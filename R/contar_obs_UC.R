@@ -6,7 +6,10 @@ contar_obs_UC <- function(
 ) {
   #
   contagem_sp_UC <- dados  |>  
-    dplyr::count(uc_name)
+    dplyr::count(
+      uc_name,
+      uc_name_abv
+    )
   
   return(contagem_sp_UC)
 }
