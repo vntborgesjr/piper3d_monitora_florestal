@@ -8,9 +8,7 @@ source("R/carregar_dados_completos.R")
 source("R/grafico_exploratorio_interativo.R") 
 
 # carregar dados para o R
-dados_completos <- carregar_dados_completos(
-  dados = "data-raw/dados-brutos.xlsx" 
-) 
+dados_completos <- carregar_dados_completos() 
 
 # Define UI for application that draws a histogram
 ui <- shiny::fluidPage(
@@ -47,6 +45,9 @@ ui <- shiny::fluidPage(
     shiny::mainPanel(
       plotly::plotlyOutput(
         outputId = "coluna"
+      ),
+      DT::DTOutput(
+        outputId = "tabela"
       )
     )
   )
@@ -75,6 +76,23 @@ server <- function(input, output) {
     fig
     
   })
+  
+  # imprimir mensagem
+  print("Gerando tabela...")
+  
+  # adicionar tabela interativa
+  output$tabela = DT::renderDataTable({
+    dados_completos |> 
+      dplyr::filter(uc_name == input$ucs,
+                    sp == input$especie,
+                    !is.na(distance)) |> 
+      DT::datatable(
+        filter = list(
+          position = "top"
+        )
+      )
+  })
+  
 }
 
 # Run the application 
