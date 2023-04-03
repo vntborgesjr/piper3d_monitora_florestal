@@ -9,6 +9,12 @@ grafico_n_obs_UC_shiny <- function(
   
   # desenha o gráfico com mais de 1000 observações
   grafico_n_obs_uc <- dados  |>  
+    mutate(
+      uc_name_abv = forcats::fct_reorder(
+        uc_name_abv,
+        dplyr::desc(n)
+      )
+    ) |> 
     ggplot2::ggplot() +
     ggplot2::aes(x = uc_name_abv,
                  y = n,
@@ -31,9 +37,8 @@ grafico_n_obs_UC_shiny <- function(
 # Exemplo
 
 # gerar gráfico
-#grafico_n_obs_UC_shiny(
-#  dados = readr::read_rds("data/dados_selecionados.rds")
-#)
+#contar_obs_UC() |> 
+  #grafico_n_obs_UC_shiny()
 
 
 # salvar em disco
