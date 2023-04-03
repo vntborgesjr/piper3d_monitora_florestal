@@ -14,6 +14,7 @@ output:
 ```{r configuração, include=FALSE, warning=FALSE, message=FALSE}
 # carregar pacotes
 library(readxl)
+library(readr)
 library(flextable)
 library(tidyr)
 library(dplyr)
@@ -274,11 +275,11 @@ tidyr::separate_wider_delim(
     ) |> 
   relocate(
     uc_category,
-    .before = `Local - Nome da Unidade de Conservação`
+    .before = uc_name
   ) |> 
   relocate(
     uc_name_abv,
-    .after = `Local - Nome da Unidade de Conservação`
+    .after = uc_name
   )
 
 # gerar tabela dinâmica dos dados brutos
@@ -388,11 +389,7 @@ source(
 )
 
 # carregar dados para o R
-dados_completos <- carregar_dados_completos(
-  dados = corrigir_diretorio(
-    corrige = "data-raw/dados-brutos.xlsx"
-  )
-  )
+dados_completos <- carregar_dados_completos()
 
 # transformar os dados para o formato do Distance
 dados_distanceR_completo <- transforma_para_distanceR(
