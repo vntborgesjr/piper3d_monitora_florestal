@@ -6,28 +6,28 @@
 # Planilha Oficial consolidada de Masto-aves 2014-21 Validada CEMAVE CPB CENAP
 # enviada pelo Gerson por whatsapp no dia 08/03/2023
 
-
-
 carregar_dados_completos <- function(
-    dados = paste0(
-      stringr::str_remove(
-        getwd(), 
-        pattern = "doc"
-      ),
-      'data-raw/dados-brutos.xlsx'
+    dados = readxl::read_xlsx(
+      path = paste0(
+        stringr::str_remove(
+          getwd(), 
+          pattern = "doc"
+        ),
+        '/data-raw/dados-brutos.xlsx'
+      )
     )
     ) {
   # carraga os dados
-  dados_brutos <- readxl::read_excel(
-    path = corrigir_diretorio(
-      corrige = "/data-raw/Planilha Oficial consolidada de Masto-aves 2014-21 Validada CEMAVE CPB CENAP.xlsx"
-    ),
-    sheet = "dados brutos"
-  )
+  #dados_brutos <- readxl::read_excel(
+   # path = corrigir_diretorio(
+    #  corrige = "/data-raw/Planilha Oficial consolidada de Masto-aves 2014-21 Validada CEMAVE CPB CENAP.xlsx"
+    #),
+    #sheet = "dados brutos"
+  #)
   
   # padronizar separadores
   # gerar o data.frame desejado
-  dados_completos <- dados_brutos |>  
+  dados_completos <- dados |>  
     dplyr::select(
       uc_code = CDUC,
       uc_name = `Local - Nome da Unidade de Conservação`,
@@ -120,11 +120,11 @@ carregar_dados_completos <- function(
       -day_effort,
       -tidyselect::starts_with("obs")
     ) |> 
-    relocate(
+    dplyr::relocate(
       uc_category,
       .before = uc_name
     ) |> 
-    relocate(
+    dplyr::relocate(
       uc_name_abv,
       .after = uc_name
     )
@@ -136,7 +136,8 @@ carregar_dados_completos <- function(
 # exemplo de uso da função
 # lembre-se de especificar o diretório correto onde o arquivo se encontra
 # na sua máquina
-#dados <- carregar_dados_completos(dados = "/home/usuario/Documentos/Vitor/Piper3D/WWF/Monitora/Dados/data-raw/Planilha Oficial consolidada de Masto-aves 2014-21 Validada CEMAVE CPB CENAP.xlsx")
+#dados <- carregar_dados_completos()
 #View(dados)
 
 
+# rm(list = ls())
