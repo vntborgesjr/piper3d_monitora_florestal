@@ -28,9 +28,9 @@ ui <- shiny::fluidPage(
       # slider para seleção do número de observações
       shiny::sliderInput(
         label = shiny::h3("Nuḿero de observações:"),
-        inputId = "obs", 
+        inputId = "obs_sp", 
         min = 1, 
-        max = 3045,
+        max = 2047,
         value = c(501, 1000),
         step = 1
         ),
@@ -55,7 +55,7 @@ server <- function(input, output) {
   
   # gera reatividade na amplitude dae valores selecionados
   filtro <- shiny::reactive({ 
-    input$obs 
+    input$obs_sp 
   })
   
   # gerar os dados para desenhar os gráficos
