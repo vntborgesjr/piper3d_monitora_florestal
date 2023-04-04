@@ -18,7 +18,10 @@ library(readr)
 library(flextable)
 library(tidyr)
 library(dplyr)
+library(plotly)
+library(tibble)
 library(DT)
+library(Distance)
 
 # carregar as funções da pasta R
 # carregar função corrigir_diretorio.R
@@ -31,6 +34,34 @@ source(
     "R/corrigir_diretorio.R"
   )
 ) 
+
+# carregar função carregar_dados_brutos_xlsx.R
+source(
+  corrigir_diretorio(
+    corrige = "R/carregar_dados_brutos_xlsx.R"
+  )
+)
+
+# carregar função gerar_tabdin_dados_brutos
+source(
+  corrigir_diretorio(
+    corrige = "R/gerar_tabdin_dados_brutos.R"
+  )
+)
+
+# carregar a função carregar_dados_completos
+source(
+  corrigir_diretorio(
+  corrige = 'R/carregar_dados_completos.R'
+  )
+)
+
+# carregar função gerar_tabdin_dados_completos
+source(
+  corrigir_diretorio(
+    corrige = "R/gerar_tabdin_dados_completos.R"
+  )
+)
 
 # carregar função carregar_dados_exploracao.R
 source(
@@ -46,21 +77,6 @@ source(
   )
 ) 
 
-# carregar dados da pasta doc
-# carregar dados_completos.R da pasta doc
-dados_completos <- readr::read_rds(
-  corrigir_diretorio(
-    corrige = "data/dados_completos.rds"
-  )
-) 
-
-
-# carregar dados_filtrados.R da pasta data para o R
-dados_filtrados <- readr::read_rds(
-  corrigir_diretorio(
-    corrige = "data/dados_filtrados.rds"
-  )
-) 
 
 ```
 
@@ -92,10 +108,12 @@ tibble::tribble(
   info$otherPkgs$Distance$Package,  info$otherPkgs$Distance$Version,
   info$otherPkgs$DT$Package,        info$otherPkgs$DT$Version,
   info$otherPkgs$flextable$Package, info$otherPkgs$flextable$Version,
+  info$otherPkgs$ggplot2$Package,     info$otherPkgs$ggplot2$Version,
   info$otherPkgs$plotly$Package,    info$otherPkgs$plotly$Version,
   info$otherPkgs$readr$Package,     info$otherPkgs$readr$Version,
+  info$otherPkgs$readxl$Package,     info$otherPkgs$readxl$Version,
   info$otherPkgs$tibble$Package,    info$otherPkgs$tibble$Version,
-  info$otherPkgs$tidyr$Package,     info$otherPkgs$tidyr$Version,
+  info$otherPkgs$tidyr$Package,     info$otherPkgs$tidyr$Version
 ) |> 
   qflextable() |> 
   set_caption(
@@ -111,29 +129,8 @@ Algumas funções foram escritas para funcionar tomando como base de dados de re
 O primeiro e mais importante cuidado é manter os mesmos nomes das colunas em versões atualizadas da base de dados do Monitora. As primeiras funções, além de carregar os dados, aplicam uma série de transformações. Os nomes das colunas são alterados, e a essas são atribuídos tipos (data, caracter, fator , inteiro e numérico), linhas são eliminadas e novas colunas são gereadas. Para exemplificar, veja o código abaixo. Ele foi escrito para executar as primeiras transformações nos dados e constitui o corpo da função `carregar_dados_filtrados()`. 
 
 ```{r}
-# carregar pacotes para manipulação dos dados
-library(tidyr)
-library(dplyr)
-library(readxl)
-
-# carregar função corrigir_diretorio
-source(
-  paste0(
-    stringr::str_remove(
-      getwd(), 
-      'doc'
-    ),
-    "R/corrigir_diretorio.R"
-  )
-) 
-
 # carregar a base de dados do Monitora
-dados_brutos <- read_excel(
-  path = corrigir_diretorio(
-    corrige = "/data-raw/Planilha Oficial consolidada de Masto-aves 2014-21 Validada CEMAVE CPB CENAP.xlsx"
-  ),
-  sheet = "dados brutos"
-)
+dados_brutos <- carregar_dados_brutos_xlsx()
 
 # gerar o data.frame desejado
 dados_completos <- dados_brutos |>  
@@ -282,9 +279,9 @@ tidyr::separate_wider_delim(
     .after = uc_name
   )
 
-# gerar tabela dinâmica dos dados brutos
+# gerar tabela dinâmica dos dados completos
 dados_completos |> 
-  slice(1:100) |> 
+  slice(1:1000) |> 
   DT::datatable(filter = list(position = "top"))
 ```
 
@@ -308,33 +305,45 @@ Se a gente ainda precisar ter algum tipo de preocupação quanto a isso. Acho qu
 
 Não é trivial para quem não está acostumado... usar runApp, knit... até mesmo o shift+enter para rodar as linhas de comando uma a uma
 
-## *PARTE II – Carregando os dados para o R*
+## **PARTE II – Carregando os dados para o R**
 
-### *Dados brutos*
+### **Dados brutos**
+
+Não precisa se assustar com a infnidade de códigos no exemplo acima. Serviu apenas para ilustrar que construir essas funções facilita a execução e a reprodutibilidade das análise dos dados do Monitora. Para cada tarefa existe uma função cujo funcionamento não necessita de preenchimento dos argumentos (embora seja possível fornece-los). Por traz das cortinas, as funções executam as tarafas necessárias para se obter o resultado desejado. Por exemplo, o mesmo resultado pode ser obtido utilizando apenas duas funções: `carregar_dados_brutos_xlsx()`e `gerar_tabdin_dados_brutos()`. 
+
+```{r}
+# carregar dados brutos
+dados_brutos <- carregar_dados_brutos_xlsx()
+dados_brutos
+```
+
+```{r}
+gerar_tabdin_dados_brutos()
+```
+A função `gerar_tabdin_dados_brutos()`, por configuração, gera uma tabela dinâmica com 1000 linhas. Você pode controlar o número de linhas pelo argumento `n_linhas = `. Mas atenção! Ela não funcionará com um número superior a **4.500 linhas**. Ao mudar a entrada de dados usando o argumento `dados = `, certifique-se de que seu número de linhas não exceda esse limite (ex. **4.500**). INSERIR NOTA (após testar em máquinas diferentes) Esse valor pode varia de acordo com as configurações da sua máquina.
+
+```{r}
+gerar_tabdin_dados_brutos(
+  n_linhas = 1:4500
+)
+```
+
+### **Dados completos**
 
 - todas espécies/UCs – carrega_dados_1.Rmd
+Descrever o que os dados trazem e porque foram formatados dessa forma. 
+
 ```{r}
-# carregar pacote
-library(DT)
-
-# carregar a função
-source(
-  corrigir_diretorio(
-  corrige = 'R/carregar_dados_completos.R'
-  )
-)
-
 # carregar dados para o R
 dados_completos <- carregar_dados_completos() 
+dados_completos
+```
 
+tabela dinamica
 
-dados_completos |> 
-  slice(1:500) |> 
-  datatable(
-    filter = list(
-      position = "top"
-    )
-  )
+```{r}
+# gerar tabela dinamica dos dados completos
+gerar_tabdin_dados_completos()
 ```
 
 
@@ -342,6 +351,7 @@ dados_completos |>
 
 - por espécie/UC – carrega_dados_2.Rmd
 até o momento usado com o exemplo da cutia na Resex Tapajós-Arapiuns
+Descrever o que os dados trazem e porque foram formatados dessa forma.
 
 ```{r}
 # carregar a função
@@ -587,11 +597,25 @@ dados_selecionados  |>
 
 #### *Quantas observações para cada espécie?*
 
+Número de observações por espécie.
+
+```{r, fig.height=20}
+# carregar funções
+source(
+  corrigir_diretorio(
+    corrige = "R/grafico_n_sp_UC_interativo.R"
+  )
+)
+
+# plotar o o número de observações por UC
+contar_total_sp() |> 
+  grafico_n_sp_UC_interativo()
+```
+
 Tabela interativa para consulta do número de observações por espécie.
 ```{r}
-dados1 |>  
-  dplyr::filter(validacao == "E") |> 
-  dplyr::count(especie) |> 
+dados_selecionados|> 
+  dplyr::count(sp) |> 
   DT::datatable(filter = list(position = "top"))
 ```
 
