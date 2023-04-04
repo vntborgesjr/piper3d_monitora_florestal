@@ -7,13 +7,13 @@
 # enviada pelo Gerson por whatsapp no dia 08/03/2023
 
 carregar_dados_completos <- function(
-    dados = readxl::read_xlsx(
-      path = paste0(
+    dados = readr::read_rds(
+      file = paste0(
         stringr::str_remove(
           getwd(), 
           pattern = "doc"
         ),
-        '/data-raw/dados-brutos.xlsx'
+        '/data-raw/dados_brutos.rds'
       )
     )
     ) {
