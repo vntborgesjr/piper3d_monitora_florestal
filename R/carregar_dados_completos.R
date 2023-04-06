@@ -5,7 +5,6 @@
 # deve carregar uma planilha que esteja no formato do arquivo:
 # Planilha Oficial consolidada de Masto-aves 2014-21 Validada CEMAVE CPB CENAP
 # enviada pelo Gerson por whatsapp no dia 08/03/2023
-
 carregar_dados_completos <- function(
     dados = readr::read_rds(
       file = paste0(
@@ -17,14 +16,6 @@ carregar_dados_completos <- function(
       )
     )
     ) {
-  # carraga os dados
-  #dados_brutos <- readxl::read_excel(
-   # path = corrigir_diretorio(
-    #  corrige = "/data-raw/Planilha Oficial consolidada de Masto-aves 2014-21 Validada CEMAVE CPB CENAP.xlsx"
-    #),
-    #sheet = "dados brutos"
-  #)
-  
   # padronizar separadores
   # gerar o data.frame desejado
   dados_completos <- dados |>  
@@ -44,7 +35,10 @@ carregar_dados_completos <- function(
       validation = `Clasificação taxonômica validada`, 
       distance = `distância (m)     do animal em relação a trilha`,
       group_size = `n° de animais`,
-      observadores = `nome dos observadores`
+      observadores = `nome dos observadores`,
+      cense_started_at = `horário de início  (h:mm)`,
+      cense_stoped_at = `horário de término (h:mm)`
+      #cense_time = `Tempo de censo`
     ) |> 
     dplyr::mutate(
       uc_category = stringi::stri_extract_first_words(
@@ -74,6 +68,7 @@ carregar_dados_completos <- function(
         where(is.character),
         as.factor
       ),
+      cense_time = cense_stoped_at - cense_started_at,
       novo = stringr::str_replace_all(observadores, 
                                       " e ",
                                       ", "),
@@ -105,20 +100,40 @@ carregar_dados_completos <- function(
       obs6 = ifelse(!is.na(obs6), 1, 0),
       number_observers = obs1 + obs2 + obs3 + obs4 + obs5 + obs6
     ) |> 
-    dplyr::group_by(ea_name, sampling_day) |> 
+    dplyr::group_by(
+      ea_name, 
+      sampling_day
+    ) |> 
     tidyr::nest() |> 
-    dplyr::mutate(day_effort2 = purrr::map(data, \(.x) rep(.x$day_effort[!is.na(.x$day_effort)][1]))) |> 
-    tidyr::unnest(c(data, day_effort2)) |> 
+    dplyr::mutate(
+      day_effort2 = purrr::map(
+        data, 
+        \(.x) rep(.x$day_effort[!is.na(.x$day_effort)][1])
+      ),
+      
+      cense_time2 = purrr::map(
+        data, 
+        \(.x) rep(.x$cense_time[!is.na(.x$cense_time)][1])
+      ),
+    ) |> 
+    tidyr::unnest(
+      c(data, day_effort2, cense_time2)
+    ) |> 
     dplyr::ungroup() |> 
     dplyr::select(
-      tidyselect::starts_with(c("uc", "ea")),
+      tidyselect::starts_with(
+        c("uc", "ea")
+      ),
       season,
       year,
       sampling_day,
       day_effort = day_effort2,
       sp:number_observers,
+      cense_time = cense_time2,
+      -cense_time,
       -day_effort,
-      -tidyselect::starts_with("obs")
+      -tidyselect::starts_with("obs"),
+      -tidyselect::ends_with("at")
     ) |> 
     dplyr::relocate(
       uc_category,
@@ -129,6 +144,17 @@ carregar_dados_completos <- function(
       .after = uc_name
     )
   
+  # grava uma versão dados_completos.rds no diretório data
+  readr::write_rds(
+    dados_completos,
+    file = paste0(
+      stringr::str_remove(
+        getwd(), 
+        "doc"
+      ),
+      "/data/dados_completos.rds"
+    )
+  )
   # retornar o data.frame
   return(dados_completos)
 }
