@@ -9,11 +9,23 @@ carregar_dados_brutos_xlsx <- function(
         getwd(), 
         "doc"
       ),
-      "/data-raw/Planilha Oficial consolidada de Masto-aves 2014-21 Validada CEMAVE CPB CENAP.xlsx"
+      "/data-raw/monitora_masto_aves_2023_04_04.xlsx"
     ),
     sheet = "dados brutos"
     )
   ) {
+  # grava uma versão dados_brutos.rds no diretório data-raw
+  readr::write_rds(
+    dados,
+    file = paste0(
+      stringr::str_remove(
+        getwd(), 
+        "doc"
+      ),
+      "/data-raw/dados_brutos.rds"
+    )
+  )
+  
     # retorna os dados butos
   return(dados)
 }
