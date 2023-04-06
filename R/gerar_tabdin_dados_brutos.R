@@ -1,6 +1,5 @@
 # Descrição
 # gera tabela dinâmica dos dados brutos
-
 gerar_tabdin_dados_brutos <- function(
     dados = readxl::read_excel(
       path = paste0(
@@ -8,7 +7,7 @@ gerar_tabdin_dados_brutos <- function(
           getwd(), 
           "doc"
         ),
-        "/data-raw/Planilha Oficial consolidada de Masto-aves 2014-21 Validada CEMAVE CPB CENAP.xlsx"
+        "/data-raw/monitora_masto_aves_2023_04_04.xlsx"
       ),
       sheet = "dados brutos"
     ),
