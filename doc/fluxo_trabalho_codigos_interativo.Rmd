@@ -1,9 +1,7 @@
 ---
 title: "Esboço do fluxo de trabalho de produção dos códigos"
 date: "Criado em 31 de março de 2023, atualizado em `r format(Sys.time(), '%d de %B de %Y')`"
-author: 
-- Luciana Fusinatto
-- Vitor Borges-Júnior
+author: "Luciana Fusinatto \n Vitor Borges-Júnior"
 output: 
   html_notebook:
     toc: true
@@ -49,89 +47,12 @@ source(
   )
 ) 
 
-# carregar função carregar_dados_brutos_xlsx.R
+# carregar função script_carregar_funções_pasta_r.R
 source(
   corrigir_diretorio(
-    corrige = "R/carregar_dados_brutos_xlsx.R"
+    corrige = "R/script_carregar_funções_pasta_r.R"
   )
 )
-
-# carregar função gerar_tabdin_dados_brutos
-source(
-  corrigir_diretorio(
-    corrige = "R/gerar_tabdin_dados_brutos.R"
-  )
-)
-
-# carregar a função carregar_dados_completos
-source(
-  corrigir_diretorio(
-  corrige = 'R/carregar_dados_completos.R'
-  )
-)
-
-# carregar função gerar_tabdin_dados_completos
-source(
-  corrigir_diretorio(
-    corrige = "R/gerar_tabdin_dados_completos.R"
-  )
-)
-
-# carregar a função carregar dados filtrados
-source(
-  corrigir_diretorio(
-     corrige = 'R/carregar_dados_filtrados.R'
-  )
-)
-
-# carregar a função gerar_tabdin_dados_filtrados
-source(
-  corrigir_diretorio(
-    corrige = 'R/gerar_tabdin_dados_filtrados.R'
-  )
-)
-
-# carregar função transformar_para_distanceR
-source(
-  corrigir_diretorio(
-    corrige = "/R/transformar_para_distanceR.R"
-  )
-)
-
-# carregar a função gerar_tabdin_dados_distanceR_completo
-source(
-  corrigir_diretorio(
-    corrige = '/R/gerar_tabdin_dados_distanceR_completo.R'
-  )
-)
-
-# carregar a função gerar_tabdin_dados_distanceR_completo
-source(
-  corrigir_diretorio(
-    corrige = '/R/transformar_para_distanceR_covariaveis.R'
-  )
-)
-
-# carregar a função gerar_tabdin_dados_distanceR_completo
-source(
-  corrigir_diretorio(
-    corrige = '/R/gerar_tabdin_dados_distanceR_completo_cov.R'
-  )
-)
-
-# carregar função carregar_dados_exploracao.R
-source(
-  corrigir_diretorio(
-    corrige = "R/carregar_dados_exploracao.R"
-  )
-) 
-
-# carregar função grafico_expĺoratorio_interativo
-source(
-  corrigir_diretorio(
-    corrige = "R/grafico_exploratorio_interativo.R"
-  )
-) 
 
 
 ```
@@ -152,17 +73,19 @@ Talvez com uma breve explicação do que cada pacote faz, versão mínima... nã
 info <- sessionInfo()
 
 # gerar tabela com os pacotes e versões
-tibble::tribble(
+tribble(
   ~Pacotes,                         ~Versão,
   version$language,                 version$version.string,
   info$otherPkgs$dplyr$Package,     info$otherPkgs$dplyr$Version,
-  info$otherPkgs$Distance$Package,  info$otherPkgs$Distance$Version,
+  #info$otherPkgs$Distance$Package,  info$otherPkgs$Distance$Version,
   info$otherPkgs$DT$Package,        info$otherPkgs$DT$Version,
   info$otherPkgs$flextable$Package, info$otherPkgs$flextable$Version,
   info$otherPkgs$ggplot2$Package,     info$otherPkgs$ggplot2$Version,
+  info$otherPkgs$lubridate$Package,     info$otherPkgs$lubridate$Version,
   info$otherPkgs$plotly$Package,    info$otherPkgs$plotly$Version,
   info$otherPkgs$readr$Package,     info$otherPkgs$readr$Version,
   info$otherPkgs$readxl$Package,     info$otherPkgs$readxl$Version,
+  info$otherPkgs$stringr$Package,     info$otherPkgs$stringr$Version,
   info$otherPkgs$tibble$Package,    info$otherPkgs$tibble$Version,
   info$otherPkgs$tidyr$Package,     info$otherPkgs$tidyr$Version
 ) |> 
@@ -646,8 +569,8 @@ Gerar tabela dinamica.
 
 Tabela interativa para consultar quantas observações foram realizadas por ano em cada UC
 ```{r}
-dados1 |>  
-  dplyr::count(ano, ucs) |> 
+dados_selecionados |>  
+  dplyr::count(year, uc_name) |> 
   DT::datatable(filter = list(position = "top"))
 ```
 
@@ -655,8 +578,8 @@ dados1 |>
 
 Tabela interativa para consultar quantas observações foram realizadas para cada espécie em cada ano
 ```{r}
-dados1 |>  
-  dplyr::count(ano, especie) |> 
+dados_selecionados |>  
+  dplyr::count(year, sp) |> 
   DT::datatable(filter = list(position = "top"))
 ```
 
@@ -665,16 +588,17 @@ dados1 |>
 Tabela interativa para consultar quantas observações foram realizadas para cada espécie em cada ano
 
 ```{r}
-dados1 |>  
-  dplyr::count(ano, ucs, especie) |> 
+
+dados_selecionados |>  
+  dplyr::count(year, uc_name, sp) |> 
   DT::datatable(filter = list(position = "top"))
 ```
 
 #### **Quantas observações para cada espécies por UC, por estação e por ano?**
 
 ```{r}
-dados1 |>  
-  dplyr::count(ano, season, uc_name, sp) |> 
+dados_selecionados |>  
+  dplyr::count(year, season, uc_name, sp) |> 
   DT::datatable(filter = list(position = "top"))
 ```
 
@@ -693,14 +617,11 @@ dados1 |>
 #### **Distribuição de distâncias**
 
 ```{r distribuicao_dsitancia, warning=FALSE}
-# carregar dados_filtrados.R da pasta data para o R
-dados_filtrados <- readr::read_rds(corrigir_diretorio(corrige = "data/dados_filtrados.rds")) 
-
 # gerar o gráfico exploratório da distribuição de distâncias perpendiculares para a espécies Dasyrocta croconota na Resex Tapajós-Arapiuns
 fig <- dados_filtrados |>
   # excluir NA's da variável distance
   tidyr::drop_na(distance) |> 
-  grafico_exploratorio3()
+  plotar_distribuicao_distancia_interativo()
 
 fig
 ```
