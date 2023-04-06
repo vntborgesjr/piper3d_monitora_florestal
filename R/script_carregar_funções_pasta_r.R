@@ -188,6 +188,13 @@ source(
   )
 )
 
+# carregar função contar_n_ano_uc
+source(
+  corrigir_diretorio(
+    corrige = "/R/plotar_distribuicao_distancia_interativo.R"
+  )
+)
+
 
 #dados = readr::read_rds(
 #  file = paste0(
