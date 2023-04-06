@@ -7,20 +7,34 @@ author:
 output: 
   html_notebook:
     toc: true
+    toc_depth: 5
+    toc_float: false
     number_section: true
-    
+    code_folding: show
 ---
 
 ```{r configuração, include=FALSE, warning=FALSE, message=FALSE}
-# carregar pacotes
-library(readxl)
+# carregar pacotes necessários
+# carregar pacotes para carregar dados
 library(readr)
-library(flextable)
-library(tidyr)
+library(readxl)
+
+# carregar pacotes para manipulação dos dados
 library(dplyr)
-library(plotly)
-library(tibble)
+library(lubridate)
+library(stringr)
+library(tidyr)
+
+# carregar pacotes para gerar tabelas de dados
 library(DT)
+library(flextable)
+library(tibble)
+
+# carregar pacotes para visualização dos dados
+library(ggplot2)
+library(plotly)
+
+# carregar pacotes parar análise de dados
 library(Distance)
 
 # carregar as funções da pasta R
@@ -63,6 +77,48 @@ source(
   )
 )
 
+# carregar a função carregar dados filtrados
+source(
+  corrigir_diretorio(
+     corrige = 'R/carregar_dados_filtrados.R'
+  )
+)
+
+# carregar a função gerar_tabdin_dados_filtrados
+source(
+  corrigir_diretorio(
+    corrige = 'R/gerar_tabdin_dados_filtrados.R'
+  )
+)
+
+# carregar função transformar_para_distanceR
+source(
+  corrigir_diretorio(
+    corrige = "/R/transformar_para_distanceR.R"
+  )
+)
+
+# carregar a função gerar_tabdin_dados_distanceR_completo
+source(
+  corrigir_diretorio(
+    corrige = '/R/gerar_tabdin_dados_distanceR_completo.R'
+  )
+)
+
+# carregar a função gerar_tabdin_dados_distanceR_completo
+source(
+  corrigir_diretorio(
+    corrige = '/R/transformar_para_distanceR_covariaveis.R'
+  )
+)
+
+# carregar a função gerar_tabdin_dados_distanceR_completo
+source(
+  corrigir_diretorio(
+    corrige = '/R/gerar_tabdin_dados_distanceR_completo_cov.R'
+  )
+)
+
 # carregar função carregar_dados_exploracao.R
 source(
   corrigir_diretorio(
@@ -80,23 +136,18 @@ source(
 
 ```
 
-# ESBOÇO FLUXO DE TRABALHO DO PRODUTO 2 - CÓDIGOS
-
-## *PARTE I – Cuidados antes de começar a rodar os códigos no R*
+# **PARTE I – Cuidados antes de começar a rodar os códigos no R**
 
 Pensar quais orientações são mais gerais e quais são importantes de acompanhar cada código.
 
-### *Rstudio/Pacotes/versões/sistemas operacionais*
+## **Rstudio/Pacotes/versões/sistemas operacionais**
 
 Sobre os pacotes, seria bom ter uma listinha de ‘library’ no início de cada código?
 Talvez com uma breve explicação do que cada pacote faz, versão mínima... não sei.
 
-*OBS*: essa tabela é uma referência para obtermos as versões dos pacotes ao final do desenvolvimento do script. Ela está automatizada, então quando terminarmos ele precisamos refaze-lo de forma que não gere mais mudança nas versões (tem que fazer a tabela na mão mesmo...).
+**OBS**: essa tabela é uma referência para obtermos as versões dos pacotes ao final do desenvolvimento do script. Ela está automatizada, então quando terminarmos ele precisamos refaze-lo de forma que não gere mais mudança nas versões (tem que fazer a tabela na mão mesmo...).
 
 ```{r}
-# carregar pacote para formatar tabela
-library(flextable)
-
 # gerar informações sobre os pacotes carregados
 info <- sessionInfo()
 
@@ -122,7 +173,7 @@ tibble::tribble(
 ```
 
 
-### *Cuidados com a planilha .xlsx que será importada (para que mantenha o padrão da planilha de referência do ICMBio)* 
+## **Cuidados com a planilha .xlsx que será importada (para que mantenha o padrão da planilha de referência do ICMBio)** 
 
 Algumas funções foram escritas para funcionar tomando como base de dados de referência a planilha em formato excel `Planilha Oficial consolidada de Masto-aves 2014-21 Validada CEMAVE CPB CENAP.xlsx` disponibilizada pelo Projeto Monitora. Estas funções carregam os dados e fazem uma série de transformações para devolve-los no formato padronizado do programa DISTANCE para Windows. Portanto, para garantir a reprodutibilidade dos códigos produzidos em versões atualizadas da base de dados do Monitora, é importante tomar alguns cuidados. 
 
@@ -279,35 +330,48 @@ tidyr::separate_wider_delim(
     .after = uc_name
   )
 
+dados_completos
+```
+
+```{r}
 # gerar tabela dinâmica dos dados completos
 dados_completos |> 
-  slice(1:1000) |> 
-  DT::datatable(filter = list(position = "top"))
+  slice(
+    1:1000
+  ) |> 
+  datatable(
+    filter = list(
+      position = "top"
+    )
+  )
 ```
 
 O trecho do código que vai da linha 101 a 113 serve selecionar apenas as colunas de interesse presente nos dados originais. Note que os nomes das planilhas originais constam nesse trecho. Caso o nome de qualque uma dessas colunas seja alterado a função deixará de funcionar.
 
 Outro aspecto importante é a presença de observações não preenchidas (ex. células vazias) nos dados originais. A função foi desenha para resolver alguns problemas presentes nos dados originais. Por exemplo, nas o trecho do código das linhas xx a xx as observações vazias (`NA`s) são substituidas pelo valor correto na coluna `day_effort`. Essa correção continnuará sendo realizada em versões atualizadas dos dados do Monitora. Porém, se outras colunas além das que estão sendo corrigidas possuirem observações vazias os dados serão carregados e transformados, porém outras funções podem ter o seu funcionamento comprometido. Por exemplo... (funções de visualização e do pacote distance que podem naõ funcionar devido a ausência de observação)
 
+Dentre todas as funções de carregamento de dados, apenas `carregar_dados_brutos()` carrega a base de dados originais do Monitora, diretamente do diretório `data-raw/monitora_masto_aves_2023_04_04.xlsx`. Ao mesmo tempo que carrega e transforma os dados, essa função gera uma versão em um formato mais leve, `.rds`, no diretório `data-raw` (`data-raw/monitora_masto_aves_2023_04_04.rds`). A função seguinte no fluxo de trabalho carrega a base a partir dessa versão mais leve. Logo, sempre que houver atualizações no arquivo original de dados brutos é necessário iniciar a rotina de carregamento de dados necessariamente com a função `carregar_dados_brutos()`.
+
 Outros cuidados...
 
 Imaginando que a planilha de dados do monitora é algo dinâmico, que o nome das colunas pode ser editado...
 
-### *Como abrir os arquivos: como salvar e descompactar a pasta. Abrir projeto*
+## **Como abrir os arquivos: como salvar e descompactar a pasta. Abrir projeto**
 
 Um passo a passo de como salvar arquivo com os códigos e abrir.. Por exemplo, da forma como está é interessante descompactar a pasta e acessar os arquivos abrindo o projeto. Acho que isso pode mudar, dependendo de como viermos a entregar o produto final. Então podemos pensar nessa explicação no final.
 
-### *Cuidados com diretório*
+## **Cuidados com diretório**
 
 Se a gente ainda precisar ter algum tipo de preocupação quanto a isso. Acho que não.
+Explicar a estrtura de diretórios do projeto.
 
-### *Como rodar cada tipo de arquivo (markdown, shiny)*
+## **Como rodar cada tipo de arquivo (markdown, shiny)**
 
 Não é trivial para quem não está acostumado... usar runApp, knit... até mesmo o shift+enter para rodar as linhas de comando uma a uma
 
-## **PARTE II – Carregando os dados para o R**
+# **PARTE II – Carregando os dados para o R**
 
-### **Dados brutos**
+## **Dados brutos**
 
 Não precisa se assustar com a infnidade de códigos no exemplo acima. Serviu apenas para ilustrar que construir essas funções facilita a execução e a reprodutibilidade das análise dos dados do Monitora. Para cada tarefa existe uma função cujo funcionamento não necessita de preenchimento dos argumentos (embora seja possível fornece-los). Por traz das cortinas, as funções executam as tarafas necessárias para se obter o resultado desejado. Por exemplo, o mesmo resultado pode ser obtido utilizando apenas duas funções: `carregar_dados_brutos_xlsx()`e `gerar_tabdin_dados_brutos()`. 
 
@@ -328,7 +392,7 @@ gerar_tabdin_dados_brutos(
 )
 ```
 
-### **Dados completos**
+## **Dados completos**
 
 - todas espécies/UCs – carrega_dados_1.Rmd
 Descrever o que os dados trazem e porque foram formatados dessa forma. 
@@ -347,299 +411,238 @@ gerar_tabdin_dados_completos()
 ```
 
 
-### *Dados filtrados*
+## **Dados filtrados**
 
 - por espécie/UC – carrega_dados_2.Rmd
 até o momento usado com o exemplo da cutia na Resex Tapajós-Arapiuns
 Descrever o que os dados trazem e porque foram formatados dessa forma.
 
 ```{r}
-# carregar a função
-source(
-  corrigir_diretorio(
-     corrige = 'R/carregar_dados_filtrados.R'
-  )
-  )
-
 # carregar dados para o R
-dados_filtrados <- carregar_dados_filtrados(
-  dados = corrigir_diretorio(
-    corrige =  'data-raw/dados-brutos.xlsx'
-  ),
-  nome_uc = "Resex Tapajós-Arapiuns",
-  nome_sp = "Dasyprocta croconota"
-)
-
-dados_filtrados |> 
-  datatable(
-    filter = list(
-      position = "top"
-    )
-  )
+dados_filtrados <- carregar_dados_filtrados()
+dados_filtrados
 ```
 
-## *Parte III – Transformando dados para Distance*
-
-### *Dados completos*
-
-- todas espécies/UCs – transforma_para_distanceR.Rmd
 
 ```{r}
-# carregar as funções
-source(
-  corrigir_diretorio(
-    corrige = "R/carregar_dados_completos.R"
-  )
-  ) 
+# gerar tabela dinâmica
+gerar_tabdin_dados_filtrados()
+```
 
-source(
-  corrigir_diretorio(
-    corrige = "R/transforma_para_distanceR.R"
-  )
-)
 
-# carregar dados para o R
-dados_completos <- carregar_dados_completos()
+# **Parte III – Transformando dados para Distance**
 
+## **Dados completos**
+
+- todas espécies/UCs – transformar_para_distanceR.Rmd
+
+```{r}
 # transformar os dados para o formato do Distance
-dados_distanceR_completo <- transforma_para_distanceR(
-  dados_completos
-)
-
-dados_distanceR_completo |> 
-  slice(1:500) |> 
-  datatable(
-    filter = list(
-      position = "top"
-    )
-  )
+dados_distanceR_completo <- transformar_para_distanceR()
+dados_distanceR_completo
 ```
 
+```{r}
+# gerar tabela dinamica dos dados no formato do distance do R
+gerar_tabdin_dados_distanceR_completo()
+```
+
+Em princípio tudo certo até aqui.
 
 ```{r}
-# carregar as funções
-source(
-  corrigir_diretorio(
-  corrige = "R/transforma_para_distanceR_covariaveis.R"
-)
-)
-
-# carregar dados para o R
-dados_filtrados <- read_rds(
-  file = corrigir_diretorio(
-    corrige = "data/dados_filtrados.rds"
-  )
-  )
-
 # transformar os dados para o formato do Distance
-dados_distanceR_covariaveis <- transforma_para_distanceR_covariaveis(
-  dados = dados_filtrados
-)
-
-dados_distanceR_covariaveis |> 
-  slice(1:500) |> 
-  datatable(
-    filter = list(
-      position = "top"
-    )
-  )
-```
-
-### *Dados selecionados* 
-
-Sistematizar os critérios utilizados para eliminar observações (linhas).
-
-- espécies validadas
-- ...
-
-## Quantas observações foram validadas para quais níveis taxonômicos?
-
-```{r}
-n_sp_validada <- dados_completos |> 
-  count(validation)
-```
-
-Foram selecionadas apenas as observações validadas ao nível de espécie, somando um total `r n_sp_validada$n[1]` observações.
-
-```{r}
-# carregar as funções
-source(
-  corrigir_diretorio(
-    corrige = "R/carregar_dados_completos.R"
-  )
-  ) 
-source(
-  corrigir_diretorio(
-    corrige = "R/grafico_n_sp_validadas.R"
-  )
-)
-
-# carregar dados para o R
-dados_completos <- carregar_dados_completos()
-
-# gerar gráfico com número observações validadas para cada nível taxonômico
-grafico_n_sp_validadas()
+dados_distance_r_covariaveis <- transformar_para_distanceR_covariaveis()
+dados_distance_r_covariaveis
 ```
 
 ```{r}
-# carregar função carregar dados selecionados
-source(
-  corrigir_diretorio(
-    corrige = "R/carregar_dados_selecionados.R"
-  )
-)
-
-# gerar tabela de dados selecionados
-dados_selecionados <- carregar_dados_selecionados()
-
-dados_selecionados |> 
-  slice(1:500) |> 
-  datatable(
-    filter = list(
-      position = "top"
-    )
-  )
+# tabdin de dados_distanceR_covariaveis
+gerar_tabdin_dados_distanceR_completo_cov()
 ```
 
-### *PARTE IV – Explorando os dados*
+# **PARTE IV – Explorando e selecionando os dados para as análises**
 
-### *Selecionando os melhores modelos de estudo de acordo com os dados*
+## **Selecionando os melhores modelos de estudo de acordo com os dados**
 
 Critŕios:
 
 - espécies com maior volume de dados total
 - maior volume de dados por UC
  –  exploração_01.nb.html (acho que o .Rmd para gerar esse html não está na pasta Monitora). Eu tinha gostado bastante desse documento, com as tabelas dinâmicas. Talvez dê para selecionar as perguntas que são válidas de deixar/ tirar/ incluir.
-
 WWF - Projeto Monitora
+- espécies validadas
+- ...
 
-#### *Exploração de dados*
+### **Exploração e seleção de dados**
 
-#### *Informações básicas*
+#### **Aspectos relacionados ao número total de observações**
 
-#### *Quantas unidades de conservação ao todo?*
+Sistematizar os critérios utilizados para eliminar observações (linhas). 
+
+Pensar num esquema de árvore de decisão para se chegar ao subconjunto de dados que será analisados.
+
+#### **Quantas observações foram validadas para quais níveis taxonômicos?**
+
+Essas operações são realizadas sobre a tabela de dados `dados_completos` pois os dados que foram transformados para o formato do distace no R não possuem a coluna `validation`, necessária para essas opereações. Mais a frente o procedimento de como obter os dados selecionados e transformatos para o formato das análises será demonstrado.
+
+```{r}
+# contar observações validadas ao nível de espécie
+n_obs_validadas <- contar_n_obs_validadas()
+n_obs_validadas
+```
+
+Foram selecionadas apenas as observações validadas ao nível de espécie, somando um total `r n_obs_validadas[1]` observações.
+
+```{r}
+# gerar gráfico com número observações validadas para cada nível taxonômico
+plotar_n_obs_validadas()
+```
+
+Filnalmente chegamos ao subconjunto dos dados que será utilizado para selecionar quais espécies serão analisadas.
+
+```{r}
+# gerar tabela de dados selecionados
+dados_selecionados <- carregar_dados_selecionados()
+dados_selecionados
+```
+
+```{r}
+# gerar tabdin dados_selecionados 
+gerar_tabdin_dados_selecionados()
+```
+
+#### **Quantas unidades de conservação ao todo?**
 
 ```{r n_de_ucs}
-source(
-  corrigir_diretorio(
-    corrige = "R/contar_UCs.R"
-  )
-)
-
-n_ucs <- contar_UCs(
-  dados_selecionados
-)
+# contar número total de UC's 
+n_ucs <- contar_n_uc()
+n_ucs
 ```
 
 Os dados são provenientes de `r n_ucs` unidades de conservação ao todo.
 
-#### *Quantas espécies ao todo?*
+#### **Quantas espécies ao todo?**
 
 ```{r}
-source(
-  corrigir_diretorio(
-    corrige = "R/contar_sp.R"
-  )
-)
-
-n_sp <- contar_sp(
-  dados_completos
-)
+n_sp <- contar_n_sp()
+n_sp
 ```
 
-Foram coletados dados para `r n_sp` espécies.
+Até aqui temos dados para `r n_sp` espécies.
 
-#### *Quantas observações por unidade de conservação ao todo?*
+#### **Quantas observações por unidade de conservação ao todo?**
 
 As UC's foram filtradas de acordo com o número de observações permitir a visualização.
 
 A função de contagem de UC's gerou 40 UC's, mas só há observações para 38. *Lembrar de verificar isso*.
 
 ```{r}
-# carregar funções
-source(
-  corrigir_diretorio(
-    corrige = "R/contar_obs_UC.R"
-  )
-)
-
-n_obs_uc <- contar_obs_UC()
-
-n_obs_uc |> 
-  datatable(filter= list(
-    position = "top"
-  )
-  )
+# contar número de observações por UC
+n_obs_uc <- contar_n_obs_uc()
+n_obs_uc
 ```
 
 *Adicionar o nome completo da UC na caixa interativa do gráfico*.
 *Identificar os plotes com subtítulos ex tentar adicionar título aos plotes*
+**Adicionar nomes das UCs nos 3 primeiros gáficos (descompartilhar eixo x)** 
 
 ```{r, fig.height=20}
-# carregar funções
-source(
-  corrigir_diretorio(
-    corrige = "R/grafico_n_obs_UC_interativo.R"
-  )
-)
-
-# plotar o o número de observações por UC
-dados_selecionados |> 
-  grafico_n_obs_UC_interativo()
+# plotar o número de observações por UC
+plotar_n_obs_uc_interativo()
 ```
 
-Tabela interativa com os dados completos de contagem de observações por UC.
 ```{r}
-dados_selecionados  |>  
-  dplyr::count(uc_name, uc_name_abv) |> 
-  DT::datatable(filter = list(position = "top"))
+# gerar tabdin
+gerar_tabdin_n_obs_uc()
 ```
 
-#### *Quantas observações para cada espécie?*
+#### **Quantas observações para cada espécie?**
 
 Número de observações por espécie.
 
 ```{r, fig.height=20}
-# carregar funções
-source(
-  corrigir_diretorio(
-    corrige = "R/grafico_n_sp_UC_interativo.R"
-  )
-)
+# contar total sp
+n_obs_sp <- contar_n_obs_sp()
+n_obs_sp
+```
 
+Esse gráfico pode melhorar. Descompartilhar o eixo x? Abreviar o nome das espécies...
+
+```{r, fig.height=20}
 # plotar o o número de observações por UC
-contar_total_sp() |> 
-  grafico_n_sp_UC_interativo()
+plotar_n_sp_uc_interativo()
 ```
 
 Tabela interativa para consulta do número de observações por espécie.
 ```{r}
-dados_selecionados|> 
-  dplyr::count(sp) |> 
-  DT::datatable(filter = list(position = "top"))
+# gerar tabela dinâmica com o número total de obsevações por espécie
+gerar_tabdin_n_obs_sp()
 ```
 
-#### *Quais e quantas observações para cada espécie por unidades de conservação?*
+#### **Quais e quantas observações para cada espécie por unidades de conservação?**
 
-Tabela interativa para consulta do número de observações por espécie e por UC.
+Gerar função para plotar o número de observações para cada espécie por UC.
+
+```{r, fig.height=20}
+
+```
+
 ```{r}
-dados1 |>  
-  dplyr::filter(validacao == "E") |> 
-  dplyr::count(ucs, especie) |> 
-  DT::datatable(filter = list(position = "top"))
+# gerar tabela com o número de observações por espécie e por UC
+n_obs_sp_uc <- contar_n_obs_sp_uc()
+n_obs_sp_uc
 ```
 
-#### *Quantas unidades de conservação foram amostradas em cada ano?*
+Gerar função tabela dinâmica.
+
+```{r}
+
+```
+
+#### **Quantas unidades de conservação foram amostradas em cada ano?**
+
+Gerar função para visualizar número de UCs amostradas em cada ano.
+
+```{r}
+
+```
+
 
 ```{r, echo=FALSE}
-dados1 |>  
-  dplyr::count(ano, ucs) |>  
-  dplyr::group_by(ano) |>  
-  dplyr::count(ucs) |>  
-  dplyr::summarise(n_ucs = sum(n))
+# gerar tabela com o número de unidades de conservação amostradas em cada ano
+n_ucs_ano <- contar_n_uc_ano()
+n_ucs_ano
 ```
 
-#### *Quantas observações foram realizadas por UC em cada ano?*
+Gerar função para tabela dinâmica.
+
+```{r}
+
+```
+
+#### **Quais unidades de conservação foram amostradas em um maior número de anos?**
+
+Gerar gráfico com o número de anos em que cada UC foi amostrada.
+
+```{r}
+
+```
+
+Tabela
+
+```{r}
+n_ano_uc <- contar_n_ano_uc()
+n_ano_uc  
+```
+
+Gerar tabela dinamica.
+
+```{r}
+
+```
+
+
+#### **Quantas observações foram realizadas por UC em cada ano?**
 
 Tabela interativa para consultar quantas observações foram realizadas por ano em cada UC
 ```{r}
@@ -648,7 +651,7 @@ dados1 |>
   DT::datatable(filter = list(position = "top"))
 ```
 
-#### Quantas observações para cada espécies por ano?
+#### **Quantas observações para cada espécies por ano?**
 
 Tabela interativa para consultar quantas observações foram realizadas para cada espécie em cada ano
 ```{r}
@@ -657,7 +660,7 @@ dados1 |>
   DT::datatable(filter = list(position = "top"))
 ```
 
-#### *Quantas observações para cada espécies por UC e por ano?*
+#### **Quantas observações para cada espécies por UC e por ano?**
 
 Tabela interativa para consultar quantas observações foram realizadas para cada espécie em cada ano
 
@@ -667,7 +670,7 @@ dados1 |>
   DT::datatable(filter = list(position = "top"))
 ```
 
-#### *Quantas observações para cada espécies por UC, por estação e por ano?*
+#### **Quantas observações para cada espécies por UC, por estação e por ano?**
 
 ```{r}
 dados1 |>  
@@ -675,7 +678,7 @@ dados1 |>
   DT::datatable(filter = list(position = "top"))
 ```
 
-### *Selecionando melhores modelos de estudo considerando estratificação espacial/temporal – se há suficiência amostral (60-80 observações) por estrato*
+#### **Selecionando melhores modelos de estudo considerando estratificação espacial/temporal – se há suficiência amostral (60-80 observações) por estrato**
 
 - Possíveis estratificações espaciais – EAs/UCs
 
@@ -683,11 +686,11 @@ dados1 |>
 
 	- Possíveis estratificações temporais – Espécie/UC/Ano 
 
-### *Avaliando distância de truncamento *
+#### **Avaliando distância de truncamento**
 
 - Gráficos de distribuição das frequências de ocorrência x distância perpendicular. Arquivos gráfico-exploratorio1.Rmd e gráfico-exploratorio2.Rmd (eu não sei como você fez para incluir aquela linha vermelha com o valor de w no gráfico exploratório 2, mas ficou legal)
 
-### *Distribuição de distâncias*
+#### **Distribuição de distâncias**
 
 ```{r distribuicao_dsitancia, warning=FALSE}
 # carregar dados_filtrados.R da pasta data para o R
@@ -702,7 +705,7 @@ fig <- dados_filtrados |>
 fig
 ```
 
-### *avaliando covariáveis*
+#### **Avaliando covariáveis**
 
 – As covariáveis devem ser pensadas de acordo com o grupo taxonômico. Espécies que formam grupos devem ter a covariável ‘size’. 
 
@@ -710,27 +713,27 @@ As estratégias de estratificação podem ser substituídas por covariáveis tam
 
 Como covariável temporal, pode se pensar em usar, além do ano, a estação do ano (season), o horário do dia (para animais que variam a atividade). O horário do dia pode ser convertido em tempo após nascer do sol (como no exemplo). Mas para isso é necessário criar essa variável no dataset. E não é trivial porque precisa saber o horário de nascer do sol em cada dia/local para calcular.
 
-### *gerar gráficos distância x covariável*
+**ATENÇÃO: gerar gráficos distância x covariável**
 
 Exemplo de Gráficos de Marques et al. 2007
 
-## *PARTE V – Ajustando os modelos*
+# **PARTE V – Ajustando os modelos**
 
 Esse trabalho do Marque et al. 2007 é uma boa referência de como usar as abordagens CDS global, CDS estratificada e MCDS.
 
 Aqui, é possível testar alguns caminhos de modelos. A estratificação só faz sentido quando o volume de dados for grande. Ainda assim o uso de covariáveis pode substituir a estratificação. Pensar em como orientar o uso dessas abordagens
 
-### *Modelos pela abordagem CDS – dados globais*
+## **Modelos pela abordagem CDS – dados globais**
 
 - função ds do Distance (argumentos básicos: truncation; key, adjustment, scale... estudar argumentos para ver se mais algum interessa)
 
-### *Modelos pela abordagem CDS – dados estratificados*
+## **Modelos pela abordagem CDS – dados estratificados**
 
 - Aqui precisa ver direitinho os cuidados que precisa ter para ajustar as funções nos dados estratificados. Acho que faz em blocos. Vai aplicando os mesmos parâmetros para todos os estratos a cada modelo.
 
 - para cada estrato (espacial ou temporal) usar - função ds do Distance (argumentos básicos: truncation; key, adjustment, scale... estudar argumentos para ver se mais algum interessa)
 
-### *Modelos pela abordagem MCDS – dados globais*
+## **Modelos pela abordagem MCDS – dados globais**
 
 Aqui não faz sentido estratificar
 
@@ -738,27 +741,28 @@ Aqui não faz sentido estratificar
 
 Dicas em Miller et al. 2019 sobre covariáveis (ver arquivo no driver).
 
-## *PARTE VI – Avaliando os modelos*
+# **PARTE VI – Avaliando os modelos**
 
-### *Ajuste dos modelos *
+## **Ajuste dos modelos**
 
 - função gof_ds 
 
 – para gerar Q-Q plots e testes associados
 
-### *Selecionando modelos (AIC) *
+## **Selecionando modelos (AIC)**
 
 – função summarize_ds_models
 
 DICAS EXTRAS DE MILLER et al. 2019
 
-## *PARTE VII – PRODUTO FINAL*
+# **PARTE VII – PRODUTO FINAL**
 
 - Como organizar
 
 - Interatividade
 
-# Criar expressões reativas
+**Criar expressões reativas**
+
 reactive()
 eventReactive()
 
@@ -777,7 +781,9 @@ isolate()
 
 - Pacote targets seria últil?
 
-# Glossário
+# **Glossário**
+
+Descrever as variáveis (colunas), termos técnicos ao longo do texto...
 
  - `Effort` - extensão total percorrida em metros no conjunto de dados seleciodo.
  
