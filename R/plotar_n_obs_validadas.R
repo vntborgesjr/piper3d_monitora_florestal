@@ -16,18 +16,21 @@ plotar_n_obs_validadas <- function(
     ggplot2::aes(
       x = validation,
       y = n,
-      label = n
     ) +
     ggplot2::geom_col(
       fill = "chartreuse4"
     ) +
-    ggplot2::geom_label() +
     ggplot2::labs(
       title = "Número de obs. validadas para \ncada nível taxonômico",
       x = "Nível taxonômico",
       y = "Contagem"
     ) +
     ggplot2::theme_minimal(14)
+  
+  # gerar gráfico interativo
+  grafico_n_sp_validada <- plotly::ggplotly(
+    grafico_n_sp_validada
+  )
   
   return(grafico_n_sp_validada)
 }
