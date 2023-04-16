@@ -5,16 +5,16 @@
 #
 # carregar funções
 source("R/carregar_dados_selecionados.R")
-source("R/contar_total_sp.R")
+source("R/contar_n_obs_sp.R")
 source("R/grafico_n_obs_sp_shiny.R") 
 
-#n_obs_uc <- contar_obs_UC()
+#n_obs_uc <- contar_n_obs_sp()
 
 # Define UI for application that draws a histogram
 ui <- shiny::fluidPage(
   
   # Application title
-  shiny::titlePanel("Número de total observações por UC"),
+  shiny::titlePanel("Número de total observações por espécie"),
   
   # Sidebar with a slider input for number of bins 
   shiny::sidebarLayout(
@@ -30,7 +30,7 @@ ui <- shiny::fluidPage(
         label = shiny::h3("Nuḿero de observações:"),
         inputId = "obs_sp", 
         min = 1, 
-        max = 2497,
+        max = 3497,
         value = c(501, 1000),
         step = 1
         ),
@@ -61,7 +61,7 @@ server <- function(input, output) {
   # gerar os dados para desenhar os gráficos
   n_obs_sp_filtrado <- reactive({
     dados_selecionados |>  
-      contar_total_sp() |> 
+      contar_n_obs_sp() |> 
       dplyr::filter( 
         n %in% filtro()[1]:filtro()[2] 
       )
@@ -97,7 +97,3 @@ server <- function(input, output) {
 
 # Run the application 
 shiny::shinyApp(ui = ui, server = server)
-    
-contar_total_sp() |> 
-  summarise(max(n),
-            min(n))
