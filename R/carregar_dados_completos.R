@@ -25,6 +25,7 @@ carregar_dados_completos <- function(
       ea_number = `Número da Estação Amostral`,
       ea_name = `Nome da EA`,
       season = `Estação do ano`,
+      year = Ano,
       sampling_day = `data da amostragem`,
       day_effort = `Esforço de amostragem tamanho da trilha (m)`,
       class = Classe,
@@ -63,7 +64,6 @@ carregar_dados_completos <- function(
         "Gênero" = "g",
         "Ordem" = "O"
       ),
-      year = lubridate::year(sampling_day),
       across(
         where(is.character),
         as.factor
