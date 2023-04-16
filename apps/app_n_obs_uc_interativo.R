@@ -5,10 +5,10 @@
 #
 # carregar funções
 source("R/carregar_dados_selecionados.R")
-source("R/contar_obs_UC.R")
+source("R/contar_n_obs_uc.R")
 source("R/grafico_n_obs_UC_shiny.R") 
 
-#n_obs_uc <- contar_obs_UC()
+#n_obs_uc <- contar_n_obs_uc()
 
 # Define UI for application that draws a histogram
 ui <- shiny::fluidPage(
@@ -30,7 +30,7 @@ ui <- shiny::fluidPage(
         label = shiny::h3("Nuḿero de observações:"),
         inputId = "obs_sp", 
         min = 1, 
-        max = 2047,
+        max = 3047,
         value = c(501, 1000),
         step = 1
         ),
@@ -61,7 +61,7 @@ server <- function(input, output) {
   # gerar os dados para desenhar os gráficos
   n_obs_uc_filtrado <- reactive({
     dados_selecionados |>  
-      contar_obs_UC() |> 
+      contar_n_obs_uc() |> 
       dplyr::filter( 
         n %in% filtro()[1]:filtro()[2] 
       )
