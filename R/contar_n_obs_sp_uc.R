@@ -19,6 +19,7 @@ contar_n_obs_sp_uc <- function(
     ) |> 
     dplyr::count(
       uc_name, 
+      uc_name_abv,
       sp, 
       #sp_abv
     )
