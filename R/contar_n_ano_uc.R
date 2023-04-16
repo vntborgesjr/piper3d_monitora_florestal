@@ -1,5 +1,5 @@
 # Descrição
-# fornece o número total de observações por espécie.
+# fornece o número total de anos em que cada UC foi amostrada.
 
 contar_n_ano_uc <- function(
     dados = readr::read_rds(
@@ -12,7 +12,7 @@ contar_n_ano_uc <- function(
       )
     )
 ) {
-  # gera o número de observaçẽos por espécie
+  # gera o número de anos em que cada UC foi amostrada
   n_ano_uc <- dados |>  
     dplyr::filter(
       validation == "Espécie"
@@ -30,7 +30,7 @@ contar_n_ano_uc <- function(
       year
     ) |>  
     dplyr::summarise(
-      n_ucs = sum(n)
+      n_anos = sum(n)
     )
   
   # grava a tabela n_ano_uc.rds no diretório data/
