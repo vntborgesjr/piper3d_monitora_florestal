@@ -5,7 +5,7 @@
 #
 # carregar funções
 source("R/carregar_dados_completos.R") 
-source("R/grafico_exploratorio_interativo.R") 
+source("R/plotar_distribuicao_distancia_interativo.R") 
 
 # carregar dados para o R
 dados_completos <- carregar_dados_completos() 
@@ -70,7 +70,7 @@ server <- function(input, output) {
     print("Gerando gráficos...")
     
     # gerar gráficos
-    fig <- grafico_exploratorio_interativo(dados_filtrados())
+    fig <- plotar_distribuicao_distancia_interativo(dados_filtrados())
     
     # retornar graficos
     fig
