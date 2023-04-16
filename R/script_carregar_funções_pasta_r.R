@@ -160,10 +160,10 @@ source(
   )
 )
 
-# carregar função plotar_n_sp_uc_interativo
+# carregar função plotar_n_obs_sp_interativo
 source(
   corrigir_diretorio(
-    corrige = "/R/plotar_n_sp_uc_interativo.R"
+    corrige = "/R/plotar_n_obs_sp_interativo.R"
   )
 )
 
@@ -171,6 +171,13 @@ source(
 source(
   corrigir_diretorio(
     corrige = "/R/contar_n_obs_sp_uc.R"
+  )
+)
+
+# carregar função plotar_n_obs_sp_uc_interativo
+source(
+  corrigir_diretorio(
+    corrige = "/R/plotar_n_obs_sp_uc_interativo.R"
   )
 )
 
@@ -188,10 +195,45 @@ source(
   )
 )
 
-# carregar função contar_n_ano_uc
+# carregar função plotar_distribuicao_distancia_interativo
 source(
   corrigir_diretorio(
     corrige = "/R/plotar_distribuicao_distancia_interativo.R"
+  )
+)
+
+# carregar função gerar_tabdin_n_obs_sp_uc
+source(
+  corrigir_diretorio(
+    corrige = "/R/gerar_tabdin_n_obs_sp_uc.R"
+  )
+)
+
+# carregar função gerar_tabdin_n_uc_ano
+source(
+  corrigir_diretorio(
+    corrige = "/R/gerar_tabdin_n_uc_ano.R"
+  )
+)
+
+# carregar função gerar_tabdin_n_ano_uc
+source(
+  corrigir_diretorio(
+    corrige = "/R/gerar_tabdin_n_ano_uc.R"
+  )
+)
+
+# carregar função contar_n_obs_uc_ano
+source(
+  corrigir_diretorio(
+    corrige = "/R/contar_n_obs_uc_ano.R"
+  )
+)
+
+# carregar função gerar_tabdin_n_obs_uc_ano
+source(
+  corrigir_diretorio(
+    corrige = "/R/gerar_tabdin_n_obs_uc_ano.R"
   )
 )
 
