@@ -1,0 +1,61 @@
+---
+title: "carregar_dados_selecionados()"
+output: 
+   html_document:
+     df_print: 'paged'
+---
+
+carregar_dados_selecionados {}                                            Documentação R
+
+# Carrega e transforma a planilha original de dados
+
+## Descrição
+
+A função `carregar_dados_selecionados()`...
+
+## Uso
+
+`carregar_dados_selecionados(
+  dados = dados_completos.rds
+  )`
+
+## Argumentos
+
+`dados`        `.xlsx`.
+
+## Detalhes
+
+A funcionalidade depende da formataçao correta dos dados. É importante manter o padrão dos nomes das colunas e das observações categóricas em versões atualizadas dos dados. Para aplicar a função é necessário utilizar a versão R 4.2.2 e estar com as versões atualizadas dos pacotes `readxl`, `dplyr`, `lubridate`, `stringr`,  `tdiyr` e `tidyselect`.
+
+## Exemplo
+
+```{r}
+# carregar função corrigir_diretorio
+source(
+  paste0(
+    stringr::str_remove(
+      getwd(), 
+      'doc'
+    ),
+    "R/corrigir_diretorio.R"
+  )
+) 
+
+# carregar função carregar dados selecionados
+source(
+  corrigir_diretorio(
+    corrige = "R/carregar_dados_selecionados.R"
+  )
+)
+
+# gerar tabela de dados selecionados
+dados_selecionados <- carregar_dados_selecionados()
+
+dados_selecionados
+```
+
+```{r}
+# gravar no disco os dados importados para o R
+#readr::write_rds(dados_selecionados, paste0(stringr::str_remove(getwd(), 'doc'), "data/dados_selecionados.rds")) 
+```
+
