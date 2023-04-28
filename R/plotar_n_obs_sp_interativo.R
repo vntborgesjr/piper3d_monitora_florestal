@@ -1,150 +1,57 @@
 # Descrição
-
+# desenha um gráfico de barras interativo com o número de observações por espécie
 plotar_n_obs_sp_interativo <- function(
     dados = readr::read_rds(
       file = paste0(
-        stringr::str_remove(
-          getwd(), 
-          "doc"
-        ),
+        here::here(),
         "/data/n_obs_sp.rds"
       )
     )
 ) {
-  # carregar pacote necessário
-  #library(patchwork)
-  
-  # desenha o gráfico com mais de 1000 observações
-  mais_mil_obs <- dados |>  
-    dplyr::filter(n %in% 1001:2497) |> 
-    dplyr::mutate(
-      sp = forcats::fct_reorder(
-        sp,
-        dplyr::desc(n)
+  fig <- plotly::ggplotly(
+    # gerar figura
+    fig <- dados |> 
+      dplyr::mutate(
+        n_obs = dplyr::case_when(
+          n > 1000 ~ "Mais de 1000 observações",
+          n %in% 501:1000 ~ "Entre 501 e 1000 observações",
+          n %in% 101:500 ~ "Entre 101 e 500 observações",
+          n %in% 1:100 ~ "Até 100 observações"
+        ),
+        sp_name = forcats::fct_reorder(
+          sp_name,
+          n
+        ),
+        n_obs = forcats::fct_reorder(
+          n_obs,
+          dplyr::desc(n)
+        )
+      ) |> 
+      ggplot2::ggplot() +
+      ggplot2::aes(y = sp_name,
+                   x = n,
+                   label = sp_name_abv) +
+      ggplot2::geom_col(
+        fill = "chartreuse4",
+        #width = .9
+      ) +
+      ggplot2::labs(y = "Espécies",
+                    x = "Número de observações") +
+      ggplot2::facet_wrap(
+        facets = vars(
+          n_obs
+        ), 
+        nrow = 4, 
+        scales = "free"
+      ) +
+      ggplot2::theme_minimal(14) + 
+      theme(
+        # Remove labels from the vertical axis
+        axis.text.y = element_blank(),
+        strip.text = element_text(size = 10),
       )
-    ) |> 
-    ggplot2::ggplot() +
-    ggplot2::aes(x = sp, # substituir por sp_abv
-                 y = n) +
-    ggplot2::geom_col(fill = "chartreuse4") +
-    #ggplot2::geom_label() +
-    ggplot2::labs(
-      x = "Nome das espécies",
-      y = "Número de observações"
-    ) +
-    ggplot2::theme_minimal(14)
-  
-  # transforma em grafico interativo
-  mais_mil_obs <- plotly::ggplotly(mais_mil_obs)
-  
-  # desenha o gráfico com 501 a 1000 observações
-  quinhentos_mil_obs <- dados  |>  
-    dplyr::filter(n %in% 501:1000) |> 
-    dplyr::mutate(
-      sp = forcats::fct_reorder(
-        sp,
-        dplyr::desc(n)
-      )
-    ) |> 
-    ggplot2::ggplot() +
-    ggplot2::aes(x = sp, # substituir por sp_abv
-                 y = n) +
-    ggplot2::geom_col(fill = "chartreuse4") +
-    #ggplot2::geom_label() +
-    ggplot2::labs(
-      x = "Nome das espécies",
-      y = "Número de observações"
-    ) +
-    ggplot2::theme_minimal(14)
-  
-  # transforma em gráfico interativo
-  quinhentos_mil_obs <- plotly::ggplotly(quinhentos_mil_obs)
-  
-  # desenha o gráfico com 101 a 500 observações
-  cem_quintas_obs <- dados  |>  
-    dplyr::filter(n %in% 101:500) |> 
-    dplyr::mutate(
-      sp = forcats::fct_reorder(
-        sp,
-        dplyr::desc(n)
-      )
-    ) |> 
-    ggplot2::ggplot() +
-    ggplot2::aes(x = sp, # substituir por sp_abv
-                 y = n) +
-    ggplot2::geom_col(fill = "chartreuse4") +
-    #ggplot2::geom_label() +
-    ggplot2::labs(
-      x = "Nome das espécies",
-      y = "Número de observações"
-    ) +
-    ggplot2::theme_minimal(14)
-  
-  # tansforma em gráfico interativo
-  cem_quintas_obs <- plotly::ggplotly(cem_quintas_obs)
-  
-  # desenha o gráfico com menos de 100 observações
-  uma_cem_obs <- dados  |>  
-    dplyr::filter(n < 100) |> 
-    dplyr::mutate(
-      sp = forcats::fct_reorder(
-        sp,
-        dplyr::desc(n)
-      )
-    ) |> 
-    ggplot2::ggplot() +
-    ggplot2::aes(x = sp, # substituir por sp_abv
-                 y = n) +
-    ggplot2::geom_col(fill = "chartreuse4") +
-    #ggplot2::geom_label() +
-    ggplot2::labs(
-      x = "Nome das espécies",
-      y = "Número de observações"
-    ) +
-    ggplot2::theme_minimal(14)
-  
-  # tansforma em gráfico interativo
-  uma_cem_obs <- plotly::ggplotly(uma_cem_obs)
-  
-  # organizar os gráficos
-  # fig <- ggpubr::ggarrange(
-  #  hist,
-  # box, 
-  #pontos,
-  #nrow = 3
-  #)
-  fig <-  plotly::subplot(
-    mais_mil_obs, 
-    quinhentos_mil_obs,
-    cem_quintas_obs,
-    uma_cem_obs,
-    nrows = 4,
-    titleX = FALSE,
-    titleY = TRUE,
-    shareX = FALSE,
-    shareY = TRUE
   )
   
   # retronar os gráficos
   return(fig)
 }
-
-# Exemplo
-
-# carregar dados
-#cutia_tap_arap <- readr::read_rds("data/dados_filtrados.rds")
-
-# gerar gráficos
-#grafico_exploratorio_interativo(cutia_tap_arap)
-
-
-# salvar em disco
-#ggplot2::ggsave(
-# "fig.tiff", 
-#width = 15, 
-#height = 15,
-#units = "cm"
-#)
-#contar_total_sp() |> 
-# grafico_n_sp_UC_interativo()
-
