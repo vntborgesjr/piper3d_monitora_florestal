@@ -1,13 +1,8 @@
-# Descrição
-# fornece o número total de observações por espécie.
-
+# fornece quantas UC's foram amostradas por ano
 contar_n_uc_ano <- function(
     dados = readr::read_rds(
       file = paste0(
-        stringr::str_remove(
-          getwd(), 
-          "doc"
-        ),
+        here::here(),
         "/data/dados_selecionados.rds"
       )
     )
@@ -35,10 +30,7 @@ contar_n_uc_ano <- function(
   readr::write_rds(
     n_uc_ano,
     file = paste0(
-      stringr::str_remove(
-        getwd(), 
-        "doc"
-      ),
+      here::here(),
       "/data/n_uc_ano.rds"
     )
   )
@@ -47,6 +39,3 @@ contar_n_uc_ano <- function(
   return(n_uc_ano)
 }
 
-# Exemplo
-
-#contar_total_sp() 
