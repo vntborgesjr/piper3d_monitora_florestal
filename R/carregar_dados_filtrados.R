@@ -6,10 +6,7 @@
 carregar_dados_filtrados <- function(
     dados = readr::read_rds(
       file = paste0(
-        stringr::str_remove(
-          getwd(), 
-          pattern = "doc"
-        ),
+        here::here(),
         '/data/dados_completos.rds'
       )
     ),
@@ -21,17 +18,14 @@ carregar_dados_filtrados <- function(
   dados_filtrados <- dados |>  
     dplyr::filter(
       uc_name == nome_uc,
-      sp == nome_sp
+      sp_name == nome_sp
     )
   
   # grava uma versão dados_filtrados.rds no diretório data
   readr::write_rds(
     dados_filtrados,
     file = paste0(
-      stringr::str_remove(
-        getwd(), 
-        "doc"
-      ),
+      here::here(),
       "/data/dados_filtrados.rds"
     )
   )
