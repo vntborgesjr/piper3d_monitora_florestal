@@ -442,6 +442,7 @@ gerar_tabdin_n_obs_uc()
 plotar_n_obs_uc_interativo()
 ```
 
+
 #### **Quantas observações para cada espécie?**
 
 Número de observações por espécie.
@@ -460,26 +461,36 @@ n_obs_sp <- contar_n_obs_sp()
 gerar_tabdin_n_obs_sp()
 ```
 
+Esse gráfico pode melhorar. Compartilhar o eixo x? Adicionar título ao eixo x...
+
 ```{r, fig.height=20}
 # plotar o o número de observações por UC
 plotar_n_obs_sp_interativo()
 ```
 
+Tabela interativa para consulta do número de observações por espécie.
+```{r}
+
+```
 
 #### **Quais e quantas observações para cada espécie por unidades de conservação?**
 
 ```{r}
 # gerar tabela com o número de observações por espécie e por UC
 n_obs_sp_uc <- contar_n_obs_sp_uc()
-
-# gerar tabdin
-gerar_tabdin_n_obs_sp_uc()
+n_obs_sp_uc
 ```
 
 **Repensar esse gráfico...** Talvez não seja necessário...
 
 ```{r, fig.height=20}
 plotar_n_obs_sp_uc_interativo()
+```
+
+Gerar função tabela dinâmica.
+
+```{r}
+gerar_tabdin_n_obs_sp_uc()
 ```
 
 #### **Quantas unidades de conservação foram amostradas em cada ano?**
@@ -495,9 +506,13 @@ Se der tempo incluir ao final.
 
 ```{r, echo=FALSE}
 # gerar tabela com o número de unidades de conservação amostradas em cada ano
-n_uc_ano <- contar_n_uc_ano()
+n_ucs_ano <- contar_n_uc_ano()
+n_ucs_ano
+```
 
-# gerar tabdin
+Gerar função para tabela dinâmica.
+
+```{r}
 gerar_tabdin_n_uc_ano()
 ```
 
@@ -515,17 +530,25 @@ Tabela
 
 ```{r}
 n_ano_uc <- contar_n_ano_uc()
+n_ano_uc  
+```
 
-# gera tabdin
+Gerar tabela dinamica.
+
+```{r}
 gerar_tabdin_n_ano_uc()
 ```
+
 
 #### **Quantas observações foram realizadas por UC em cada ano?**
 
 ```{r}
 n_obs_uc_ano <- contar_n_obs_uc_ano()
+n_obs_uc_ano
+```
 
-# gera tabdin
+Tabela interativa para consultar quantas observações foram realizadas por ano em cada UC
+```{r}
 gerar_tabdin_n_obs_uc_ano()
 ```
 
@@ -533,8 +556,11 @@ gerar_tabdin_n_obs_uc_ano()
 
 ```{r}
 n_obs_sp_ano <- contar_n_obs_sp_ano()
+n_obs_sp_ano
+```
 
-# gerar tabdin
+Tabela interativa para consultar quantas observações foram realizadas para cada espécie em cada ano
+```{r}
 gerar_tabdin_n_obs_sp_ano()
 ```
 
@@ -542,8 +568,12 @@ gerar_tabdin_n_obs_sp_ano()
 
 ```{r}
 n_obs_sp_uc_ano <- contar_n_obs_sp_uc_ano()
+n_obs_sp_uc_ano
+```
 
-# gerar tabdin
+Tabela interativa para consultar quantas observações foram realizadas para cada espécie em cada ano
+
+```{r}
 gerar_tabdin_n_obs_sp_uc_ano()
 ```
 
@@ -551,8 +581,10 @@ gerar_tabdin_n_obs_sp_uc_ano()
 
 ```{r}
 n_obs_sp_uc_estacao_ano <- contar_n_obs_sp_uc_estacao_ano()
+n_obs_sp_uc_estacao_ano
+```
 
-# gerar tabdin
+```{r}
 gerar_tabdin_n_obs_sp_uc_estacao_ano()
 ```
 
