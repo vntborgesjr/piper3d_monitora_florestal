@@ -20,13 +20,6 @@ source(
   )
 )
 
-# carregar função carregar_dados_brutos_rds.R
-source(
-  corrigir_diretorio(
-    corrige = "/R/carregar_dados_brutos_rds.R"
-  )
-)
-
 # carregar função gerar_tabdin_dados_brutos
 source(
   corrigir_diretorio(
@@ -153,7 +146,7 @@ source(
   )
 )
 
-# carregar função plotar_n_obs_uc_interativo
+# carregar função plotar_n_obs_uc_estatico
 source(
   corrigir_diretorio(
     corrige = "/R/plotar_n_obs_uc_estatico.R"
@@ -167,7 +160,7 @@ source(
   )
 )
 
-# carregar função plotar_n_obs_uc_interativo
+# carregar função gerar_tabdin_n_obs_uc
 source(
   corrigir_diretorio(
     corrige = "/R/gerar_tabdin_n_obs_uc.R"
