@@ -1,13 +1,8 @@
-# Descrição
 # gera tabela dinâmica dos dados completos
-
 gerar_tabdin_dados_distanceR_completo_cov <- function(
     dados = readr::read_rds(
       file = paste0(
-        stringr::str_remove(
-          getwd(), 
-          pattern = "doc"
-        ),
+        here::here(),
         '/data/dados_transformados_dist_r_cov.rds'
       )
     ),
