@@ -1,13 +1,9 @@
 # Descrição
 # fornece o número total de anos em que cada UC foi amostrada.
-
 contar_n_ano_uc <- function(
     dados = readr::read_rds(
       file = paste0(
-        stringr::str_remove(
-          getwd(), 
-          "doc"
-        ),
+        here::here(),
         "/data/dados_selecionados.rds"
       )
     )
@@ -37,10 +33,7 @@ contar_n_ano_uc <- function(
   readr::write_rds(
     n_ano_uc,
     file = paste0(
-      stringr::str_remove(
-        getwd(), 
-        "doc"
-      ),
+      here::here(),
       "/data/n_ano_uc.rds"
     )
   )
