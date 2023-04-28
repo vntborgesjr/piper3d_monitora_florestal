@@ -1,13 +1,9 @@
 # Descrição
-# fornece o número total de observações por espécie.
-
+# fornece o número total de observações por espécie por UC
 contar_n_obs_sp_uc <- function(
     dados = readr::read_rds(
       file = paste0(
-        stringr::str_remove(
-          getwd(), 
-          "doc"
-        ),
+        here::here(),
         "/data/dados_selecionados.rds"
       )
     )
@@ -20,18 +16,15 @@ contar_n_obs_sp_uc <- function(
     dplyr::count(
       uc_name, 
       uc_name_abv,
-      sp, 
-      #sp_abv
+      sp_name, 
+      sp_name_abv
     )
   
   # grava a tabela n_obs_sp_uc.rds no diretório data/
   readr::write_rds(
     n_obs_sp_uc,
     file = paste0(
-      stringr::str_remove(
-        getwd(), 
-        "doc"
-      ),
+      here::here(),
       "/data/n_obs_sp_uc.rds"
     )
   )
