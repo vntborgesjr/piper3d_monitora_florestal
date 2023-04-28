@@ -25,7 +25,7 @@ carregar_dados_exploracao <- function(dados) {
       order = Ordem,
       family = Família,
       genus = Gênero,
-      sp = `Espécies validadas para análise do ICMBio`,
+      sp_name = `Espécies validadas para análise do ICMBio`,
       validation = `Clasificação taxonômica validada`, 
       distance = `distância (m)     do animal em relação a trilha`,
       group_size = `n° de animais`,
@@ -79,7 +79,7 @@ carregar_dados_exploracao <- function(dados) {
       year,
       sampling_day,
       day_effort = day_effort2,
-      sp:number_observers,
+      sp_name:number_observers,
       -day_effort,
       -tidyselect::starts_with("obs")
     )
