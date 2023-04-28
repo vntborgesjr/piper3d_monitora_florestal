@@ -1,0 +1,627 @@
+---
+title: "Esboço do fluxo de trabalho de produção dos códigos"
+date: "Criado em 31 de março de 2023, atualizado em `r format(Sys.time(), '%d de %B de %Y')`"
+author: "Luciana Fusinatto \n Vitor Borges-Júnior"
+output: 
+  html_notebook:
+    toc: true
+    toc_depth: 5
+    toc_float: false
+    number_section: true
+    code_folding: show
+---
+
+```{r configuração, include=FALSE, warning=FALSE, message=FALSE}
+# carregar pacotes
+library(Distance)
+library(dplyr)
+library(DT)
+library(flextable)
+library(ggplot2)
+library(lubridate)
+library(plotly)
+library(readr)
+library(readxl)
+library(stringr)
+library(tibble)
+library(tidyr)
+
+# carregar as funções da pasta R
+# carregar função corrigir_diretorio.R
+source(
+  paste0(
+    stringr::str_remove(
+      getwd(), 
+      'doc'
+    ),
+    "R/corrigir_diretorio.R"
+  )
+) 
+
+# carregar função script_carregar_funções_pasta_r.R
+source(
+  corrigir_diretorio(
+    corrige = "R/script_carregar_funções_pasta_r.R"
+  )
+)
+
+
+```
+
+# **PARTE I – Cuidados antes de começar a rodar os códigos no R**
+
+Pensar quais orientações são mais gerais e quais são importantes de acompanhar cada código.
+
+## **Rstudio/Pacotes/versões/sistemas operacionais**
+
+Sobre os pacotes, seria bom ter uma listinha de ‘library’ no início de cada código?
+Talvez com uma breve explicação do que cada pacote faz, versão mínima... não sei.
+
+**OBS**: essa tabela é uma referência para obtermos as versões dos pacotes ao final do desenvolvimento do script. Ela está automatizada, então quando terminarmos ele precisamos refaze-lo de forma que não gere mais mudança nas versões (tem que fazer a tabela na mão mesmo...).
+
+```{r}
+# gerar informações sobre os pacotes carregados
+info <- sessionInfo()
+
+# gerar tabela com os pacotes e versões
+tribble(
+  ~Pacotes,                         ~Versão,
+  version$language,                 version$version.string,
+  info$otherPkgs$dplyr$Package,     info$otherPkgs$dplyr$Version,
+  #info$otherPkgs$Distance$Package,  info$otherPkgs$Distance$Version,
+  info$otherPkgs$DT$Package,        info$otherPkgs$DT$Version,
+  info$otherPkgs$flextable$Package, info$otherPkgs$flextable$Version,
+  info$otherPkgs$ggplot2$Package,     info$otherPkgs$ggplot2$Version,
+  info$otherPkgs$lubridate$Package,     info$otherPkgs$lubridate$Version,
+  info$otherPkgs$plotly$Package,    info$otherPkgs$plotly$Version,
+  info$otherPkgs$readr$Package,     info$otherPkgs$readr$Version,
+  info$otherPkgs$readxl$Package,     info$otherPkgs$readxl$Version,
+  info$otherPkgs$stringr$Package,     info$otherPkgs$stringr$Version,
+  info$otherPkgs$tibble$Package,    info$otherPkgs$tibble$Version,
+  info$otherPkgs$tidyr$Package,     info$otherPkgs$tidyr$Version
+) |> 
+  qflextable() |> 
+  set_caption(
+    "Tabela xx - configuração de pacotes necessários e respectivas versões mínimas que devem ser utilizadas para reproduzir os códigos"
+  )
+```
+
+
+## **Cuidados com a planilha .xlsx que será importada (para que mantenha o padrão da planilha de referência do ICMBio)** 
+
+A primeira função que utilizaremos, `carregar_dados_brutos_xlsx()`, irá carregar a a planilha em formato excel, `Planilha Oficial consolidada de Masto-aves 2014-21 Validada CEMAVE CPB CENAP.xlsx`, e gerar automaticamente o arquivo `dados_brutos.rds` na pasta `data-raw`. A função seguinte a ser utilizada, `carregar_dados_completos()` que irá carregar o arquivo `dados_brutos.rds`. Essa função foi escrita para carrega os dados e operar uma série de transformações para devolve-lo no formato padronizado do programa **DISTANCE** para Windows. Portanto, para garantir a reprodutibilidade dos códigos produzidos em versões atualizadas da base de dados do Monitora, é importante tomar alguns cuidados. 
+
+O primeiro e mais importante cuidado é **manter a consistência dos nomes das colunas** em versões atualizadas da base de dados do Monitora. Além de carregar os dados, a função `carregar_dados_completos()` aplica uma série de transformações nas colunas. Seus nomes são alterados, e a essas são atribuídos tipos apropriados (data, caracter, fator, inteiro e numérico), linhas são eliminadas e novas colunas são gereadas. Para exemplificar, veja o código abaixo. Ele foi escrito para executar as primeiras transformações nos dados e constitui o corpo da função `carregar_dados_filtrados()`. 
+
+```{r}
+# carregar a base de dados do Monitora
+dados_brutos <- carregar_dados_brutos_xlsx()
+
+# gerar o data.frame desejado reproduzindo as transformações realizadas pela função carregar_dados_completos()
+dados_filtrados <- dados_brutos |>  
+  # selecionar as colunas necessárias para as analises, padronizando os nomes para o formato DISTANCE
+  dplyr::select(
+    uc_code = CDUC,
+    uc_name = `Local - Nome da Unidade de Conservação`,
+    ea_number = `Número da Estação Amostral`,
+    ea_name = `Nome da EA`,
+    season = `Estação do ano`,
+    sampling_day = `data da amostragem`,
+    day_effort = `Esforço de amostragem tamanho da trilha (m)`,
+    sp = `Espécies validadas para análise do ICMBio`,
+    distance = `distância (m)     do animal em relação a trilha`,
+    group_size = `n° de animais`,
+    observadores = `nome dos observadores`
+  ) |>
+  # atribuir os tipos corretos às colunas e criar novas colunas
+    dplyr::mutate(
+      uc_category = stringi::stri_extract_first_words(
+      uc_name
+    ),
+    # abrevia o nome das UCs
+    uc_name_abv = forcats::lvls_revalue(
+      uc_name,
+      new_levels = c(
+        "ETM", "EM", "EN", "ESGT", "FJ", "PCV", "PA", "PSBoc", "PSBod", "PSC",
+        "PSM", "PSC", "PSD", "PSP", "PSO", "PPN", "PCO", "PI", "PJaú", "PJur",
+        "PMR", "PS", "PV", "PCA", "PMT", "RG", "RJ", "RTap", "RU", "RG",
+        "RTrom", "RAT", "RBA", "RCI", "RCM", "RRC", "RROP", "RIA", "RRA", "RTA"
+      )
+    ),
+      # atribuir o tipo data à coluna sampling_day
+      year = lubridate::year(
+        sampling_day
+      ),
+      # atribuir o tipo fator às colunas do tipo caracter
+      across(
+        where(
+          is.character
+        ),
+        as.factor
+      ),
+      # substituir separadores de nome por ","
+      novo = stringr::str_replace_all(
+        observadores, 
+        " e ",
+        ", "
+      ),
+      # substituir separadores de nome por ","
+      novo = stringr::str_replace_all(
+        novo, 
+        " E ",
+        ", "
+      ),
+      # substituir separadores de nome por ","
+      novo = stringr::str_replace_all(
+        novo, 
+        "/",
+        ", "
+      ),
+      # substituir separadores de nome por ","
+      novo = stringr::str_replace_all(
+        novo, 
+        ";",
+        ", "
+      ),
+      # substituir separadores de nome por ","
+      novo = stringr::str_replace_all(
+        novo, 
+        " a ",
+        ", "
+      ) 
+    ) |>
+  # transformar os nomes dos observadores da coluna novo em colunas individuais
+tidyr::separate_wider_delim(
+  novo, 
+  ",",
+  names = c(
+    "obs1", "obs2", "obs3", "obs4", "obs5", "obs6"
+  ),
+  too_few = "align_start"
+) |> 
+  # gerar uma nova coluna number_observers com o número total de observadores em um mesmo transecto
+  dplyr::mutate(
+    # se o valor da observação é diferente de NA, substituir por 1, se for NA, substituir por 0
+    obs1 = ifelse(!is.na(obs1), 1, 0),
+    obs2 = ifelse(!is.na(obs2), 1, 0),
+    obs3 = ifelse(!is.na(obs3), 1, 0),
+    obs4 = ifelse(!is.na(obs4), 1, 0),
+    obs5 = ifelse(!is.na(obs5), 1, 0),
+    obs6 = ifelse(!is.na(obs6), 1, 0),
+    # gera nova coluna number_observers a partir da soma das colunas de observadores individuais
+    number_observers = obs1 + obs2 + obs3 + obs4 + obs5 + obs6
+  ) |> 
+  # agrupar os dados pelas colunas ea_name e sampling_day
+  group_by(
+    ea_name, 
+    sampling_day
+  ) |> 
+  # aninhar as observações agrupadas uem listas
+  nest() |> 
+  # completar com o valor correto as linhas vazias das da variável day_effort
+  mutate(
+    day_effort2 = purrr::map(
+      data, \(.x) rep(
+        .x$day_effort[
+          !is.na(
+            .x$day_effort
+          )
+        ][1]
+      )
+    )
+  ) |> 
+  # desanihar os dados
+  unnest(
+    c(
+      data, 
+      day_effort2
+    )
+  ) |> 
+  # desagrupar os dados
+  ungroup() |> 
+  # selecionar as colunas desejadas e excluir as indesejadas
+  select(
+    tidyselect::starts_with(c("uc", "ea")),
+    season,
+    year,
+    sampling_day,
+    day_effort = day_effort2,
+    sp:number_observers,
+    -day_effort,
+    -tidyselect::starts_with("obs")
+  ) |>
+  # filtrar os dados pela UC e espécie desejadas
+    dplyr::filter(
+      uc_name == "Resex Tapajós-Arapiuns",
+      sp == "Dasyprocta croconota"
+    ) |> 
+  relocate(
+    uc_category,
+    .before = uc_name
+  ) |> 
+  relocate(
+    uc_name_abv,
+    .after = uc_name
+  )
+
+# gerar tabela dinâmica dos dados filtrados
+dados_filtrados |> 
+  slice(
+    1:1000
+  ) |> 
+  datatable(
+    filter = list(
+      position = "top"
+    )
+  )
+```
+
+O trecho do código que vai da linha 103 a 115 serve selecionar apenas as colunas de interesse presente nos dados originais. Note que os nomes das planilhas originais constam nesse trecho. Caso o nome de qualque uma dessas colunas seja alterado a função deixará de funcionar.
+
+Outro aspecto importante é a presença de observações não preenchidas (ex. células vazias) nos dados originais. A função foi desenha para resolver alguns problemas presentes nos dados originais. Por exemplo, nas o trecho do código das linhas xx a xx as observações vazias (`NA`s) são substituidas pelo valor correto na coluna `day_effort`. Essa correção continnuará sendo realizada em versões atualizadas dos dados do Monitora. Porém, se outras colunas além das que estão sendo corrigidas possuirem observações vazias os dados serão carregados e transformados, porém outras funções podem ter o seu funcionamento comprometido. Por exemplo... (funções de visualização e do pacote distance que podem naõ funcionar devido a ausência de observação)
+
+Dentre todas as funções de carregamento de dados, apenas `carregar_dados_brutos_xlsx()` carrega a base de dados originais do Monitora, diretamente do diretório `data-raw/monitora_masto_aves_2023_04_04.xlsx`. Ao mesmo tempo que carrega e transforma os dados, essa função gera uma versão em um formato mais leve, `.rds`, no diretório `data-raw` (`data-raw/monitora_masto_aves_2023_04_04.rds`). A função seguinte no fluxo de trabalho carrega a base a partir dessa versão mais leve. Logo, sempre que houver atualizações no arquivo original de dados brutos é necessário iniciar a rotina de carregamento de dados necessariamente com a função `carregar_dados_brutos_xlsx()`.
+
+Outros cuidados...
+
+Imaginando que a planilha de dados do monitora é algo dinâmico, que o nome das colunas pode ser editado...
+
+## **Como abrir os arquivos: como salvar e descompactar a pasta. Abrir projeto**
+
+Um passo a passo de como salvar arquivo com os códigos e abrir.. Por exemplo, da forma como está é interessante descompactar a pasta e acessar os arquivos abrindo o projeto. Acho que isso pode mudar, dependendo de como viermos a entregar o produto final. Então podemos pensar nessa explicação no final.
+
+## **Cuidados com diretório**
+
+Se a gente ainda precisar ter algum tipo de preocupação quanto a isso. Acho que não.
+Explicar a estrtura de diretórios do projeto.
+
+## **Como rodar cada tipo de arquivo (markdown, shiny)**
+
+Não é trivial para quem não está acostumado... usar runApp, knit... até mesmo o shift+enter para rodar as linhas de comando uma a uma
+
+# **PARTE II – Carregando os dados para o R**
+
+## **Dados brutos**
+
+Não precisa se assustar com a infnidade de códigos no exemplo acima. Serviu apenas para ilustrar que construir essas funções facilita a execução e a reprodutibilidade das análise dos dados do Monitora. Para cada tarefa existe uma função cujo funcionamento não necessita de preenchimento dos argumentos (embora seja possível fornece-los). Por traz das cortinas, as funções executam as tarafas necessárias para se obter o resultado desejado. Por exemplo, o mesmo resultado pode ser obtido utilizando apenas duas funções: `carregar_dados_brutos_xlsx()`e `gerar_tabdin_dados_brutos()`. 
+
+```{r}
+# carregar dados brutos
+dados_brutos <- carregar_dados_brutos_xlsx()
+dados_brutos
+```
+
+## **Dados completos**
+
+- todas espécies/UCs – carrega_dados_1.Rmd
+Descrever o que os dados trazem e porque foram formatados dessa forma. 
+
+```{r}
+# carregar dados para o R
+dados_completos <- carregar_dados_completos() 
+dados_completos
+```
+
+## **Dados filtrados**
+
+- por espécie/UC – carrega_dados_2.Rmd
+até o momento usado com o exemplo da cutia na Resex Tapajós-Arapiuns
+Descrever o que os dados trazem e porque foram formatados dessa forma.
+
+```{r}
+# carregar dados para o R
+dados_filtrados <- carregar_dados_filtrados()
+dados_filtrados
+```
+
+# **Parte III – Transformando dados para Distance**
+
+## **Dados completos**
+
+- todas espécies/UCs – transformar_para_distanceR.Rmd
+
+```{r}
+# transformar os dados para o formato do Distance
+dados_distanceR_completo <- transformar_para_distanceR()
+dados_distanceR_completo
+```
+
+Em princípio tudo certo até aqui.
+
+```{r}
+# transformar os dados para o formato do Distance
+dados_distance_r_covariaveis <- transformar_para_distanceR_covariaveis()
+dados_distance_r_covariaveis
+```
+
+# **PARTE IV – Explorando e selecionando os dados para as análises**
+
+## **Selecionando os melhores modelos de estudo de acordo com os dados**
+
+Critŕios:
+
+- espécies com maior volume de dados total
+- maior volume de dados por UC
+ –  exploração_01.nb.html (acho que o .Rmd para gerar esse html não está na pasta Monitora). Eu tinha gostado bastante desse documento, com as tabelas dinâmicas. Talvez dê para selecionar as perguntas que são válidas de deixar/ tirar/ incluir.
+WWF - Projeto Monitora
+- espécies validadas
+- ...
+
+### **Exploração e seleção de dados**
+
+#### **Aspectos relacionados ao número total de observações**
+
+Sistematizar os critérios utilizados para eliminar observações (linhas). 
+
+Pensar num esquema de árvore de decisão para se chegar ao subconjunto de dados que será analisados.
+
+#### **Quantas observações foram validadas para quais níveis taxonômicos?**
+
+Essas operações são realizadas sobre a tabela de dados `dados_completos` pois os dados que foram transformados para o formato do distace no R não possuem a coluna `validation`, necessária para essas opereações. Mais a frente o procedimento de como obter os dados selecionados e transformatos para o formato das análises será demonstrado.
+
+```{r}
+# contar observações validadas ao nível de espécie
+n_obs_validadas <- contar_n_obs_validadas()
+n_obs_validadas
+```
+
+Foram selecionadas apenas as observações validadas ao nível de espécie, somando um total `r n_obs_validadas[1]` observações.
+
+```{r}
+# gerar gráfico com número observações validadas para cada nível taxonômico
+plotar_n_obs_validadas_estatico()
+```
+
+Filnalmente chegamos ao subconjunto dos dados que será utilizado para selecionar quais espécies serão analisadas.
+
+```{r}
+# gerar tabela de dados selecionados
+dados_selecionados <- carregar_dados_selecionados()
+dados_selecionados
+```
+#### **Quantas unidades de conservação ao todo?**
+
+```{r n_de_ucs}
+# contar número total de UC's 
+n_ucs <- contar_n_uc()
+n_ucs
+```
+
+Os dados são provenientes de `r n_ucs` unidades de conservação ao todo.
+
+#### **Quantas espécies ao todo?**
+
+```{r}
+n_sp <- contar_n_sp()
+n_sp
+```
+
+Até aqui temos dados para `r n_sp` espécies.
+
+#### **Quantas observações por unidade de conservação ao todo?**
+
+As UC's foram filtradas de acordo com o número de observações permitir a visualização.
+
+A função de contagem de UC's gerou 40 UC's, mas só há observações para 38. *Lembrar de verificar isso*.
+
+```{r}
+# contar número de observações por UC
+n_obs_uc <- contar_n_obs_uc()
+n_obs_uc
+```
+
+Como tornar o nome das UC's mais legíveis dentro das barras?
+Como tornar o gráfico mais alto para esppalhar mais as barras?
+
+```{r, fig.align='center', fig.height=18}
+# plotar o número de observações por UC
+plotar_n_obs_uc_estatico()
+```
+
+#### **Quantas observações para cada espécie?**
+
+Número de observações por espécie.
+
+```{r, fig.height=20}
+# contar total sp
+n_sp <- contar_n_sp()
+n_sp
+```
+
+```{r}
+n_obs_sp <- contar_n_obs_sp()
+n_obs_sp
+```
+
+Esse gráfico pode melhorar. Compartilhar o eixo x? Adicionar título ao eixo x...
+
+```{r, fig.height=20}
+# plotar o o número de observações por UC
+plotar_n_obs_sp_estatico()
+```
+
+#### **Quais e quantas observações para cada espécie por unidades de conservação?**
+
+```{r}
+# gerar tabela com o número de observações por espécie e por UC
+n_obs_sp_uc <- contar_n_obs_sp_uc()
+n_obs_sp_uc
+```
+
+**Repensar esse gráfico...** Talvez não seja necessário...
+
+```{r, fig.height=20}
+plotar_n_obs_sp_uc_interativo()
+```
+
+#### **Quantas unidades de conservação foram amostradas em cada ano?**
+
+Gerar função para visualizar número de UCs amostradas em cada ano.
+**Por agora não precisa** 
+Se der tempo incluir ao final.
+
+```{r}
+
+```
+
+
+```{r, echo=FALSE}
+# gerar tabela com o número de unidades de conservação amostradas em cada ano
+n_ucs_ano <- contar_n_uc_ano()
+n_ucs_ano
+```
+
+#### **Quais unidades de conservação foram amostradas em um maior número de anos?**
+
+Gerar gráfico com o número de anos em que cada UC foi amostrada.
+**Por agora não precisa**
+Se sobrar tempo acrescentar ao final.
+
+```{r}
+
+```
+
+Tabela
+
+```{r}
+n_ano_uc <- contar_n_ano_uc()
+n_ano_uc  
+```
+
+#### **Quantas observações foram realizadas por UC em cada ano?**
+
+```{r}
+n_obs_uc_ano <- contar_n_obs_uc_ano()
+n_obs_uc_ano
+```
+
+
+#### **Quantas observações para cada espécies por ano?**
+
+```{r}
+n_obs_sp_ano <- contar_n_obs_sp_ano()
+n_obs_sp_ano
+```
+
+
+#### **Quantas observações para cada espécies por UC e por ano?**
+
+```{r}
+n_obs_sp_uc_ano <- contar_n_obs_sp_uc_ano()
+n_obs_sp_uc_ano
+```
+
+#### **Quantas observações para cada espécies por UC, por estação e por ano?**
+
+```{r}
+n_obs_sp_uc_estacao_ano <- contar_n_obs_sp_uc_estacao_ano()
+n_obs_sp_uc_estacao_ano
+```
+
+#### **Selecionando melhores modelos de estudo considerando estratificação espacial/temporal – se há suficiência amostral (60-80 observações) por estrato**
+
+- Possíveis estratificações espaciais – EAs/UCs
+
+					    - UCs/Espécies
+
+	- Possíveis estratificações temporais – Espécie/UC/Ano 
+
+#### **Avaliando distância de truncamento**
+
+- Gráficos de distribuição das frequências de ocorrência x distância perpendicular. Arquivos gráfico-exploratorio1.Rmd e gráfico-exploratorio2.Rmd (eu não sei como você fez para incluir aquela linha vermelha com o valor de w no gráfico exploratório 2, mas ficou legal)
+
+#### **Distribuição de distâncias**
+
+```{r distribuicao_dsitancia, warning=FALSE}
+# gerar o gráfico exploratório da distribuição de distâncias perpendiculares para a espécies Dasyrocta croconota na Resex Tapajós-Arapiuns
+fig <- dados_filtrados |>
+  # excluir NA's da variável distance
+  tidyr::drop_na(distance) |> 
+  plotar_distribuicao_distancia_interativo()
+
+fig
+```
+
+#### **Avaliando covariáveis**
+
+– As covariáveis devem ser pensadas de acordo com o grupo taxonômico. Espécies que formam grupos devem ter a covariável ‘size’. 
+
+As estratégias de estratificação podem ser substituídas por covariáveis também (estratos espaciais/ ano)
+
+Como covariável temporal, pode se pensar em usar, além do ano, a estação do ano (season), o horário do dia (para animais que variam a atividade). O horário do dia pode ser convertido em tempo após nascer do sol (como no exemplo). Mas para isso é necessário criar essa variável no dataset. E não é trivial porque precisa saber o horário de nascer do sol em cada dia/local para calcular.
+
+**ATENÇÃO: gerar gráficos distância x covariável**
+
+Exemplo de Gráficos de Marques et al. 2007
+
+# **PARTE V – Ajustando os modelos**
+
+Esse trabalho do Marque et al. 2007 é uma boa referência de como usar as abordagens CDS global, CDS estratificada e MCDS.
+
+Aqui, é possível testar alguns caminhos de modelos. A estratificação só faz sentido quando o volume de dados for grande. Ainda assim o uso de covariáveis pode substituir a estratificação. Pensar em como orientar o uso dessas abordagens
+
+## **Modelos pela abordagem CDS – dados globais**
+
+- função ds do Distance (argumentos básicos: truncation; key, adjustment, scale... estudar argumentos para ver se mais algum interessa)
+
+## **Modelos pela abordagem CDS – dados estratificados**
+
+- Aqui precisa ver direitinho os cuidados que precisa ter para ajustar as funções nos dados estratificados. Acho que faz em blocos. Vai aplicando os mesmos parâmetros para todos os estratos a cada modelo.
+
+- para cada estrato (espacial ou temporal) usar - função ds do Distance (argumentos básicos: truncation; key, adjustment, scale... estudar argumentos para ver se mais algum interessa)
+
+## **Modelos pela abordagem MCDS – dados globais**
+
+Aqui não faz sentido estratificar
+
+- função ds do Distance (argumentos básicos: truncation; key, adjustment, scale... estudar argumentos para ver se mais algum interessa... para as covariáveis entra o argumento formula)
+
+Dicas em Miller et al. 2019 sobre covariáveis (ver arquivo no driver).
+
+# **PARTE VI – Avaliando os modelos**
+
+## **Ajuste dos modelos**
+
+- função gof_ds 
+
+– para gerar Q-Q plots e testes associados
+
+## **Selecionando modelos (AIC)**
+
+– função summarize_ds_models
+
+DICAS EXTRAS DE MILLER et al. 2019
+
+# **PARTE VII – PRODUTO FINAL**
+
+- Como organizar
+
+- Interatividade
+
+**Criar expressões reativas**
+
+reactive()
+eventReactive()
+
+observe()
+observeEvent()
+
+reactiveVal()
+reactiveValues()
+
+isolate()
+
+
+- gerar o tal documento automatizado contendo todo esse fluxo mais os resultados das análises;
+
+- tentar transformar isso num dashboard/aplicativo único integrando cada etapa dessa numa das abas do dashboard
+
+- Pacote targets seria últil?
+
+# **Glossário**
+
+Descrever as variáveis (colunas), termos técnicos ao longo do texto...
+
+ - `Effort` - extensão total percorrida em metros no conjunto de dados seleciodo.
+ 
+ - 
