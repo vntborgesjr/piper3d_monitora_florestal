@@ -1,13 +1,8 @@
-# Descrição
 # gera tabela dinâmica do número de observações por espécies
-
 gerar_tabdin_n_obs_sp <- function(
     dados = readr::read_rds(
       file = paste0(
-        stringr::str_remove(
-          getwd(), 
-          pattern = "doc"
-        ),
+        here::here(),
         '/data/n_obs_sp.rds'
       )
     )
