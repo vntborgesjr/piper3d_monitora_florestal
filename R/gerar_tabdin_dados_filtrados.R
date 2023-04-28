@@ -1,13 +1,8 @@
-# Descrição
 # gera tabela dinâmica dos dados filtrado
-
 gerar_tabdin_dados_filtrados <- function(
     dados = readr::read_rds(
       file = paste0(
-        stringr::str_remove(
-          getwd(), 
-          pattern = "doc"
-        ),
+        here::here(),
         '/data/dados_completos.rds'
       )
     ),
@@ -19,7 +14,7 @@ gerar_tabdin_dados_filtrados <- function(
   dados_filtrado <- dados |>  
     dplyr::filter(
       uc_name == nome_uc,
-      sp == nome_sp
+      sp_name == nome_sp
     ) |> 
     datatable(
       filter = list(
