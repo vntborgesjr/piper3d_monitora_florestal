@@ -1,14 +1,9 @@
 # Descrição
-# fornece o número total de observações validadas para cada nível
-# taxonômico na base de dados.
-
+# fornece o número total de observações validadas para cada nível taxonômico
 contar_n_obs_validadas <- function(
     dados = readr::read_rds(
       file = paste0(
-        stringr::str_remove(
-          getwd(), 
-          pattern = "doc"
-        ),
+        here::here(),
         '/data/dados_completos.rds'
       )
     )
@@ -22,10 +17,7 @@ contar_n_obs_validadas <- function(
   readr::write_rds(
     tabela_n_obs_validadas,
     file = paste0(
-      stringr::str_remove(
-        getwd(), 
-        pattern = "doc"
-      ),
+      here::here(),
       "/data/tabela_n_obs_validadas.rds"
     )
   )
