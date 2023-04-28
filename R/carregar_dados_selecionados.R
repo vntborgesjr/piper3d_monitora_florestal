@@ -4,26 +4,20 @@
 carregar_dados_selecionados <- function(
     dados = readr::read_rds(
     file = paste0(
-      stringr::str_remove(
-        getwd(), 
-        "doc"
-      ),
+      here::here(),
       "/data/dados_completos.rds"
     )
   )
     ) {
   # gerar o data.frame desejado
   dados_selecionados <- dados |> 
-    filter(validation == "Espécie")
+    dplyr::filter(validation == "Espécie")
   
   # grava uma versão dados_completos.rds no diretório data
   readr::write_rds(
     dados_selecionados,
     file = paste0(
-      stringr::str_remove(
-        getwd(), 
-        "doc"
-      ),
+      here::here(),
       "/data/dados_selecionados.rds"
     )
   )
