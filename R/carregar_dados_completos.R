@@ -1,5 +1,5 @@
 # Descrição
-# a função carregar_dados1() carrega toda a planilha de dados 
+# a função carregar_dados_completos() carrega toda a planilha de dados 
 # selecionando automaticamente as colunas CDU, Local - Nome da Unidade de 
 # Conservação
 # deve carregar uma planilha que esteja no formato do arquivo:
@@ -8,10 +8,7 @@
 carregar_dados_completos <- function(
     dados = readr::read_rds(
       file = paste0(
-        stringr::str_remove(
-          getwd(), 
-          pattern = "doc"
-        ),
+        here::here(),
         '/data-raw/dados_brutos.rds'
       )
     )
@@ -32,7 +29,7 @@ carregar_dados_completos <- function(
       order = Ordem,
       family = Família,
       genus = Gênero,
-      sp = `Espécies validadas para análise do ICMBio`,
+      sp_name = `Espécies validadas para análise do ICMBio`,
       validation = `Clasificação taxonômica validada`, 
       distance = `distância (m)     do animal em relação a trilha`,
       group_size = `n° de animais`,
@@ -55,6 +52,11 @@ carregar_dados_completos <- function(
           "RTrom", "RAT", "RBA", "RCI", "RCM", "RRC", "RROP", "RIA", "RRA", "RTA"
         )
       ),
+      sp_name_abv = stringr::str_split(sp_name, " ") |> 
+        purrr::map(\(string) stringr::str_sub(string, 1, 4)) |> 
+        purrr::map(\(string) stringr::str_c(string, ".")) |> 
+        purrr::map(\(string) stringr::str_flatten(string, " ")) |> 
+        purrr::list_c(),
       validation = forcats::fct_recode(
         validation,
         "Espécie" = "E",
@@ -128,7 +130,7 @@ carregar_dados_completos <- function(
       year,
       sampling_day,
       day_effort = day_effort2,
-      sp:number_observers,
+      sp_name:number_observers,
       cense_time = cense_time2,
       -cense_time,
       -day_effort,
@@ -142,16 +144,17 @@ carregar_dados_completos <- function(
     dplyr::relocate(
       uc_name_abv,
       .after = uc_name
+    ) |> 
+    dplyr::relocate(
+      sp_name_abv,
+      .after = sp_name
     )
   
   # grava uma versão dados_completos.rds no diretório data
   readr::write_rds(
     dados_completos,
     file = paste0(
-      stringr::str_remove(
-        getwd(), 
-        "doc"
-      ),
+      here::here(),
       "/data/dados_completos.rds"
     )
   )
@@ -164,6 +167,5 @@ carregar_dados_completos <- function(
 # na sua máquina
 #dados <- carregar_dados_completos()
 #View(dados)
-
-
+# str(dados)
 # rm(list = ls())
