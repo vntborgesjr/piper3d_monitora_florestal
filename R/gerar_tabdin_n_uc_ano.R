@@ -1,13 +1,8 @@
-# Descrição
 # gera tabela dinâmica do número de UCs amostradas por ano
-
 gerar_tabdin_n_uc_ano <- function(
     dados = readr::read_rds(
       file = paste0(
-        stringr::str_remove(
-          getwd(), 
-          pattern = "doc"
-        ),
+        here::here(),
         '/data/n_uc_ano.rds'
       )
     )
