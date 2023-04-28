@@ -244,7 +244,11 @@ tidyr::separate_wider_delim(
     .after = uc_name
   )
 
-# gerar tabela dinâmica dos dados filtrados
+dados_filtrados
+```
+
+```{r}
+# gerar tabela dinâmica dos dados completos
 dados_filtrados |> 
   slice(
     1:1000
@@ -440,6 +444,12 @@ Esse gráfico pode melhorar. Compartilhar o eixo x? Adicionar título ao eixo x.
 plotar_n_obs_sp_estatico()
 ```
 
+Tabela interativa para consulta do número de observações por espécie.
+```{r}
+# gerar tabela dinâmica com o número total de obsevações por espécie
+gerar_tabdin_n_obs_sp()
+```
+
 #### **Quais e quantas observações para cada espécie por unidades de conservação?**
 
 ```{r}
@@ -452,6 +462,12 @@ n_obs_sp_uc
 
 ```{r, fig.height=20}
 plotar_n_obs_sp_uc_interativo()
+```
+
+Gerar função tabela dinâmica.
+
+```{r}
+gerar_tabdin_n_obs_sp_uc()
 ```
 
 #### **Quantas unidades de conservação foram amostradas em cada ano?**
@@ -471,6 +487,12 @@ n_ucs_ano <- contar_n_uc_ano()
 n_ucs_ano
 ```
 
+Gerar função para tabela dinâmica.
+
+```{r}
+gerar_tabdin_n_uc_ano()
+```
+
 #### **Quais unidades de conservação foram amostradas em um maior número de anos?**
 
 Gerar gráfico com o número de anos em que cada UC foi amostrada.
@@ -488,6 +510,13 @@ n_ano_uc <- contar_n_ano_uc()
 n_ano_uc  
 ```
 
+Gerar tabela dinamica.
+
+```{r}
+gerar_tabdin_n_ano_uc()
+```
+
+
 #### **Quantas observações foram realizadas por UC em cada ano?**
 
 ```{r}
@@ -495,6 +524,10 @@ n_obs_uc_ano <- contar_n_obs_uc_ano()
 n_obs_uc_ano
 ```
 
+Tabela interativa para consultar quantas observações foram realizadas por ano em cada UC
+```{r}
+gerar_tabdin_n_obs_uc_ano()
+```
 
 #### **Quantas observações para cada espécies por ano?**
 
@@ -503,6 +536,10 @@ n_obs_sp_ano <- contar_n_obs_sp_ano()
 n_obs_sp_ano
 ```
 
+Tabela interativa para consultar quantas observações foram realizadas para cada espécie em cada ano
+```{r}
+gerar_tabdin_n_obs_sp_ano()
+```
 
 #### **Quantas observações para cada espécies por UC e por ano?**
 
@@ -511,11 +548,21 @@ n_obs_sp_uc_ano <- contar_n_obs_sp_uc_ano()
 n_obs_sp_uc_ano
 ```
 
+Tabela interativa para consultar quantas observações foram realizadas para cada espécie em cada ano
+
+```{r}
+gerar_tabdin_n_obs_sp_uc_ano()
+```
+
 #### **Quantas observações para cada espécies por UC, por estação e por ano?**
 
 ```{r}
 n_obs_sp_uc_estacao_ano <- contar_n_obs_sp_uc_estacao_ano()
 n_obs_sp_uc_estacao_ano
+```
+
+```{r}
+gerar_tabdin_n_obs_sp_uc_estacao_ano()
 ```
 
 #### **Selecionando melhores modelos de estudo considerando estratificação espacial/temporal – se há suficiência amostral (60-80 observações) por estrato**
