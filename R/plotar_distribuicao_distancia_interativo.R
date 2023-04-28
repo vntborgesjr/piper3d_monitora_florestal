@@ -1,14 +1,8 @@
-# Descrição
-# a função recebe um conjunto de dados no formato Distance do R e retorna 
-# três gráficos descrevendo a variação das distâncias observadas. A função 
+# retorna três gráficos interativos descrevendo a variação das distâncias observadas. A função 
 # retorna um gráfico de caixa, um gráfico de pontos e um histograma.
-
 plotar_distribuicao_distancia_interativo <- function(
     dados
 ) {
-  # carregar pacote necessário
-  #library(patchwork)
-  
   # desenha o gráfico de caixa
   box <- dados |> 
     ggplot2::ggplot() +
@@ -61,12 +55,6 @@ plotar_distribuicao_distancia_interativo <- function(
   hist <- plotly::ggplotly(hist)
   
   # organizar os gráficos
- # fig <- ggpubr::ggarrange(
-  #  hist,
-   # box, 
-    #pontos,
-    #nrow = 3
-  #)
   fig <-  plotly::subplot(
     hist, 
     box,
@@ -80,19 +68,3 @@ plotar_distribuicao_distancia_interativo <- function(
   return(fig)
 }
 
-# Exemplo
-
-# carregar dados
-#cutia_tap_arap <- readr::read_rds("data/dados_filtrados.rds")
-
-# gerar gráficos
-#grafico_exploratorio_interativo(cutia_tap_arap)
-
-
-# salvar em disco
-#ggplot2::ggsave(
-# "fig.tiff", 
-#width = 15, 
-#height = 15,
-#units = "cm"
-#)
