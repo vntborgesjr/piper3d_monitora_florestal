@@ -20,6 +20,13 @@ source(
   )
 )
 
+# carregar função carregar_dados_brutos_rds.R
+source(
+  corrigir_diretorio(
+    corrige = "/R/carregar_dados_brutos_rds.R"
+  )
+)
+
 # carregar função gerar_tabdin_dados_brutos
 source(
   corrigir_diretorio(
@@ -93,7 +100,14 @@ source(
 # carregar a função contar_n_obs_validadas
 source(
   corrigir_diretorio(
-    corrige = '/R/plotar_n_obs_validadas.R'
+    corrige = '/R/plotar_n_obs_validadas_interativo.R'
+  )
+)
+
+# carregar a função contar_n_obs_validadas
+source(
+  corrigir_diretorio(
+    corrige = '/R/plotar_n_obs_validadas_estatico.R'
   )
 )
 
@@ -132,6 +146,20 @@ source(
   )
 )
 
+# carregar a função contar_n_obs_sp.R
+source(
+  corrigir_diretorio(
+    corrige = "/R/contar_n_obs_sp.R"
+  )
+)
+
+# carregar função plotar_n_obs_uc_interativo
+source(
+  corrigir_diretorio(
+    corrige = "/R/plotar_n_obs_uc_estatico.R"
+  )
+)
+
 # carregar função plotar_n_obs_uc_interativo
 source(
   corrigir_diretorio(
@@ -164,6 +192,13 @@ source(
 source(
   corrigir_diretorio(
     corrige = "/R/plotar_n_obs_sp_interativo.R"
+  )
+)
+
+# carregar função plotar_n_obs_sp_interativo
+source(
+  corrigir_diretorio(
+    corrige = "/R/plotar_n_obs_sp_estatico.R"
   )
 )
 
@@ -236,6 +271,50 @@ source(
     corrige = "/R/gerar_tabdin_n_obs_uc_ano.R"
   )
 )
+
+# carregar função contar_n_obs_sp_ano
+source(
+  corrigir_diretorio(
+    corrige = "/R/contar_n_obs_sp_ano.R"
+  )
+)
+
+# carregar função contar_n_obs_sp_ano
+source(
+  corrigir_diretorio(
+    corrige = "/R/gerar_tabdin_n_obs_sp_ano.R"
+  )
+)
+
+# carregar função contar_n_obs_sp_uc_ano
+source(
+  corrigir_diretorio(
+    corrige = "/R/contar_n_obs_sp_uc_ano.R"
+  )
+)
+
+# carregar função gerar_tabdin_n_obs_sp_uc_ano
+source(
+  corrigir_diretorio(
+    corrige = "/R/gerar_tabdin_n_obs_sp_uc_ano.R"
+  )
+)
+
+# carregar função contar_n_obs_sp_uc_estacao_ano
+source(
+  corrigir_diretorio(
+    corrige = "/R/contar_n_obs_sp_uc_estacao_ano.R"
+  )
+)
+
+# carregar função n_obs_uc_sp_estacao_ano
+source(
+  corrigir_diretorio(
+    corrige = "/R/gerar_tabdin_n_obs_sp_uc_estacao_ano.R"
+  )
+)
+
+
 
 
 #dados = readr::read_rds(
