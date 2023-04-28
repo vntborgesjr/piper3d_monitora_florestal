@@ -1,13 +1,9 @@
 # Descrição
-# gera uma tabela com o número de observações válidas para cada UC.
-
+# gera uma tabela com o número de observações válidas para cada UC
 contar_n_obs_uc <- function(
     dados = readr::read_rds(
       file = paste0(
-        stringr::str_remove(
-          getwd(), 
-          "doc"
-        ),
+        here::here(),
         "/data/dados_selecionados.rds"
       )
     )
@@ -23,10 +19,7 @@ contar_n_obs_uc <- function(
   readr::write_rds(
     n_obs_uc,
     file = paste0(
-      stringr::str_remove(
-        getwd(), 
-        "doc"
-      ),
+      here::here(),
       "/data/n_obs_uc.rds"
     )
   )
