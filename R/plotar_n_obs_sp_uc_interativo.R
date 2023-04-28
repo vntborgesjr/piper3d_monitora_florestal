@@ -1,12 +1,8 @@
-# Descrição
-
+# desenha um gráfico de barras interativo com o número de observações por espécie e por UC
 plotar_n_obs_sp_uc_interativo <- function(
     dados = readr::read_rds(
       file = paste0(
-        stringr::str_remove(
-          getwd(), 
-          "doc"
-        ),
+        here::here(),
         "/data/n_obs_sp_uc.rds"
       )
     )
@@ -18,13 +14,13 @@ plotar_n_obs_sp_uc_interativo <- function(
   mais_mil_obs <- dados |>  
     dplyr::filter(n %in% 1001:2497) |> 
     dplyr::mutate(
-      sp = forcats::fct_reorder(
-        sp,
+      sp_name_abv = forcats::fct_reorder(
+        sp_name_abv,
         dplyr::desc(n)
       )
     ) |> 
     ggplot2::ggplot() +
-    ggplot2::aes(x = sp, # substituir por sp_abv
+    ggplot2::aes(x = sp_name_abv, # substituir por sp_abv
                  y = n,
                  fill = uc_name_abv) +
     ggplot2::geom_col(
@@ -45,13 +41,13 @@ plotar_n_obs_sp_uc_interativo <- function(
   quinhentos_mil_obs <- dados  |>  
     dplyr::filter(n %in% 501:1000) |> 
     dplyr::mutate(
-      sp = forcats::fct_reorder(
-        sp,
+      sp_name_abv = forcats::fct_reorder(
+        sp_name_abv,
         dplyr::desc(n)
       )
     ) |> 
     ggplot2::ggplot() +
-    ggplot2::aes(x = sp, # substituir por sp_abv
+    ggplot2::aes(x = sp_name_abv, # substituir por sp_abv
                  y = n,
                  fill = uc_name_abv) +
     ggplot2::geom_col(
@@ -72,13 +68,13 @@ plotar_n_obs_sp_uc_interativo <- function(
   cem_quintas_obs <- dados  |>  
     dplyr::filter(n %in% 101:500) |> 
     dplyr::mutate(
-      sp = forcats::fct_reorder(
-        sp,
+      sp_name_abv = forcats::fct_reorder(
+        sp_name_abv,
         dplyr::desc(n)
       )
     ) |> 
     ggplot2::ggplot() +
-    ggplot2::aes(x = sp, # substituir por sp_abv
+    ggplot2::aes(x = sp_name_abv, # substituir por sp_abv
                  y = n,
                  fill = uc_name_abv) +
     ggplot2::geom_col(
@@ -99,13 +95,13 @@ plotar_n_obs_sp_uc_interativo <- function(
   uma_cem_obs <- dados  |>  
     dplyr::filter(n < 100) |> 
     dplyr::mutate(
-      sp = forcats::fct_reorder(
-        sp,
+      sp_name_abv = forcats::fct_reorder(
+        sp_name_abv,
         dplyr::desc(n)
       )
     ) |> 
     ggplot2::ggplot() +
-    ggplot2::aes(x = sp, # substituir por sp_abv
+    ggplot2::aes(x = sp_name_abv, # substituir por sp_abv
                  y = n,
                  fill = uc_name_abv) +
     ggplot2::geom_col(
@@ -144,23 +140,3 @@ plotar_n_obs_sp_uc_interativo <- function(
   # retronar os gráficos
   return(fig)
 }
-
-# Exemplo
-
-# carregar dados
-#cutia_tap_arap <- readr::read_rds("data/dados_filtrados.rds")
-
-# gerar gráficos
-#grafico_exploratorio_interativo(cutia_tap_arap)
-
-
-# salvar em disco
-#ggplot2::ggsave(
-# "fig.tiff", 
-#width = 15, 
-#height = 15,
-#units = "cm"
-#)
-#contar_total_sp() |> 
- # grafico_n_sp_UC_interativo()
-
