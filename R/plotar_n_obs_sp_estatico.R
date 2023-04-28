@@ -1,13 +1,17 @@
 # Descrição
-# desenha um gráfico de barras com o número de observações por espécie
+
 plotar_n_obs_sp_estatico <- function(
     dados = readr::read_rds(
       file = paste0(
-        here::here(),
+        stringr::str_remove(
+          getwd(), 
+          "doc"
+        ),
         "/data/n_obs_sp.rds"
       )
     )
 ) {
+  # gerar figura
   fig <- dados |> 
     dplyr::mutate(
       n_obs = dplyr::case_when(
@@ -36,6 +40,14 @@ plotar_n_obs_sp_estatico <- function(
     ggplot2::geom_label(
       size = 8
     ) +
+    ggplot2::geom_text(
+      aes(0, y = sp_name_abv, label = sp_name),
+      hjust = 0,
+      nudge_x = 0.3,
+      colour = "white",
+      family = "Econ Sans Cnd",
+      size = 7
+    ) +
     ggplot2::labs(y = "Espécies",
                   x = "Número de observações") +
     ggplot2::facet_wrap(
@@ -50,7 +62,7 @@ plotar_n_obs_sp_estatico <- function(
       title = element_text(size = 40), 
       axis.text = element_text(size = 30), 
       # Remove labels from the vertical axis
-      #axis.text.y = element_blank(),
+      axis.text.y = element_blank(),
       strip.text = element_text(size = 40),
     )
 
@@ -58,3 +70,23 @@ plotar_n_obs_sp_estatico <- function(
   # retronar os gráficos
   return(fig)
 }
+
+# Exemplo
+
+# carregar dados
+#cutia_tap_arap <- readr::read_rds("data/dados_filtrados.rds")
+
+# gerar gráficos
+#grafico_exploratorio_interativo(cutia_tap_arap)
+
+
+# salvar em disco
+#ggplot2::ggsave(
+# "fig.tiff", 
+#width = 15, 
+#height = 15,
+#units = "cm"
+#)
+#contar_total_sp() |> 
+# grafico_n_sp_UC_interativo()
+
