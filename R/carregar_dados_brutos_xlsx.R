@@ -5,10 +5,7 @@
 carregar_dados_brutos_xlsx <- function(
   dados = readxl::read_excel(
     path = paste0(
-      stringr::str_remove(
-        getwd(), 
-        "doc"
-      ),
+      here::here(),
       "/data-raw/monitora_masto_aves_2023_04_04.xlsx"
     ),
     sheet = "dados brutos"
@@ -18,10 +15,7 @@ carregar_dados_brutos_xlsx <- function(
   readr::write_rds(
     dados,
     file = paste0(
-      stringr::str_remove(
-        getwd(), 
-        "doc"
-      ),
+      here::here(),
       "/data-raw/dados_brutos.rds"
     )
   )
