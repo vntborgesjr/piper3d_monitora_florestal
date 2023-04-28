@@ -1,13 +1,9 @@
 # Descrição
-# gera uma tabela com o número de observações por UC em cada ano.
-
+# gera uma tabela com o número de observações por UC em cada ano
 contar_n_obs_uc_ano <- function(
     dados = readr::read_rds(
       file = paste0(
-        stringr::str_remove(
-          getwd(), 
-          "doc"
-        ),
+        here::here(),
         "/data/dados_selecionados.rds"
       )
     )
@@ -24,10 +20,7 @@ contar_n_obs_uc_ano <- function(
   readr::write_rds(
     n_obs_uc_ano,
     file = paste0(
-      stringr::str_remove(
-        getwd(), 
-        "doc"
-      ),
+      here::here(),
       "/data/n_obs_uc_ano.rds"
     )
   )
