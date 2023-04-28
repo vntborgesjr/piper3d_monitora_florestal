@@ -1,0 +1,65 @@
+---
+title: "carregar_dados_filtrados()"
+output: 
+   html_document:
+     df_print: 'paged'
+---
+
+carregar_dados_filtrados {}                                            Documentação R
+
+# Carrega e transforma a planilha original de dados selecionando os dados de uma espécie, em uma unidade de conservação
+
+
+## Descrição
+
+
+A função `carregar_dados_filtrados()` carrega a planilha de dados originais, `"Planilha Oficial consolidada de Masto-aves 2014-21 Validada CEMAVE CPB CENAP.xlsx"` filtradas por espécie e por unidade de conservação para o R no formato `tibble`, selecionando automaticamente as colunas `CDU`, `Local - Nome da Unidade de Conservação`, `Número da Estação Amostral`, `Nome da EA`, `Estação do ano`, `data da amostragem`, `Esforço de amostragem tamanho da trilha (m)`, `Espécies validadas para análise do ICMBio`, `distância (m)     do animal em relação a trilha`, `n° de animais` e `nome dos observadores`.  As variáveis são automaticamente renomeadas para uc_code = CDUC, uc_name, ea_number, ea_name, season, sampling_day, day_effort, sp, distance, group_size e number_observers. 
+
+## Uso
+
+
+`carregar_dados_filtrados(
+  dados = NULL
+  )`
+
+## Argumentos
+
+
+`dados`       Arquivo de dados original do Porgrama Monitora em formato `.xlsx`.
+
+`nome_uc`     Nome da unidade de conservação desejada.
+
+`nome_sp`     Nome da espécies desejada.
+
+## Detalhes
+
+
+A funcionalidade depende da formataçao correta dos dados. É importante manter o padrão dos nomes das colunas, das observações categóricas e do nome da aba (*sheet*) em versões atualizadas dos dados. Para aplicar a função é necessário utilizar a versão R 4.2.2 e estar com as versões atualizadas dos pacotes `readxl`, `dplyr`, `lubridate`, `stringr`,  `tdiyr` e `tidyselect`.
+
+## Exemplo
+
+```{r}
+# carregar a função
+source(
+  corrigir_diretorio(
+     corrige = 'R/carregar_dados_filtrados.R'
+  )
+  )
+
+# carregar dados para o R
+dados_filtrados <- carregar_dados_filtrados(
+  dados = corrigir_diretorio(
+    corrige =  'data-raw/dados-brutos.xlsx'
+  ),
+  nome_uc = "Resex Tapajós-Arapiuns",
+  nome_sp = "Dasyprocta croconota"
+)
+
+dados_filtrados
+```
+
+```{r}
+# gravar no disco os dados importados para o R
+#readr::write_rds(dados, paste0(stringr::str_remove(getwd(), 'doc'), "data/dados_filtrados.rds")) 
+```
+
