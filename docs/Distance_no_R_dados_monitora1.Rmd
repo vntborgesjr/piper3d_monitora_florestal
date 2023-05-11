@@ -1,0 +1,238 @@
+---
+title: "Distance no R com dados 'modelo'"
+output: html_notebook
+---
+
+Retirado do artigo Miller et al. (2019). Distance sampling in R. Journal of Statistical Sofware 89(1)
+
+```{r setup}
+# instalar pacotes necessários
+#install.packages("Distance")
+
+# instalar pacotes adicionais
+#install.packages("mrds")
+#install.packages("dsm")
+#install.packages("mads")
+#install.packages("dsims")
+
+# carregar pacotes 
+library(Distance)
+library(dplyr)
+library(DT)
+library(flextable)
+library(ggplot2)
+library(lubridate)
+library(plotly)
+library(readr)
+library(readxl)
+library(stringr)
+library(tibble)
+library(tidyr)
+
+# carregar as funções da pasta R
+# carregar função script_carregar_funções_pasta_r.R
+source(
+  paste0(
+    here::here(),
+    "/R/minhas_funcoes.R"
+  )
+)
+
+# carregar dados
+cutia_tap_arap <- transformar_para_distanceR_covariaveis() |> 
+  filter(
+    uc_name == "Resex Tapajos-Arapiuns",
+    sp_name == "Dasyprocta croconota"
+  ) |> 
+  drop_na(distance)
+  
+#readr::write_rds(cutia_tap_arap, #"/home/usuario/Documentos/Vitor/Piper3D/WWF/Monitora/Dados/data/cutia_tap_arap.rds")
+cutia_tap_arap |> 
+  DT::datatable(filter = "top")
+```
+
+# Formatação do conjunto de dados
+
+Variáveis necessárias para o `data.frame`:
+
+- `Region.Label`: vetor fator com o estrato contendo o transecto (pode ser uma estratificação pré-amostragem - UCs - ou pós-amostragem - ex. região, estado, bioma)
+
+- `Area`: vetor numérico contendo a área do estrato;
+
+- `Sample.Label`: vetor númerico contendo a identidade (ID) do transecto
+
+- `object`: nome adicional, ver seção 6;
+
+- `detected`: nome adicional, ver seção 6;
+
+- `Effort`: vetor númerico contendo o esforço do transecto (para linhas seu comprimento, para pontos o número de vezes que o ponto foi visitado)
+
+- `size`: vetor numérico copntendo o tamanho do grupo observado;
+
+- `distance`: vetor numérico de distâncias observadas;
+
+- `Month`:
+
+- `OBs`:
+
+- `Sp`:
+
+ - `mas`:
+ 
+ - `HAS`:
+ 
+ - `Study.Area`:
+ 
+Transectos que foram amostrados, mas que não tiveram observações (n = 0) devem ser incluídos no conjunto de dados com `NA` nas observações de distância e qualquer outra covariael para a qual não se tenha observação.
+ 
+```{r}
+# cutia_tap_arap |> 
+#   complete(Region.Label, Sample.Label, sp_name) |> 
+#   datatable(filter = list(position = "top"))
+```
+
+Jogar a imputacao de `NA`s pra dentro da funcao carregar dados completos.
+
+## Determinando a distância para truncar os dados
+
+```{r, fig.height=15, fig.width=10, warning=FALSE}
+# desenha o grafico com a distribuicao de distancias perpendiculares
+cutia_tap_arap |> 
+  plotar_distribuicao_distancia_interativo()
+```
+
+ 
+## Ajustando funções de detecção no R
+
+### Cutias da Resex Tapajós-Arapiuns
+
+Ajustando um modelo ao dados das cutias *Dsyprocta croconota*, configurando uma distância limite de 20m e usando *Half-normal* como *key function* usando o argumento `key`.
+
+```{r}
+# ajustando a função de detecção para uma distancia de truncamento de 20 metros
+# Key function - Half-normal 
+cutia_hn <- cutia_tap_arap |> 
+#  filter(Region.Label != "Pascoal") |> 
+  ds(
+    truncation = 20,
+    key = "hn"
+  )
+```
+
+Ajustando um modelo ao dados da cutia *Dsyprocta croconota*, configurando uma distância limite de 20m e usando *Hazard rate* como *key function* usando o argumento `key`.
+
+```{r}
+# Key function - Hazard-rate 
+cutia_hr <- cutia_tap_arap |> 
+  filter(Region.Label != "Pascoal") |> 
+  ds(
+    truncation = 20,
+     key = "hr"
+  )
+```
+
+
+```{r}
+plot(cutia_hn)
+plot(cutia_hr)
+```
+
+Ajustando um modelo ao dados das cutias, configurando uma distância limite de 20m e usando *Uniform* como *key function* a séria de ajuste com o argumento `adjustment` ee especificando a ordem com o argumento `order`.
+
+```{r}
+cutia_unifcos <- cutia_tap_arap |> 
+  ds(truncation = 20,
+     key = "unif",
+     adjustment = "cos",
+     order = c(1, 2))
+```
+
+Ajuste *Hermite pollynomial* usa od código `"herm"` e polinomial simples `"poly"`.
+
+Podemos incluir covariáveis utilizando o argumento `formula = ~ ...`. Abaixo, está especificado um modelo "Hazard-rate" para os dados de cutia q ue inclui o tempo de senso como covariável e uma distância limite de 20m.
+
+```{r}
+cutia_hr_time <- cutia_tap_arap_15 |> 
+  ds(truncation = 20,
+     key = "hr",
+     formula = ~ cense_time)
+```
+
+Adicionando uma segunda covariável: tamanho do grupo.
+
+```{r}
+cutia_hr_time_size <- ds(data = cutia_tap_arap_15,
+                     truncation = 20,
+                     transect = "line",
+                     key = "hr",
+                     formula = ~ cense_time + size)
+```
+
+```{r}
+plot(cutia_hr_time)
+plot(cutia_hr_time_size)
+```
+
+## Checagem e seleção de modelos
+
+Podemos usar a função `summary` para obter informações importantes sobre o modelo.
+
+```{r}
+summary(cutia_hn)
+```
+
+O resultado  inclui detalhes sobre o dado e a especificação do modelo, assim como dos coeficientes ($\beta_{j}$) e sua inceteza, a média do valor de detectabilidade e sua incerteza e uma estimativa da abundância na área coberta pela amostragem (sem levar em consideração o tamanho dos agrupamentos, ou bandos). 
+
+### Bondade de ajuste
+
+Para visualizar quão bem a função de detecção se ajusta aos dados quanto temos as distâncias exatas podemos usar um plot de quantis empíricos x teóricos (Q-Q plot). Ele compara a função de distribuição cumulativa (CDF) dos valores ajustados da função detecção a distribuição empírica dos dados (EDF). 
+
+Também podemos usar o teste de Cramér-von Mises para testar se os pontos da EDF e da CDF tem origem na mesma distribuição. O teste usa a soma de todas as distâncias entre um ponto e a linha y = x para formar a estatística a ser testada. Um resultado significativo fornece evidência contra a hiipótese nula, sugerindo que o modelo não se ajusta bem aos dados.
+
+```{r}
+# ajustando um modelo Half-normal
+cutia_hn <- ds(data = cutia_tap_arap_15,
+                 truncation = 20,
+                 transect = "line",
+                 key = "hn", 
+                 adjustment = NULL)
+
+# conduzindo o teste dfe bondadede ajuste de Cramer-von Mises
+gof_ds(cutia_hn)
+
+gof_ds(cutia_hr_time)
+```
+
+O resutlado do teste aponta que o modelo *Half-normal* deve ser descartado.
+
+Testes de bondade de ajuste de chi-quadrado são gerados usando a função `gof_ds` quando as distâncias forneceidas estão categorizadas.
+
+### Seleção de Modelos
+
+Uma vez que temos um conjunto de modelos plausíveis, podemos utilizar o cirtériode informaçãode Akaike (AIC) para selecionar entre os modelos o que melhor se ajusta aos dados utilizando a função `summarize_ds_models`.
+
+```{r}
+# gerando uma tabela de seleção de modelos usando AIC
+summarize_ds_models(cutia_hn, cutia_hr_time, cutia_hr_time_size)
+```
+
+O melhor modelo é o Hazard-rate com tempo de senso e tamanho do grupo como covariáveis.
+
+## Estimando a abundância e a variância
+
+### Estimando abundância e variância no R
+
+Para obter a abundância na região de estudo, primeiro calculamos a abundância na área amostrada para obter $N_c$ e em seguida escalonamos esse valor para toda a área de estudo multiplicando $N_c$ pela razão entre a área amostrada e a área da região. Para estimar a abundância na área amostrada, utilizamos as estimativas de probabilidade de detecção no estimador de Horvitz-Thompson.
+
+Quando fornecemos os dados no formato correto ("flatfile") `ds` irá automaticamente calcular as estimativas de abundância baseado nas informações de amostragem presenta nos dados.
+
+```{r}
+summary(cutia_hn)
+```
+
+1. Summary statistics: fornece as áreas, aŕea de amostragem, esforço, número de observações, número de transectos, taxa de encontro, seus erros padrões e coeficientes de variação para cada estrato;
+
+2. Abundance: fornece estimativas, erros padrões, coeficientesde variação, intervalos de confiança inferior e superior, graus de liberdade para a estimativa de abundância de cada estrato;
+
+3. Densidade: lista as mesmas estatísticas de Abundance, só que para densidade.
+
