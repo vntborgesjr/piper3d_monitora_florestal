@@ -285,11 +285,11 @@ carregar_dados_filtrados <- function(
     dados = readr::read_rds(
       file = paste0(
         here::here(),
-        "/data/dados_completos.rds",
-      ),
-    nome_uc = "Resex Tapajos-Arapiuns",
-    nome_sp = "Dasyprocta croconota"
-  )
+        "/data/dados_completos.rds"
+      )
+  ),
+  nome_uc = "Resex Tapajos-Arapiuns",
+  nome_sp = "Dasyprocta croconota"
 ) {
   # gerar o data.frame desejado
   dados_filtrados <- dados |>
