@@ -46,7 +46,14 @@ cutia_tap_arap <- transformar_para_distanceR_covariaveis() |>
   ) |> 
   drop_na(distance)
   
-#readr::write_rds(cutia_tap_arap, #"/home/usuario/Documentos/Vitor/Piper3D/WWF/Monitora/Dados/data/cutia_tap_arap.rds")
+# readr::write_excel_csv(
+#   cutia_tap_arap, 
+#   paste0(
+#     here::here(), 
+#     "/data/cutia_tap_arap.csv"
+#   )
+# )
+
 cutia_tap_arap |> 
   DT::datatable(filter = "top")
 ```
@@ -106,35 +113,99 @@ cutia_tap_arap |>
 
 ### Cutias da Resex Tapajós-Arapiuns
 
-Ajustando um modelo ao dados das cutias *Dsyprocta croconota*, configurando uma distância limite de 20m e usando *Half-normal* como *key function* usando o argumento `key`.
+#### *Half-Normal* sem termos de ajuste
+
+Ajustando um modelo ao dados das cutias *Dasyprocta croconota*, configurando uma distância limite de 20m e usando *Half-normal* como *key function* usando o argumento `key`, sem termo de ajuste.
 
 ```{r}
 # ajustando a função de detecção para uma distancia de truncamento de 20 metros
 # Key function - Half-normal 
-cutia_hn <- cutia_tap_arap |> 
-#  filter(Region.Label != "Pascoal") |> 
+cutia_tap_arap_hn <- cutia_tap_arap |> 
+  ds(
+    truncation = 20,
+    key = "hn",
+    adjustment = NULL
+  )
+```
+
+#### *Half-Normal* com termos de ajuste *Hermite-Polynomial*
+
+Ajustando um modelo ao dados das cutias *Dasyprocta croconota*, configurando uma distância limite de 20m e usando *Half-normal* como *key function* usando o argumento `key`, com termo de ajuste do tipo *Hermite-polynomial*.
+
+```{r}
+# ajustando a função de detecção para uma distancia de truncamento de 20 metros
+# Key function - Half-normal 
+cutia_tap_arap_hn_herm <- cutia_tap_arap |> 
+  ds(
+    truncation = 20,
+    key = "hn",
+    adjustment = "herm"
+  )
+```
+
+#### *Half-Normal* com termos de ajuste *Cosine*
+
+Ajustando um modelo ao dados das cutias *Dasyprocta croconota*, configurando uma distância limite de 20m e usando *Half-normal* como *key function* usando o argumento `key`, com termo de ajuste do tipo *Cosine*.
+
+```{r}
+# ajustando a função de detecção para uma distancia de truncamento de 20 metros
+# Key function - Half-normal 
+cutia_tap_arap_hn_cos <- cutia_tap_arap |> 
   ds(
     truncation = 20,
     key = "hn"
-  )
+    )
 ```
 
-Ajustando um modelo ao dados da cutia *Dsyprocta croconota*, configurando uma distância limite de 20m e usando *Hazard rate* como *key function* usando o argumento `key`.
+#### *Hazard-Rate* sem termos de ajuste
+
+Ajustando um modelo ao dados da cutia *Dasyprocta croconota*, configurando uma distância limite de 20m e usando *Hazard rate* como *key function* usando o argumento `key`.
 
 ```{r}
 # Key function - Hazard-rate 
-cutia_hr <- cutia_tap_arap |> 
-  filter(Region.Label != "Pascoal") |> 
+cutia_tap_arap_hr <- cutia_tap_arap |> 
   ds(
     truncation = 20,
-     key = "hr"
+     key = "hr",
+    adjustment = NULL
   )
+```
+
+#### *Hazard-Rate* com termos de ajuste *Simple-polynomial*
+
+Ajustando um modelo ao dados da cutia *Dasyprocta croconota*, configurando uma distância limite de 20m e usando *Hazard rate* como *key function* usando o argumento `key` e termo de ajuste do tipo polinomial simples.
+
+```{r}
+# Key function - Hazard-rate 
+cutia_tap_arap_hr_poly <- cutia_tap_arap |> 
+  ds(
+    truncation = 20,
+     key = "hr",
+    adjustment = "poly"
+  )
+```
+
+#### *Hazard-Rate* com termos de ajuste *Cosine*
+
+Ajustando um modelo ao dados da cutia *Dasyprocta croconota*, configurando uma distância limite de 20m e usando *Hazard rate* como *key function* usando o argumento `key` e termo de ajuste do tipo cosseno.
+
+```{r}
+# Key function - Hazard-rate 
+cutia_tap_arap_hr_cos <- cutia_tap_arap |> 
+  ds(
+    truncation = 20,
+    key = "hr"
+    )
 ```
 
 
 ```{r}
-plot(cutia_hn)
-plot(cutia_hr)
+plot(cutia_tap_arap_hn, breaks = seq(0, 20, 2.5))
+plot(cutia_tap_arap_hn_herm, breaks = seq(0, 20, 2.5))
+plot(cutia_tap_arap_hn_cos, breaks = seq(0, 20, 2.5))
+plot(cutia_tap_arap_hr, breaks = seq(0, 20, 2.5))
+plot(cutia_tap_arap_hr_poly, breaks = seq(0, 20, 2.5))
+plot(cutia_tap_arap_hr_cos, breaks = seq(0, 20, 2.5))
 ```
 
 Ajustando um modelo ao dados das cutias, configurando uma distância limite de 20m e usando *Uniform* como *key function* a séria de ajuste com o argumento `adjustment` ee especificando a ordem com o argumento `order`.
