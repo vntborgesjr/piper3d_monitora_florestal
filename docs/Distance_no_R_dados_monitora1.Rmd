@@ -46,16 +46,24 @@ cutia_tap_arap <- transformar_para_distanceR_covariaveis() |>
   ) |> 
   drop_na(distance)
   
-readr::write_excel_csv(
-  cutia_tap_arap,
-  paste0(
-    here::here(),
-    "/data/cutia_tap_arap.csv"
-  ), 
-)
+# readr::write_excel_csv(
+#   cutia_tap_arap,
+#   paste0(
+#     here::here(),
+#     "/data/cutia_tap_arap.csv"
+#   ), 
+# )
 
 cutia_tap_arap |> 
   DT::datatable(filter = "top")
+```
+
+```{r}
+cutia_tap_arap |> 
+  count(Region.Label)
+
+cutia_tap_arap |> 
+  count(Sample.Label)
 ```
 
 # Formatação do conjunto de dados
@@ -307,3 +315,6 @@ summary(cutia_hn)
 
 3. Densidade: lista as mesmas estatísticas de Abundance, só que para densidade.
 
+## **Funções Exploratórias Adicionais**
+
+`contar_n_repeticoes_trilha()` - conta o número de vezes que cada trilha foi visitada
