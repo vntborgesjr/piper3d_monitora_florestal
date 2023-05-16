@@ -41,7 +41,7 @@ source(
 # carregar dados
 cutia_tap_arap <- transformar_para_distanceR_covariaveis() |> 
   filter(
-    uc_name == "Resex Tapajos-Arapiuns",
+    Region.Label == "Resex Tapajos-Arapiuns",
     sp_name == "Dasyprocta croconota"
   ) |> 
   drop_na(distance)
@@ -51,19 +51,40 @@ cutia_tap_arap <- transformar_para_distanceR_covariaveis() |>
 #   paste0(
 #     here::here(),
 #     "/data/cutia_tap_arap.csv"
-#   ), 
+#   ),
 # )
+
+cutia_tap_arap <- cutia_tap_arap |> 
+  select(
+    Region.Label,
+    Area,
+    Sample.Label,
+    Effort,
+    distance
+  ) 
 
 cutia_tap_arap |> 
   DT::datatable(filter = "top")
 ```
 
 ```{r}
-cutia_tap_arap |> 
-  count(Region.Label)
+dados_completos |> 
+  group_by(
+    uc_name,
+    ea_name
+  ) |> 
+  filter(day_effort == max(day_effort))  |> 
+  drop_na(distance) |> 
+  ungroup()
+```
 
-cutia_tap_arap |> 
-  count(Sample.Label)
+```{r}
+dados_completos |> 
+  filter(
+    uc_name == "Resex Tapajos-Arapiuns",
+    sp_name == "Dasyprocta croconota"
+  ) |> 
+  datatable(filter = list(position = "top"))
 ```
 
 # Formatação do conjunto de dados
@@ -113,99 +134,144 @@ Jogar a imputacao de `NA`s pra dentro da funcao carregar dados completos.
 ```{r, fig.height=15, fig.width=10, warning=FALSE}
 # desenha o grafico com a distribuicao de distancias perpendiculares
 cutia_tap_arap |> 
+  filter(distance >= 1,
+         distance <= 14) |> 
   plotar_distribuicao_distancia_interativo()
+```
+
+```{r}
+summary(cutia_tap_arap$distance)
 ```
 
  
 ## Ajustando funções de detecção no R
 
-### Cutias da Resex Tapajós-Arapiuns
+### Cutias da Resex Tapajós-Arapiuns para diferentes distâncias de truncamento
 
-#### *Half-Normal* sem termos de ajuste
+#### *Half-Normal* sem termos de ajuste e com termos de ajuste Cosseno e Polinomial de Hermite
 
 Ajustando um modelo ao dados das cutias *Dasyprocta croconota*, configurando uma distância limite de 20m e usando *Half-normal* como *key function* usando o argumento `key`, sem termo de ajuste.
 
 ```{r}
-# ajustando a função de detecção para uma distancia de truncamento de 20 metros
+
+cutia_tap_arap_filtrado <- cutia_tap_arap |> 
+  filter(distance >= 1,
+         distance <= 14)
+
+# ajustando a função de detecção para uma distancia de truncamento de 20, 15, 10 e 5 metros
+# dsitancias de truncamento
+dist_truncamento <- list(
+  `14 metros` = 14, 
+  `12 metros` = 12, 
+  `10 metros` = 10,
+  `7 metros` = 7
+)
+
 # Key function - Half-normal 
-cutia_tap_arap_hn <- cutia_tap_arap |> 
-  ds(
-    truncation = 20,
-    key = "hn",
-    adjustment = NULL
+cutia_tap_arap_hn <- purrr::map(
+  dist_truncamento,
+  \(.x) ajuste_modelos_distance_hn(
+    cutia_tap_arap_filtrado, 
+    truncamento = .x
+  )
   )
 ```
 
-#### *Half-Normal* com termos de ajuste *Hermite-Polynomial*
-
-Ajustando um modelo ao dados das cutias *Dasyprocta croconota*, configurando uma distância limite de 20m e usando *Half-normal* como *key function* usando o argumento `key`, com termo de ajuste do tipo *Hermite-polynomial*.
-
 ```{r}
-# ajustando a função de detecção para uma distancia de truncamento de 20 metros
-# Key function - Half-normal 
-cutia_tap_arap_hn_herm <- cutia_tap_arap |> 
-  ds(
-    truncation = 20,
-    key = "hn",
-    adjustment = "herm"
-  )
+cutia_tap_arap_hn
 ```
 
-#### *Half-Normal* com termos de ajuste *Cosine*
-
-Ajustando um modelo ao dados das cutias *Dasyprocta croconota*, configurando uma distância limite de 20m e usando *Half-normal* como *key function* usando o argumento `key`, com termo de ajuste do tipo *Cosine*.
-
-```{r}
-# ajustando a função de detecção para uma distancia de truncamento de 20 metros
-# Key function - Half-normal 
-cutia_tap_arap_hn_cos <- cutia_tap_arap |> 
-  ds(
-    truncation = 20,
-    key = "hn"
-    )
-```
-
-#### *Hazard-Rate* sem termos de ajuste
+#### *Hazard-Rate* sem termos de ajuste e com termos de ajuste Cosseno e Polinomial de Hermite
 
 Ajustando um modelo ao dados da cutia *Dasyprocta croconota*, configurando uma distância limite de 20m e usando *Hazard rate* como *key function* usando o argumento `key`.
 
 ```{r}
-# Key function - Hazard-rate 
-cutia_tap_arap_hr <- cutia_tap_arap |> 
-  ds(
-    truncation = 20,
-     key = "hr",
-    adjustment = NULL
+# ajustando a função de detecção para uma distancia de truncamento de 20, 15, 10 e 5 metros
+# Key function - Hazard-rate
+cutia_tap_arap_hr <- purrr::map(
+  dist_truncamento,
+  \(.x) ajuste_modelos_distance_hr(
+    cutia_tap_arap_filtrado, 
+    truncamento = .x
+  )
   )
 ```
 
-#### *Hazard-Rate* com termos de ajuste *Simple-polynomial*
+#### *Uniform* sem termos de ajuste e com termos de ajuste Cosseno e Polinomial de Hermite
 
-Ajustando um modelo ao dados da cutia *Dasyprocta croconota*, configurando uma distância limite de 20m e usando *Hazard rate* como *key function* usando o argumento `key` e termo de ajuste do tipo polinomial simples.
+Ajustando um modelo ao dados das cutias *Dasyprocta croconota*, configurando uma distância limite de 20m e usando *Uniform* como *key function* usando o argumento `key`, sem termo de ajuste.
 
 ```{r}
-# Key function - Hazard-rate 
-cutia_tap_arap_hr_poly <- cutia_tap_arap |> 
-  ds(
-    truncation = 20,
-     key = "hr",
-    adjustment = "poly"
+# ajustando a função de detecção para uma distancia de truncamento de 20, 15, 10 e 5 metros
+# Key function - Uniform
+cutia_tap_arap_unif <- purrr::map(
+  dist_truncamento,
+  \(.x) ajuste_modelos_distance_unif(
+    cutia_tap_arap, 
+    truncamento = .x
   )
+)
 ```
 
-#### *Hazard-Rate* com termos de ajuste *Cosine*
-
-Ajustando um modelo ao dados da cutia *Dasyprocta croconota*, configurando uma distância limite de 20m e usando *Hazard rate* como *key function* usando o argumento `key` e termo de ajuste do tipo cosseno.
+###### Seleção de modelos
 
 ```{r}
-# Key function - Hazard-rate 
-cutia_tap_arap_hr_cos <- cutia_tap_arap |> 
-  ds(
-    truncation = 20,
-    key = "hr"
-    )
+summarize_ds_models(
+  cutia_tap_arap_hn$`14 metros`$`Sem termo`,
+cutia_tap_arap_hn$`14 metros`$Cosseno,
+  cutia_tap_arap_hn$`14 metros`$`Hermite polinomial`,
+cutia_tap_arap_hr$`14 metros`$`Sem termo`,
+cutia_tap_arap_hr$`14 metros`$Cosseno,
+cutia_tap_arap_hr$`14 metros`$`Polinomial simples`,
+cutia_tap_arap_unif$`14 metros`$Cosseno,
+cutia_tap_arap_unif$`14 metros`$`Polinomial simples`
+)
 ```
 
+```{r}
+summarize_ds_models(
+  cutia_tap_arap_hn$`12 metros`$`Sem termo`,
+cutia_tap_arap_hn$`12 metros`$Cosseno,
+  cutia_tap_arap_hn$`12 metros`$`Hermite polinomial`,
+cutia_tap_arap_hr$`12 metros`$`Sem termo`,
+cutia_tap_arap_hr$`12 metros`$Cosseno,
+cutia_tap_arap_hr$`12 metros`$`Polinomial simples`,
+cutia_tap_arap_unif$`12 metros`$Cosseno,
+cutia_tap_arap_unif$`12 metros`$`Polinomial simples`
+)
+```
+
+```{r}
+summarize_ds_models(
+  cutia_tap_arap_hn$`10 metros`$`Sem termo`,
+cutia_tap_arap_hn$`10 metros`$Cosseno,
+  cutia_tap_arap_hn$`10 metros`$`Hermite polinomial`,
+cutia_tap_arap_hr$`10 metros`$`Sem termo`,
+cutia_tap_arap_hr$`10 metros`$Cosseno,
+cutia_tap_arap_hr$`10 metros`$`Polinomial simples`,
+cutia_tap_arap_unif$`10 metros`$Cosseno,
+cutia_tap_arap_unif$`10 metros`$`Polinomial simples`
+)
+```
+
+```{r}
+summarize_ds_models(
+  cutia_tap_arap_hn$`7 metros`$`Sem termo`,
+cutia_tap_arap_hn$`7 metros`$Cosseno,
+  cutia_tap_arap_hn$`7 metros`$`Hermite polinomial`,
+cutia_tap_arap_hr$`7 metros`$`Sem termo`,
+cutia_tap_arap_hr$`7 metros`$Cosseno,
+cutia_tap_arap_hr$`7 metros`$`Polinomial simples`,
+cutia_tap_arap_unif$`7 metros`$Cosseno,
+cutia_tap_arap_unif$`7 metros`$`Polinomial simples`
+)
+```
+
+#### Resumir o resultado dos modelos
+
+O que tem que ter?
+
+Os gráficos (probabilidade de detecção pela distância, com a curva ajustada, exemplo abaixo, fazer no ggplot), resultado do goodness of fit (gof_ds()), cada modelo vai ter que ter um nome diferente numa tabela(?)
 
 ```{r}
 plot(cutia_tap_arap_hn, breaks = seq(0, 20, 2.5))
@@ -216,49 +282,38 @@ plot(cutia_tap_arap_hr_poly, breaks = seq(0, 20, 2.5))
 plot(cutia_tap_arap_hr_cos, breaks = seq(0, 20, 2.5))
 ```
 
-Ajustando um modelo ao dados das cutias, configurando uma distância limite de 20m e usando *Uniform* como *key function* a séria de ajuste com o argumento `adjustment` ee especificando a ordem com o argumento `order`.
-
-```{r}
-cutia_unifcos <- cutia_tap_arap |> 
-  ds(truncation = 20,
-     key = "unif",
-     adjustment = "cos",
-     order = c(1, 2))
-```
-
-Ajuste *Hermite pollynomial* usa od código `"herm"` e polinomial simples `"poly"`.
-
-Podemos incluir covariáveis utilizando o argumento `formula = ~ ...`. Abaixo, está especificado um modelo "Hazard-rate" para os dados de cutia q ue inclui o tempo de senso como covariável e uma distância limite de 20m.
-
-```{r}
-cutia_hr_time <- cutia_tap_arap_15 |> 
-  ds(truncation = 20,
-     key = "hr",
-     formula = ~ cense_time)
-```
-
-Adicionando uma segunda covariável: tamanho do grupo.
-
-```{r}
-cutia_hr_time_size <- ds(data = cutia_tap_arap_15,
-                     truncation = 20,
-                     transect = "line",
-                     key = "hr",
-                     formula = ~ cense_time + size)
-```
-
-```{r}
-plot(cutia_hr_time)
-plot(cutia_hr_time_size)
-```
-
 ## Checagem e seleção de modelos
 
 Podemos usar a função `summary` para obter informações importantes sobre o modelo.
 
 ```{r}
-summary(cutia_hn)
+
+lista_modelos <- list(
+  cutia_tap_arap_hn,
+  cutia_tap_arap_hn_herm,
+  cutia_tap_arap_hn_cos,
+  cutia_tap_arap_hr,
+  cutia_tap_arap_hr_poly,
+  cutia_tap_arap_hr_cos
+)
+
+purrr::map(lista_modelos, \(x) summary(x))
 ```
+
+```{r}
+summarize_ds_models(
+  cutia_tap_arap_hn,
+  cutia_tap_arap_hn_herm,
+  cutia_tap_arap_hn_cos,
+  cutia_tap_arap_hr,
+  cutia_tap_arap_hr_poly,
+  cutia_tap_arap_hr_cos
+)
+
+
+```
+
+
 
 O resultado  inclui detalhes sobre o dado e a especificação do modelo, assim como dos coeficientes ($\beta_{j}$) e sua inceteza, a média do valor de detectabilidade e sua incerteza e uma estimativa da abundância na área coberta pela amostragem (sem levar em consideração o tamanho dos agrupamentos, ou bandos). 
 
@@ -318,3 +373,547 @@ summary(cutia_hn)
 ## **Funções Exploratórias Adicionais**
 
 `contar_n_repeticoes_trilha()` - conta o número de vezes que cada trilha foi visitada
+
+## Adicionando covariavel
+
+Ajuste *Hermite pollynomial* usa od código `"herm"` e polinomial simples `"poly"`.
+
+Podemos incluir covariáveis utilizando o argumento `formula = ~ ...`. Abaixo, está especificado um modelo "Hazard-rate" para os dados de cutia q ue inclui o tempo de senso como covariável e uma distância limite de 20m.
+
+```{r}
+cutia_hr_time <- cutia_tap_arap_15 |> 
+  ds(truncation = 20,
+     key = "hr",
+     formula = ~ cense_time)
+```
+
+Adicionando uma segunda covariável: tamanho do grupo.
+
+```{r}
+cutia_hr_time_size <- ds(data = cutia_tap_arap_15,
+                     truncation = 20,
+                     transect = "line",
+                     key = "hr",
+                     formula = ~ cense_time + size)
+```
+
+```{r}
+plot(cutia_hr_time)
+plot(cutia_hr_time_size)
+```
+
+### Cutias da ESEC Terra do Meio para diferentes distâncias de truncamento
+
+```{r}
+cutia_esec_terra_meio <- transformar_para_distanceR_covariaveis() |> 
+  filter(
+    Region.Label == "Esec da Terra do Meio",
+    sp_name == "Dasyprocta croconota"
+  ) |> 
+  drop_na(distance)
+  
+```
+
+```{r}
+# desenha o grafico com a distribuicao de distancias perpendiculares
+cutia_esec_terra_meio |> 
+  filter(distance >= 1,
+         distance < 15) |> 
+  plotar_distribuicao_distancia_interativo(largura_caixa = 1)
+```
+
+#### *Half-Normal* sem termos de ajuste e com termos de ajuste Cosseno e Polinomial de Hermite
+
+Ajustando um modelo ao dados das cutias *Dasyprocta croconota*, configurando uma distância limite de 20m e usando *Half-normal* como *key function* usando o argumento `key`, sem termo de ajuste.
+
+```{r}
+cutia_esec_terra_meio_filtrado
+```
+
+
+```{r}
+cutia_esec_terra_meio_filtrado <- cutia_esec_terra_meio |> 
+  filter(distance >= 1,
+         distance < 15)
+# ajustando a função de detecção para uma distancia de truncamento de 20, 15, 10 e 5 metros
+# dsitancias de truncamento
+dist_truncamento <- list(
+  #`20 metros` = 20, 
+  `15 metros` = 15, 
+  `12 metros` = 12,
+  `10 metros` = 10
+)
+
+# Key function - Half-normal 
+cutia_esec_terra_meio_hn <- purrr::map(
+  dist_truncamento,
+  \(.x) ajuste_modelos_distance_hn(
+    cutia_esec_terra_meio_filtrado, 
+    truncamento = .x
+  )
+  )
+```
+
+```{r}
+cutia_esec_terra_meio_hn
+```
+
+#### *Hazard-Rate* sem termos de ajuste e com termos de ajuste Cosseno e Polinomial de Hermite
+
+Ajustando um modelo ao dados da cutia *Dasyprocta croconota*, configurando uma distância limite de 20m e usando *Hazard rate* como *key function* usando o argumento `key`.
+
+```{r}
+# ajustando a função de detecção para uma distancia de truncamento de 20, 15, 10 e 5 metros
+# Key function - Hazard-rate
+cutia_esec_terra_meio_hr <- purrr::map(
+  dist_truncamento,
+  \(.x) ajuste_modelos_distance_hr(
+    cutia_esec_terra_meio_filtrado, 
+    truncamento = .x
+  )
+  )
+```
+
+#### *Uniform* sem termos de ajuste e com termos de ajuste Cosseno e Polinomial de Hermite
+
+Ajustando um modelo ao dados das cutias *Dasyprocta croconota*, configurando uma distância limite de 20m e usando *Uniform* como *key function* usando o argumento `key`, sem termo de ajuste.
+
+```{r}
+# ajustando a função de detecção para uma distancia de truncamento de 20, 15, 10 e 5 metros
+# Key function - Uniform
+cutia_esec_terra_meio_unif <- purrr::map(
+  dist_truncamento,
+  \(.x) ajuste_modelos_distance_unif(
+    cutia_tap_arap, 
+    truncamento = .x
+  )
+  )
+```
+
+###### Seleção de modelos
+
+```{r}
+summarize_ds_models(
+  cutia_esec_terra_meio_hn$`20 metros`$`Sem termo`,
+cutia_esec_terra_meio_hn$`20 metros`$Cosseno,
+  cutia_esec_terra_meio_hn$`20 metros`$`Hermite polinomial`,
+cutia_esec_terra_meio_hr$`20 metros`$`Sem termo`,
+cutia_esec_terra_meio_hr$`20 metros`$Cosseno,
+cutia_esec_terra_meio_hr$`20 metros`$`Polinomial simples`,
+cutia_esec_terra_meio_unif$`20 metros`$Cosseno,
+cutia_esec_terra_meio_unif$`20 metros`$`Polinomial simples`
+)
+```
+
+```{r}
+summarize_ds_models(
+  cutia_esec_terra_meio_hn$`15 metros`$`Sem termo`,
+cutia_esec_terra_meio_hn$`15 metros`$Cosseno,
+  cutia_esec_terra_meio_hn$`15 metros`$`Hermite polinomial`,
+cutia_esec_terra_meio_hr$`15 metros`$`Sem termo`,
+cutia_esec_terra_meio_hr$`15 metros`$Cosseno,
+cutia_esec_terra_meio_hr$`15 metros`$`Polinomial simples`,
+cutia_esec_terra_meio_unif$`15 metros`$Cosseno,
+cutia_esec_terra_meio_unif$`15 metros`$`Polinomial simples`
+)
+```
+
+```{r}
+summarize_ds_models(
+  cutia_esec_terra_meio_hn$`10 metros`$`Sem termo`,
+cutia_esec_terra_meio_hn$`10 metros`$Cosseno,
+  cutia_esec_terra_meio_hn$`10 metros`$`Hermite polinomial`,
+cutia_esec_terra_meio_hr$`10 metros`$`Sem termo`,
+cutia_esec_terra_meio_hr$`10 metros`$Cosseno,
+cutia_esec_terra_meio_hr$`10 metros`$`Polinomial simples`,
+cutia_esec_terra_meio_unif$`10 metros`$Cosseno,
+cutia_esec_terra_meio_unif$`10 metros`$`Polinomial simples`
+)
+```
+
+```{r}
+summarize_ds_models(
+  cutia_esec_terra_meio_hn$`12 metros`$`Sem termo`,
+cutia_esec_terra_meio_hn$`12 metros`$Cosseno,
+  cutia_esec_terra_meio_hn$`12 metros`$`Hermite polinomial`,
+cutia_esec_terra_meio_hr$`12 metros`$`Sem termo`,
+cutia_esec_terra_meio_hr$`12 metros`$Cosseno,
+cutia_esec_terra_meio_hr$`12 metros`$`Polinomial simples`,
+cutia_esec_terra_meio_unif$`12 metros`$Cosseno,
+cutia_esec_terra_meio_unif$`12 metros`$`Polinomial simples`
+)
+```
+
+### Cutias da Parna da Serra do Pardo para diferentes distâncias de truncamento
+
+```{r}
+cutia_parna_serra_pardo <- transformar_para_distanceR_covariaveis() |> 
+  filter(
+    Region.Label == "Parna da Serra do Pardo",
+    sp_name == "Dasyprocta croconota"
+  ) |> 
+  drop_na(distance)
+  
+```
+
+```{r}
+# desenha o grafico com a distribuicao de distancias perpendiculares
+cutia_parna_serra_pardo |> 
+  filter(distance < 15,
+         distance > 0) |> 
+  plotar_distribuicao_distancia_interativo()
+```
+
+#### *Half-Normal* sem termos de ajuste e com termos de ajuste Cosseno e Polinomial de Hermite
+
+Ajustando um modelo ao dados das cutias *Dasyprocta croconota*, configurando uma distância limite de 20m e usando *Half-normal* como *key function* usando o argumento `key`, sem termo de ajuste.
+
+```{r}
+# ajustando a função de detecção para uma distancia de truncamento de 20, 15, 10 e 5 metros
+# dsitancias de truncamento
+dist_truncamento <- list(
+  `20 metros` = 20, 
+  `15 metros` = 15, 
+  `10 metros` = 10,
+  `5 metros` = 5
+)
+
+# Key function - Half-normal 
+cutia_parna_serra_pardo_hn <- purrr::map(
+  dist_truncamento,
+  \(.x) ajuste_modelos_distance_hn(
+    cutia_parna_serra_pardo, 
+    truncamento = .x
+  )
+  )
+```
+
+```{r}
+cutia_parna_serra_pardo_hn
+```
+
+#### *Hazard-Rate* sem termos de ajuste e com termos de ajuste Cosseno e Polinomial de Hermite
+
+Ajustando um modelo ao dados da cutia *Dasyprocta croconota*, configurando uma distância limite de 20m e usando *Hazard rate* como *key function* usando o argumento `key`.
+
+```{r}
+# ajustando a função de detecção para uma distancia de truncamento de 20, 15, 10 e 5 metros
+# Key function - Hazard-rate
+cutia_parna_serra_pardo_hr <- purrr::map(
+  dist_truncamento,
+  \(.x) ajuste_modelos_distance_hr(
+    cutia_parna_serra_pardo, 
+    truncamento = .x
+  )
+  )
+```
+
+#### *Uniform* sem termos de ajuste e com termos de ajuste Cosseno e Polinomial de Hermite
+
+Ajustando um modelo ao dados das cutias *Dasyprocta croconota*, configurando uma distância limite de 20m e usando *Uniform* como *key function* usando o argumento `key`, sem termo de ajuste.
+
+```{r}
+# ajustando a função de detecção para uma distancia de truncamento de 20, 15, 10 e 5 metros
+# Key function - Uniform
+cutia_parna_serra_pardo_unif <- purrr::map(
+  dist_truncamento,
+  \(.x) ajuste_modelos_distance_unif(
+    cutia_parna_serra_pardo, 
+    truncamento = .x
+  )
+)
+```
+
+###### Seleção de modelos
+
+```{r}
+summarize_ds_models(
+  cutia_parna_serra_pardo_hn$`20 metros`$`Sem termo`,
+cutia_parna_serra_pardo_hn$`20 metros`$Cosseno,
+  cutia_parna_serra_pardo_hn$`20 metros`$`Hermite polinomial`,
+cutia_parna_serra_pardo_hr$`20 metros`$`Sem termo`,
+cutia_parna_serra_pardo_hr$`20 metros`$Cosseno,
+cutia_parna_serra_pardo_hr$`20 metros`$`Polinomial simples`,
+cutia_parna_serra_pardo_unif$`20 metros`$Cosseno,
+cutia_parna_serra_pardo_unif$`20 metros`$`Polinomial simples`
+)
+```
+
+```{r}
+summarize_ds_models(
+  cutia_parna_serra_pardo_hn$`15 metros`$`Sem termo`,
+cutia_parna_serra_pardo_hn$`15 metros`$Cosseno,
+  cutia_parna_serra_pardo_hn$`15 metros`$`Hermite polinomial`,
+cutia_parna_serra_pardo_hr$`15 metros`$`Sem termo`,
+cutia_parna_serra_pardo_hr$`15 metros`$Cosseno,
+cutia_parna_serra_pardo_hr$`15 metros`$`Polinomial simples`,
+cutia_parna_serra_pardo_unif$`15 metros`$Cosseno,
+cutia_parna_serra_pardo_unif$`15 metros`$`Polinomial simples`
+)
+```
+
+```{r}
+summarize_ds_models(
+  cutia_parna_serra_pardo_hn$`10 metros`$`Sem termo`,
+cutia_parna_serra_pardo_hn$`10 metros`$Cosseno,
+  cutia_parna_serra_pardo_hn$`10 metros`$`Hermite polinomial`,
+cutia_parna_serra_pardo_hr$`10 metros`$`Sem termo`,
+cutia_parna_serra_pardo_hr$`10 metros`$Cosseno,
+cutia_parna_serra_pardo_hr$`10 metros`$`Polinomial simples`,
+cutia_parna_serra_pardo_unif$`10 metros`$`Sem termo`,
+cutia_parna_serra_pardo_unif$`10 metros`$Cosseno,
+cutia_parna_serra_pardo_unif$`10 metros`$`Polinomial simples`
+)
+```
+
+```{r}
+summarize_ds_models(
+  cutia_parna_serra_pardo_hn$`5 metros`$`Sem termo`,
+cutia_parna_serra_pardo_hn$`5 metros`$Cosseno,
+  cutia_parna_serra_pardo_hn$`5 metros`$`Hermite polinomial`,
+cutia_parna_serra_pardo_hr$`5 metros`$`Sem termo`,
+cutia_parna_serra_pardo_hr$`5 metros`$Cosseno,
+cutia_parna_serra_pardo_hr$`5 metros`$`Polinomial simples`,
+cutia_parna_serra_pardo_unif$`5 metros`$`Sem termo`,
+cutia_parna_serra_pardo_unif$`5 metros`$Cosseno,
+cutia_parna_serra_pardo_unif$`5 metros`$`Polinomial simples`
+)
+```
+
+##### Tentativa de fazer a seleçã ode modelos usando purrr - tentar aninhar mais um map
+
+```{r}
+purrr::map_df(
+  list(
+    cutia_esec_terra_meio_hn$`20 metros`,
+    cutia_esec_terra_meio_hr$`20 metros`
+  ),
+  \(.x) purrr::map_df(.x, \(.y) summarize_ds_models(.y))
+)
+
+purrr::map_df(
+  cutia_esec_terra_meio_hn$`15 metros`,
+  \(.x) summarize_ds_models(.x)
+)
+
+purrr::map_df(
+  cutia_esec_terra_meio_hn$`10 metros`,
+  \(.x) summarize_ds_models(.x)
+)
+
+purrr::map_df(
+  cutia_esec_terra_meio_hn$`5 metros`,
+  \(.x) summarize_ds_models(.x)
+)
+```
+
+
+
+```{r}
+
+```
+
+# Sugestões chat GPT
+
+## Pergunta 1 - Falta de monotonicidade na função de detecção
+
+Estou ajustando modelos de amostragem por distância para obter estimativa de densidade de objetos utilizando o pacote Distance no ambiente de programação R. Alguns dos modelos aos dados estão apresentando problemas de falta de monotonicidade na função de detecção. Tem alguma sugestão de como posso resolver o problema de falta de monotonicidade na função de detecção?
+
+Resposta: A falta de monotonicidade na função de detecção em modelos de amostragem por distância pode ser um desafio, mas existem algumas abordagens que você pode tentar para resolver esse problema. Aqui estão algumas sugestões:
+
+1. Verifique os dados: Primeiro, verifique se os seus dados estão corretos e se não há erros na sua preparação ou processamento. Erros nos dados podem levar a resultados não esperados e à falta de monotonicidade na função de detecção.
+
+2. Ajuste de parâmetros: Experimente ajustar os parâmetros do modelo de amostragem por distância. Por exemplo, você pode alterar o valor do raio de busca (search radius) ou do número mínimo de vizinhos necessários para detecção. Pequenas alterações nesses parâmetros podem ter um impacto significativo na monotonicidade da função de detecção.
+
+3. Transformações dos dados: Considere aplicar transformações nos seus dados antes de ajustar o modelo. Por exemplo, você pode tentar aplicar uma transformação logarítmica ou uma transformação Box-Cox para reduzir a escala dos dados e torná-los mais adequados para o modelo de amostragem por distância.
+
+4. Suavização: Se você identificar regiões com falta de monotonicidade na função de detecção, pode ser útil aplicar técnicas de suavização. Por exemplo, você pode utilizar técnicas de suavização local, como o kernel smoothing, para tornar a função de detecção mais suave e monotônica.
+
+5. Outros modelos ou métodos: Se os modelos de amostragem por distância continuarem a apresentar problemas de falta de monotonicidade, talvez seja necessário explorar outros modelos ou métodos de estimativa de densidade. Existem diversas abordagens disponíveis na literatura, como modelos baseados em krigagem ou métodos de estimativa de densidade kernel.
+
+6. Validação cruzada: Realize uma validação cruzada do seu modelo para avaliar sua capacidade de generalização. Às vezes, a falta de monotonicidade pode ser causada por overfitting nos dados de treinamento. A validação cruzada pode ajudar a identificar esse problema e orientar ajustes adicionais no modelo.
+
+Lembre-se de que a falta de monotonicidade na função de detecção pode indicar uma inadequação do modelo em relação aos seus dados ou características específicas do problema em questão. Portanto, pode ser necessário explorar diferentes abordagens e técnicas para obter resultados satisfatórios.
+
+## Pergunta 2: Falta de convergência
+
+A falta de convergência em modelos de amostragem por distância pode ser um desafio, mas existem algumas sugestões que você pode seguir para tentar resolver esse problema. Aqui estão algumas opções:
+
+1. Verifique os dados: Verifique se os seus dados estão corretos e se não há erros na preparação ou processamento dos mesmos. Erros nos dados podem levar a problemas de convergência. Verifique também se não há valores extremos ou dados ausentes que possam estar afetando o ajuste do modelo.
+
+2. Reduza a complexidade do modelo: Se o seu modelo atual é muito complexo, pode ser difícil obter a convergência. Considere reduzir a complexidade do modelo, diminuindo o número de parâmetros a serem estimados ou simplificando a estrutura do modelo.
+
+3. Inicialização adequada: Tente fornecer uma boa inicialização para os parâmetros do modelo. Isso pode ajudar a evitar problemas de convergência. Se possível, utilize valores iniciais próximos dos valores verdadeiros dos parâmetros ou utilize resultados de modelos anteriores como ponto de partida.
+
+4. Ajuste dos parâmetros do algoritmo de otimização: Muitas vezes, o problema de falta de convergência está relacionado aos parâmetros do algoritmo de otimização utilizado para ajustar o modelo. Experimente ajustar esses parâmetros, como o tamanho do passo (step size), a tolerância de convergência (convergence tolerance) ou o número máximo de iterações permitidas. Tente diferentes combinações de valores para esses parâmetros e observe se isso ajuda a alcançar a convergência.
+
+5. Normalização dos dados: Considere normalizar os seus dados antes de ajustar o modelo. Isso pode ajudar a evitar problemas numéricos ou de escala que possam afetar a convergência. Normalizar os dados para uma escala com média zero e desvio padrão igual a um é uma abordagem comum.
+
+6. Explorar outros algoritmos ou métodos: Se o modelo de amostragem por distância continuar apresentando problemas de convergência, você pode considerar explorar outros algoritmos ou métodos para estimativa de densidade. Existem diferentes abordagens disponíveis na literatura, como métodos baseados em Máxima Verossimilhança (Maximum Likelihood) ou algoritmos de Monte Carlo.
+
+7. Verifique a documentação e recursos do pacote: Verifique a documentação do pacote Distance e os recursos disponíveis para encontrar informações específicas sobre os problemas de convergência e possíveis soluções. Fóruns de discussão ou grupos de usuários relacionados ao pacote também podem ser úteis para obter suporte e orientação.
+
+Lembre-se de que a falta de convergência pode ter várias causas e não há uma solução única para todos os casos. É importante iterar e experimentar diferentes abordagens até encontrar uma solução adequada para o seu problema específico.
+
+## Pergunta 3: Pico próximo da distância zero
+
+Picos próximos a distância zero podem ser um desafio ao ajustar modelos de amostragem por distância. Esses picos podem indicar a presença de pontos muito próximos uns dos outros, o que pode impactar negativamente a estimativa de densidade. Aqui estão algumas sugestões para lidar com esse problema:
+
+1. Verifique a qualidade dos dados: Verifique se os seus dados estão corretos e se não há erros na preparação ou processamento dos mesmos. Erros nos dados podem levar a picos próximos a distância zero. Verifique também se não há pontos duplicados ou dados ausentes que possam estar causando esses picos.
+
+2. Limpeza dos dados: Considere a possibilidade de remover ou ajustar pontos próximos demais uns dos outros. Você pode definir um limiar de distância mínima abaixo do qual os pontos serão considerados duplicados ou fundidos em um único ponto. Isso pode ajudar a evitar os picos próximos a distância zero.
+
+3. Transformação dos dados: Considere aplicar uma transformação nos dados antes de ajustar o modelo. Por exemplo, você pode tentar aplicar uma transformação logarítmica ou uma transformação Box-Cox para reduzir a escala dos dados e suavizar os picos próximos a distância zero.
+
+4. Utilize um raio de busca maior: Experimente aumentar o raio de busca (search radius) utilizado no modelo de amostragem por distância. Isso pode ajudar a capturar informações sobre a densidade em uma região mais ampla ao redor de cada ponto e reduzir a influência dos picos próximos a distância zero.
+
+5. Considere outros modelos ou métodos: Se os picos próximos a distância zero continuarem a ser um problema, você pode explorar outros modelos ou métodos de estimativa de densidade que sejam mais robustos a esse tipo de situação. Por exemplo, modelos baseados em kernel podem ser uma alternativa viável, pois permitem uma suavização mais flexível e podem lidar melhor com a presença de picos próximos.
+
+6. Experimente diferentes configurações: Faça experimentos com diferentes configurações e parâmetros do modelo de amostragem por distância. Isso inclui a escolha do tipo de função de detecção e a definição de parâmetros relacionados à detecção e ao suavização dos picos próximos a distância zero.
+
+Lembre-se de que a solução ideal dependerá das características específicas dos seus dados e do problema em questão. É importante iterar, experimentar diferentes abordagens e avaliar os resultados para encontrar a melhor solução para o seu caso.
+
+## Pergunta 4: Função de detecção maior que 1 em algumas distâncias
+
+Se a função de detecção está apresentando valores maiores que um em algumas distâncias, isso pode indicar um problema no ajuste dos modelos de amostragem por distância. Aqui estão algumas sugestões para resolver esse problema:
+
+1. Verifique os dados: Verifique se os seus dados estão corretos e se não há erros na preparação ou processamento dos mesmos. Erros nos dados podem levar a resultados inesperados na função de detecção. Verifique também se não há pontos duplicados ou dados ausentes que possam afetar o ajuste do modelo.
+
+2. Verifique a função de detecção: Revise a função de detecção utilizada no modelo. Verifique se a função está corretamente especificada e se está sendo aplicada corretamente aos dados. Certifique-se de que não há erros de programação ou configuração que estejam causando valores maiores que um na função de detecção.
+
+3. Ajuste de parâmetros: Experimente ajustar os parâmetros do modelo de amostragem por distância. Por exemplo, você pode alterar o valor do raio de busca (search radius) ou o número mínimo de vizinhos necessários para detecção. Pequenas alterações nesses parâmetros podem afetar a função de detecção e evitar que ela apresente valores maiores que um.
+
+4. Normalização dos dados: Considere normalizar os seus dados antes de ajustar o modelo. A normalização dos dados para uma escala específica, como a escala [0, 1], pode ajudar a evitar valores maiores que um na função de detecção. Isso pode ser especialmente útil se os seus dados possuírem diferentes ordens de grandeza.
+
+5. Explorar outras funções de detecção: Se a função de detecção atual estiver apresentando problemas, você pode considerar utilizar outras funções de detecção disponíveis no pacote Distance ou em outros pacotes. Experimente diferentes funções para encontrar aquela que melhor se ajusta aos seus dados e evita valores maiores que um.
+
+6. Verifique a documentação e recursos do pacote: Consulte a documentação do pacote Distance e os recursos disponíveis para obter informações específicas sobre problemas relacionados à função de detecção e possíveis soluções. Fóruns de discussão ou grupos de usuários relacionados ao pacote também podem ser úteis para obter suporte e orientação.
+
+Lembre-se de que é importante investigar a causa raiz do problema e iterar em diferentes abordagens até encontrar uma solução adequada para o seu caso específico.
+
+# Primeira espécie modelo 
+
+## *Saguinus midas* no **Parna Montanhas do Tumucumaque**
+
+### Carregar dados
+
+```{r}
+sagui_mont_tumuc <- transformar_para_distanceR_covariaveis() |> 
+  filter(
+    Region.Label == "Parna Montanhas do Tumucumaque",
+    sp_name == "Saguinus midas"
+  ) |> 
+  drop_na(distance)
+```
+
+### Distribuição das distâncias perpendiculares
+
+```{r}
+sagui_mont_tumuc |> 
+  plotar_distribuicao_distancia_interativo()
+```
+
+### Ajustando modelo distance com função de detecção Half-Normal e distancia de truncamento 10
+
+```{r}
+sagui_mont_tumuc_hn <- sagui_mont_tumuc |> 
+  ajuste_modelos_distance_hn(truncamento = 10)
+```
+
+### Ajustando modelo distance com função de detecção Hazard-rate e distancia de truncamento 10
+
+```{r}
+sagui_mont_tumuc_hr <- sagui_mont_tumuc |> 
+  ajuste_modelos_distance_hr(truncamento = 10)
+```
+### Plot dos modelos
+
+```{r}
+sagui_mont_tumuc_hn |> 
+  purrr::map(\(.x) plot(.x)) 
+```
+
+```{r}
+sagui_mont_tumuc_hr |> 
+  purrr::map(\(.x) plot(.x)) 
+```
+
+### Seleção de modelos
+
+```{r}
+summarize_ds_models(
+  sagui_mont_tumuc_hn$`Sem termo`,
+  sagui_mont_tumuc_hn$Cosseno,
+  sagui_mont_tumuc_hn$`Hermite polinomial`,
+  sagui_mont_tumuc_hr$`Sem termo`,
+  sagui_mont_tumuc_hr$Cosseno,
+  sagui_mont_tumuc_hr$`Polinomial simples`
+)
+```
+
+### Teste de bondade de ajuste
+
+```{r}
+sagui_mont_tumuc_hn |> 
+  purrr::map(\(.x) gof_ds(model = .x))
+```
+
+```{r}
+sagui_mont_tumuc_hr |> 
+  purrr::map(\(.x) gof_ds(model = .x))
+```
+
+### Estimando a abundancia
+
+```{r}
+# área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
+sagui_mont_tumuc_hn$`Sem termo`$dht$individuals$summary[1:9]
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
+sagui_mont_tumuc_hn$`Sem termo`$dht$individuals$Nhat.by.sample[1:8]
+```
+
+```{r}
+# total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
+sagui_mont_tumuc_hn$`Sem termo`$dht$individuals$D
+
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
+sagui_mont_tumuc_hr$`Sem termo`$dht$individuals$summary[1:9]
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
+sagui_mont_tumuc_hr$`Sem termo`$dht$individuals$Nhat.by.sample[1:8]
+```
+```{r}
+(125.8 + 67.6 + 240.8)/4e+07
+```
+
+
+```{r}
+# total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
+sagui_mont_tumuc_hr$`Sem termo`$dht$individuals$D
+
+```
+
+# Tentativa de rodar o dsitance para mais de uma espécie ao de uma só vez
+
+```{r}
+dados_entre_60_130 <- transformar_para_distanceR_covariaveis() |> 
+  filter(
+    distance > 60,
+    distance < 130
+  ) |> 
+  drop_na(distance)
+```
+
+```{r}
+dados_entre_60_130_aninhado_especie <- dados_entre_60_130 |> 
+  nest(sp_name)
+```
+
