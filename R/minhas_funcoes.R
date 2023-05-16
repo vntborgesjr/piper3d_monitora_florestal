@@ -16,6 +16,117 @@ library(stringr)
 library(tidyr)
 library(tidyselect)
 
+
+# Documentacao da funcao ajuste_modelo_distace_hn() -----------------------
+#' Title
+#'
+#' @param dados 
+#' @param lista_termos_ajuste 
+#' @param truncamento 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+ajuste_modelos_distance_hn <- function(
+    dados,
+    lista_termos_ajuste = list(
+      `Sem termo` = NULL, 
+      Cosseno = "cos", 
+      `Hermite polinomial` = "herm", 
+    ),
+    truncamento = NULL
+) {
+  # ajustando a função de detecção
+  # Key function - Half-normal 
+  modelos_ajustados <- purrr::map(
+    lista_termos_ajuste, 
+    \(.x) ds(
+      data = dados,
+      truncation = truncamento,
+      key = "hn",
+      adjustment = .x
+    )
+  )
+  
+  # retorna o output dos modelos
+  return(modelos_ajustados)
+  
+}
+
+# Documentacao da funcao ajuste_modelos_distance_hr() ----------------------
+#' Title
+#'
+#' @param dados 
+#' @param lista_termos_ajuste 
+#' @param truncamento 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+ajuste_modelos_distance_hr <- function(
+    dados,
+    lista_termos_ajuste = list(
+      `Sem termo` = NULL, 
+      Cosseno = "cos", 
+      `Polinomial simples` = "poly" 
+    ),
+    truncamento = NULL
+) {
+  # ajustando a função de detecção
+  # Key function - Hazard-rate
+  modelos_ajustados <- purrr::map(
+    lista_termos_ajuste, 
+    \(.x) ds(
+      data = dados,
+      truncation = truncamento,
+      key = "hr",
+      adjustment = .x
+    )
+  )
+  
+  # retorna o output dos modelos
+  return(modelos_ajustados)
+  
+}
+
+# Documentacao da funcao ajuste_modelos_distance_unif() -------------------
+#' Title
+#'
+#' @param dados 
+#' @param lista_termos_ajuste 
+#' @param truncamento 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+ajuste_modelos_distance_unif <- function(
+    dados,
+    lista_termos_ajuste = list(
+      #`Sem termo` = NULL, 
+      Cosseno = "cos", 
+      `Polinomial simples` = "poly" 
+    ),
+    truncamento = NULL
+) {
+  # ajustando a função de detecção
+  # Key function - Uniforme
+  modelos_ajustados <- purrr::map(
+    lista_termos_ajuste, 
+    \(.x) ds(
+      data = dados,
+      truncation = truncamento,
+      key = "unif",
+      adjustment = .x
+    )
+  )
+  
+  # retorna o output dos modelos
+  return(modelos_ajustados)
+  
+}
 # Documentacao da funcao carregar_dados_brutos.xlsx -----------------------
 #' Carrega os dados brutos originais em formato .xlsx
 #'
@@ -96,7 +207,8 @@ carregar_dados_brutos_rds <- function(
 #' @param dados recebe o caminho para carregar um arquivo .rds. Por configuracao, carrega os dados brutos dos Projeto Monitora Componente Florestal a partir do formato .rds
 #' @details
 #' A funcao \code{carregar_dados_completos()} disponibiliza ao usario os dados brutos do Projeto Monitora Componente Florestal, selecionando, transformando e renomeando suas colunas. (Fornecer mais detalhes sobre as transformacoes operadas).
-#'
+#' Avisar que distancias de trilhas percorridas estao sendo imputadas quando os valores estao ausentes.
+#' 
 #' @return Retorna um objeto do tipo \code{tibble} contendo uma selecao de colunas transformadas e renomeadas a partir dos dados brutos do Projeto Monitora Componente Florestal.
 #' @export
 #' @author
@@ -246,7 +358,36 @@ carregar_dados_completos <- function(
     dplyr::relocate(
       sp_name_abv,
       .after = sp_name
-    )
+    ) |> 
+    tidyr::fill(day_effort)
+  
+  # calculo do esforco
+  dados_completos <- dados_completos |> 
+    dplyr::distinct(
+      ea_name,
+      sampling_day
+    ) |> 
+    dplyr::count(
+      ea_name, 
+      name = "n_repeats"
+    ) |> 
+    dplyr::left_join(
+      dados_completos,
+      by = "ea_name"
+    ) |> 
+    dplyr::mutate(total_effort = day_effort*n_repeats) |> 
+    dplyr::relocate(
+      total_effort,
+      .after = day_effort
+    ) |> 
+    group_by(
+      uc_name,
+      ea_name
+    ) |> 
+    filter(day_effort == max(day_effort))  |> 
+    ungroup()
+  
+  
 
   # grava uma versao dados_completos.rds no diretorio inst/extdata
   readr::write_rds(
@@ -1575,7 +1716,8 @@ plotar_distribuicao_distancia_interativo <- function(
         here::here(),
         "/data/dados_selecionados_transformados_dist_r.rds"
       )
-    )
+    ),
+    largura_caixa = 2.5
 ) {
   # desenha o grafico de caixa
   box <- dados |>
@@ -1617,7 +1759,7 @@ plotar_distribuicao_distancia_interativo <- function(
     dplyr::arrange(dplyr::desc(distance)) |>
     ggplot2::ggplot() +
     ggplot2::aes(x = distance) +
-    ggplot2::geom_histogram(binwidth = 2.5,
+    ggplot2::geom_histogram(binwidth = largura_caixa,
                             fill = "chartreuse4",
                             col = "white",
                             center = 1.25) +
@@ -2329,10 +2471,10 @@ transformar_para_distanceR_covariaveis <- function(
 ) {
   dados_transformados_dist_r_cov <- dados |>
     dplyr::select(
-      Region.Label = `ea_name`,
-      Sample.Label = `sampling_day`,
-      Effort = day_effort,
-      uc_name,
+      Region.Label = uc_name,
+      Sample.Label = `ea_name`,
+      Effort = total_effort,
+      sampling_day,
       uc_name_abv,
       sp_name,
       sp_name_abv,
@@ -2343,7 +2485,7 @@ transformar_para_distanceR_covariaveis <- function(
     ) |>
     dplyr::mutate(
       Area = 0,
-      Sample.Label = lubridate::date(Sample.Label),
+      # Sample.Label = lubridate::date(Sample.Label),
       object = 1:nrow(dados)
     ) |>
     dplyr::relocate(
@@ -2395,13 +2537,13 @@ transformar_para_distanceR <- function(
   dados_transformados_dist_r <- dados |>
     dplyr::select(
       uc_code,
-      uc_name,
       ea_number,
-      Region.Label = `ea_name`,
+      sampling_day,
+      Region.Label = uc_name,
       year,
       season,
-      Sample.Label = sampling_day,
-      Effort = day_effort,
+      Sample.Label = `ea_name`,
+      Effort = total_effort,
       sp_name,
       sp_name_abv,
       distance,
