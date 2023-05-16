@@ -4,11 +4,10 @@
 # para rodar a plicação precione o botão acima 'Run App'.
 #
 # carregar funções
-source("R/carregar_dados_completos.R") 
-source("R/plotar_distribuicao_distancia_interativo.R") 
+source("R/minhas_funcoes.R") 
 
 # carregar dados para o R
-dados_completos <- carregar_dados_completos() 
+dados_selecionados <- carregar_dados_selecionados() 
 
 # Define UI for application that draws a histogram
 ui <- shiny::fluidPage(
@@ -30,14 +29,14 @@ ui <- shiny::fluidPage(
         inputId = "ucs",
         selected = "Resex Tapajós-Arapiuns",
         label = "UC's", 
-        choices = unique(dados_completos$uc_name) 
+        choices = unique(dados_selecionados$uc_name) 
       ),
       # caixa de seleção das espeçies
       shiny::selectInput(
         inputId = "especie",
         selected = "Dasyprocta croconota",
         label = "Espécie", 
-        choices = unique(dados_completos$sp)
+        choices = unique(dados_selecionados$sp_name)
       )
     ),
     
@@ -59,9 +58,9 @@ server <- function(input, output) {
   # gera reatividade 
   # gerar os dados para desenhar os gráficos
   dados_filtrados <- reactive({
-    dados_completos |> 
+    dados_selecionados |> 
       dplyr::filter(uc_name == input$ucs,
-                    sp == input$especie,
+                    sp_name == input$especie,
                     !is.na(distance))
   })
   
@@ -82,9 +81,9 @@ server <- function(input, output) {
   
   # adicionar tabela interativa
   output$tabela = DT::renderDataTable({
-    dados_completos |> 
+    dados_selecionados |> 
       dplyr::filter(uc_name == input$ucs,
-                    sp == input$especie,
+                    sp_name == input$especie,
                     !is.na(distance)) |> 
       DT::datatable(
         filter = list(
@@ -96,4 +95,4 @@ server <- function(input, output) {
 }
 
 # Run the application 
-shiny::shinyApp(ui = ui, server = server)
+shiny::shinyApp(ui = ui, server = server, options = list(launch.browser = FALSE, port = 5261))
