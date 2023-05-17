@@ -102,15 +102,15 @@ dados_filtrados <- dados_brutos |>
   # selecionar as colunas necessárias para as analises, padronizando os nomes para o formato DISTANCE
   dplyr::select(
     uc_code = CDUC,
-    uc_name = `Local - Nome da Unidade de Conservação`,
-    ea_number = `Número da Estação Amostral`,
+    uc_name = `Local - Nome da Unidade de Conservacao`,
+    ea_number = `Numero da Estacao Amostral`,
     ea_name = `Nome da EA`,
-    season = `Estação do ano`,
+    season = `Estacao do ano`,
     sampling_day = `data da amostragem`,
-    day_effort = `Esforço de amostragem tamanho da trilha (m)`,
-    sp = `Espécies validadas para análise do ICMBio`,
-    distance = `distância (m)     do animal em relação a trilha`,
-    group_size = `n° de animais`,
+    day_effort = `Esforco de amostragem tamanho da trilha (m)`,
+    sp = `Especies validadas para analise do ICMBio`,
+    distance = `distancia (m)     do animal em relacao a trilha`,
+    group_size = `n de animais`,
     observadores = `nome dos observadores`
   ) |>
   # atribuir os tipos corretos às colunas e criar novas colunas
@@ -232,7 +232,7 @@ tidyr::separate_wider_delim(
   ) |>
   # filtrar os dados pela UC e espécie desejadas
     dplyr::filter(
-      uc_name == "Resex Tapajós-Arapiuns",
+      uc_name == "Resex Tapajos-Arapiuns",
       sp == "Dasyprocta croconota"
     ) |> 
   relocate(
@@ -339,7 +339,7 @@ gerar_tabdin_dados_filtrados()
 dados_distanceR_completo <- transformar_para_distanceR()
 
 # gerar tabela dinamica dos dados no formato do distance do R
-gerar_tabdin_dados_distanceR_completo()
+gerar_tabdin_dados_selecionados_distanceR()
 ```
 
 Em princípio tudo certo até aqui.
@@ -349,7 +349,7 @@ Em princípio tudo certo até aqui.
 dados_distance_r_covariaveis <- transformar_para_distanceR_covariaveis()
 
 # tabdin de dados_distanceR_covariaveis
-gerar_tabdin_dados_distanceR_completo_cov()
+gerar_tabdin_dados_selecionados_distanceR_cov()
 ```
 
 # **PARTE IV – Explorando e selecionando os dados para as análises**
@@ -470,7 +470,7 @@ plotar_n_obs_sp_interativo()
 
 Tabela interativa para consulta do número de observações por espécie.
 ```{r}
-
+gerar_tabdin_n_obs_sp()
 ```
 
 #### **Quais e quantas observações para cada espécie por unidades de conservação?**
