@@ -91,36 +91,36 @@ dados_completos |>
 
 Variáveis necessárias para o `data.frame`:
 
-- `Region.Label`: vetor fator com o estrato contendo o transecto (pode ser uma estratificação pré-amostragem - UCs - ou pós-amostragem - ex. região, estado, bioma)
+-   `Region.Label`: vetor fator com o estrato contendo o transecto (pode ser uma estratificação pré-amostragem - UCs - ou pós-amostragem - ex. região, estado, bioma)
 
-- `Area`: vetor numérico contendo a área do estrato;
+-   `Area`: vetor numérico contendo a área do estrato;
 
-- `Sample.Label`: vetor númerico contendo a identidade (ID) do transecto
+-   `Sample.Label`: vetor númerico contendo a identidade (ID) do transecto
 
-- `object`: nome adicional, ver seção 6;
+-   `object`: nome adicional, ver seção 6;
 
-- `detected`: nome adicional, ver seção 6;
+-   `detected`: nome adicional, ver seção 6;
 
-- `Effort`: vetor númerico contendo o esforço do transecto (para linhas seu comprimento, para pontos o número de vezes que o ponto foi visitado)
+-   `Effort`: vetor númerico contendo o esforço do transecto (para linhas seu comprimento, para pontos o número de vezes que o ponto foi visitado)
 
-- `size`: vetor numérico copntendo o tamanho do grupo observado;
+-   `size`: vetor numérico copntendo o tamanho do grupo observado;
 
-- `distance`: vetor numérico de distâncias observadas;
+-   `distance`: vetor numérico de distâncias observadas;
 
-- `Month`:
+-   `Month`:
 
-- `OBs`:
+-   `OBs`:
 
-- `Sp`:
+-   `Sp`:
 
- - `mas`:
- 
- - `HAS`:
- 
- - `Study.Area`:
- 
+-   `mas`:
+
+-   `HAS`:
+
+-   `Study.Area`:
+
 Transectos que foram amostrados, mas que não tiveram observações (n = 0) devem ser incluídos no conjunto de dados com `NA` nas observações de distância e qualquer outra covariael para a qual não se tenha observação.
- 
+
 ```{r}
 # cutia_tap_arap |> 
 #   complete(Region.Label, Sample.Label, sp_name) |> 
@@ -143,7 +143,6 @@ cutia_tap_arap |>
 summary(cutia_tap_arap$distance)
 ```
 
- 
 ## Ajustando funções de detecção no R
 
 ### Cutias da Resex Tapajós-Arapiuns para diferentes distâncias de truncamento
@@ -313,13 +312,11 @@ summarize_ds_models(
 
 ```
 
-
-
-O resultado  inclui detalhes sobre o dado e a especificação do modelo, assim como dos coeficientes ($\beta_{j}$) e sua inceteza, a média do valor de detectabilidade e sua incerteza e uma estimativa da abundância na área coberta pela amostragem (sem levar em consideração o tamanho dos agrupamentos, ou bandos). 
+O resultado inclui detalhes sobre o dado e a especificação do modelo, assim como dos coeficientes ($\beta_{j}$) e sua inceteza, a média do valor de detectabilidade e sua incerteza e uma estimativa da abundância na área coberta pela amostragem (sem levar em consideração o tamanho dos agrupamentos, ou bandos).
 
 ### Bondade de ajuste
 
-Para visualizar quão bem a função de detecção se ajusta aos dados quanto temos as distâncias exatas podemos usar um plot de quantis empíricos x teóricos (Q-Q plot). Ele compara a função de distribuição cumulativa (CDF) dos valores ajustados da função detecção a distribuição empírica dos dados (EDF). 
+Para visualizar quão bem a função de detecção se ajusta aos dados quanto temos as distâncias exatas podemos usar um plot de quantis empíricos x teóricos (Q-Q plot). Ele compara a função de distribuição cumulativa (CDF) dos valores ajustados da função detecção a distribuição empírica dos dados (EDF).
 
 Também podemos usar o teste de Cramér-von Mises para testar se os pontos da EDF e da CDF tem origem na mesma distribuição. O teste usa a soma de todas as distâncias entre um ponto e a linha y = x para formar a estatística a ser testada. Um resultado significativo fornece evidência contra a hiipótese nula, sugerindo que o modelo não se ajusta bem aos dados.
 
@@ -364,11 +361,11 @@ Quando fornecemos os dados no formato correto ("flatfile") `ds` irá automaticam
 summary(cutia_hn)
 ```
 
-1. Summary statistics: fornece as áreas, aŕea de amostragem, esforço, número de observações, número de transectos, taxa de encontro, seus erros padrões e coeficientes de variação para cada estrato;
+1.  Summary statistics: fornece as áreas, aŕea de amostragem, esforço, número de observações, número de transectos, taxa de encontro, seus erros padrões e coeficientes de variação para cada estrato;
 
-2. Abundance: fornece estimativas, erros padrões, coeficientesde variação, intervalos de confiança inferior e superior, graus de liberdade para a estimativa de abundância de cada estrato;
+2.  Abundance: fornece estimativas, erros padrões, coeficientesde variação, intervalos de confiança inferior e superior, graus de liberdade para a estimativa de abundância de cada estrato;
 
-3. Densidade: lista as mesmas estatísticas de Abundance, só que para densidade.
+3.  Densidade: lista as mesmas estatísticas de Abundance, só que para densidade.
 
 ## **Funções Exploratórias Adicionais**
 
@@ -429,7 +426,6 @@ Ajustando um modelo ao dados das cutias *Dasyprocta croconota*, configurando uma
 ```{r}
 cutia_esec_terra_meio_filtrado
 ```
-
 
 ```{r}
 cutia_esec_terra_meio_filtrado <- cutia_esec_terra_meio |> 
@@ -707,15 +703,15 @@ purrr::map_df(
 )
 ```
 
-
-
 ```{r}
 
 ```
 
-# Primeira espécie para dados com repetição 
+# Primeira espécie para dados com repetição
 
 ## *Saguinus midas* no **Parna Montanhas do Tumucumaque**
+
+![Fonte: datuopinion.com](https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.MKXKT9lNOTspnocS9qpgJAHaFO%26pid%3DApi&f=1&ipt=baacdeefff20d2cc79d1cc7beba75bbb85546c4b53a4ba3305f4cca2e1f2e592&ipo=images)
 
 ### Carregar dados
 
@@ -748,6 +744,7 @@ sagui_mont_tumuc_hn <- sagui_mont_tumuc |>
 sagui_mont_tumuc_hr <- sagui_mont_tumuc |> 
   ajuste_modelos_distance_hr(truncamento = 10)
 ```
+
 ### Plot dos modelos
 
 ```{r}
@@ -812,28 +809,25 @@ sagui_mont_tumuc_hr$`Sem termo`$dht$individuals$summary[1:9]
 # área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
 sagui_mont_tumuc_hr$`Sem termo`$dht$individuals$Nhat.by.sample[1:8]
 ```
-```{r}
-(125.8 + 67.6 + 240.8)/4e+07
-```
-
 
 ```{r}
 # total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
 sagui_mont_tumuc_hr$`Sem termo`$dht$individuals$D
-
 ```
 
 # Segunda espécie para dados com repetição
 
 ## *Myoprocta pratti* na **Resex Alto Tarauacá**
 
+![Fonte: zoochat.com](https://external-content.duckduckgo.com/iu/?u=https%253A%252F%252Ftse3.mm.bing.net%252Fth%253Fid%253DOIP.hqCNuSZSYZYfF_hTuoFlWAHaE8%2526pid%253DApi&f=1&ipt=6708c08de380fff37267c88563c4958653de6bc88c44979b20f2fd7ffcbbad4a&ipo=images)
+
 ### Carregar dados
 
 ```{r}
-sagui_mont_tumuc <- transformar_para_distanceR_covariaveis() |> 
+cutia_alto_tarau <- transformar_para_distanceR_covariaveis() |> 
   filter(
-    Region.Label == "Parna Montanhas do Tumucumaque",
-    sp_name == "Saguinus midas"
+    Region.Label == "Resex Alto Tarauacá",
+    sp_name == "Myoprocta pratti"
   ) |> 
   drop_na(distance)
 ```
@@ -841,32 +835,33 @@ sagui_mont_tumuc <- transformar_para_distanceR_covariaveis() |>
 ### Distribuição das distâncias perpendiculares
 
 ```{r}
-sagui_mont_tumuc |> 
+cutia_alto_tarau |> 
   plotar_distribuicao_distancia_interativo()
 ```
 
 ### Ajustando modelo distance com função de detecção Half-Normal e distancia de truncamento 10
 
 ```{r}
-sagui_mont_tumuc_hn <- sagui_mont_tumuc |> 
+cutia_alto_tarau_hn <- cutia_alto_tarau |> 
   ajuste_modelos_distance_hn(truncamento = 10)
 ```
 
 ### Ajustando modelo distance com função de detecção Hazard-rate e distancia de truncamento 10
 
 ```{r}
-sagui_mont_tumuc_hr <- sagui_mont_tumuc |> 
+cutia_alto_tarau_hr <- cutia_alto_tarau |> 
   ajuste_modelos_distance_hr(truncamento = 10)
 ```
+
 ### Plot dos modelos
 
 ```{r}
-sagui_mont_tumuc_hn |> 
+cutia_alto_tarau_hn |> 
   purrr::map(\(.x) plot(.x)) 
 ```
 
 ```{r}
-sagui_mont_tumuc_hr |> 
+cutia_alto_tarau_hr |> 
   purrr::map(\(.x) plot(.x)) 
 ```
 
@@ -874,24 +869,24 @@ sagui_mont_tumuc_hr |>
 
 ```{r}
 summarize_ds_models(
-  sagui_mont_tumuc_hn$`Sem termo`,
-  sagui_mont_tumuc_hn$Cosseno,
-  sagui_mont_tumuc_hn$`Hermite polinomial`,
-  sagui_mont_tumuc_hr$`Sem termo`,
-  sagui_mont_tumuc_hr$Cosseno,
-  sagui_mont_tumuc_hr$`Polinomial simples`
+  cutia_alto_tarau_hn$`Sem termo`,
+  cutia_alto_tarau_hn$Cosseno,
+  cutia_alto_tarau_hn$`Hermite polinomial`,
+  cutia_alto_tarau_hr$`Sem termo`,
+  cutia_alto_tarau_hr$Cosseno,
+  cutia_alto_tarau_hr$`Polinomial simples`
 )
 ```
 
 ### Teste de bondade de ajuste
 
 ```{r}
-sagui_mont_tumuc_hn |> 
+cutia_alto_tarau_hn |> 
   purrr::map(\(.x) gof_ds(model = .x))
 ```
 
 ```{r}
-sagui_mont_tumuc_hr |> 
+cutia_alto_tarau_hr |> 
   purrr::map(\(.x) gof_ds(model = .x))
 ```
 
@@ -899,37 +894,33 @@ sagui_mont_tumuc_hr |>
 
 ```{r}
 # área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
-sagui_mont_tumuc_hn$`Sem termo`$dht$individuals$summary[1:9]
+cutia_alto_tarau_hn$`Sem termo`$dht$individuals$summary[1:9]
 ```
 
 ```{r}
 # área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
-sagui_mont_tumuc_hn$`Sem termo`$dht$individuals$Nhat.by.sample[1:8]
+cutia_alto_tarau_hn$`Sem termo`$dht$individuals$Nhat.by.sample[1:8]
 ```
 
 ```{r}
 # total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
-sagui_mont_tumuc_hn$`Sem termo`$dht$individuals$D
+cutia_alto_tarau_hn$`Sem termo`$dht$individuals$D
 
 ```
 
 ```{r}
 # área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
-sagui_mont_tumuc_hr$`Sem termo`$dht$individuals$summary[1:9]
+cutia_alto_tarau_hr$`Sem termo`$dht$individuals$summary[1:9]
 ```
 
 ```{r}
 # área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
-sagui_mont_tumuc_hr$`Sem termo`$dht$individuals$Nhat.by.sample[1:8]
+cutia_alto_tarau_hr$`Sem termo`$dht$individuals$Nhat.by.sample[1:8]
 ```
-```{r}
-(125.8 + 67.6 + 240.8)/4e+07
-```
-
 
 ```{r}
 # total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
-sagui_mont_tumuc_hr$`Sem termo`$dht$individuals$D
+cutia_alto_tarau_hr$`Sem termo`$dht$individuals$D
 
 ```
 
@@ -937,13 +928,15 @@ sagui_mont_tumuc_hr$`Sem termo`$dht$individuals$D
 
 ## *Lagothrix cana* na **Rebio do Jaru**
 
+![Fonte: zoochat.com](https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.wNKxS8e_CGO89TOOoTy-ywHaE8%26pid%3DApi&f=1&ipt=43306d74ae7f05cf0c98b98bfac7d113fbb4031c267e5efae616fb999dc64dd0&ipo=images)
+
 ### Carregar dados
 
 ```{r}
-sagui_mont_tumuc <- transformar_para_distanceR_covariaveis() |> 
+macaco_jaru <- transformar_para_distanceR_covariaveis() |> 
   filter(
-    Region.Label == "Parna Montanhas do Tumucumaque",
-    sp_name == "Saguinus midas"
+    Region.Label == "Rebio do Jaru",
+    sp_name == "Lagothrix cana"
   ) |> 
   drop_na(distance)
 ```
@@ -951,32 +944,33 @@ sagui_mont_tumuc <- transformar_para_distanceR_covariaveis() |>
 ### Distribuição das distâncias perpendiculares
 
 ```{r}
-sagui_mont_tumuc |> 
+macaco_jaru |> 
   plotar_distribuicao_distancia_interativo()
 ```
 
-### Ajustando modelo distance com função de detecção Half-Normal e distancia de truncamento 10
+### Ajustando modelo distance com função de detecção Half-Normal e distancia de truncamento 20
 
 ```{r}
-sagui_mont_tumuc_hn <- sagui_mont_tumuc |> 
-  ajuste_modelos_distance_hn(truncamento = 10)
+macaco_jaru_hn <- macaco_jaru |> 
+  ajuste_modelos_distance_hn(truncamento = 20)
 ```
 
-### Ajustando modelo distance com função de detecção Hazard-rate e distancia de truncamento 10
+### Ajustando modelo distance com função de detecção Hazard-rate e distancia de truncamento 20
 
 ```{r}
-sagui_mont_tumuc_hr <- sagui_mont_tumuc |> 
-  ajuste_modelos_distance_hr(truncamento = 10)
+macaco_jaru_hr <- macaco_jaru |> 
+  ajuste_modelos_distance_hr(truncamento = 20)
 ```
+
 ### Plot dos modelos
 
 ```{r}
-sagui_mont_tumuc_hn |> 
+macaco_jaru_hn |> 
   purrr::map(\(.x) plot(.x)) 
 ```
 
 ```{r}
-sagui_mont_tumuc_hr |> 
+macaco_jaru_hr |> 
   purrr::map(\(.x) plot(.x)) 
 ```
 
@@ -984,24 +978,24 @@ sagui_mont_tumuc_hr |>
 
 ```{r}
 summarize_ds_models(
-  sagui_mont_tumuc_hn$`Sem termo`,
-  sagui_mont_tumuc_hn$Cosseno,
-  sagui_mont_tumuc_hn$`Hermite polinomial`,
-  sagui_mont_tumuc_hr$`Sem termo`,
-  sagui_mont_tumuc_hr$Cosseno,
-  sagui_mont_tumuc_hr$`Polinomial simples`
+  macaco_jaru_hn$`Sem termo`,
+  macaco_jaru_hn$Cosseno,
+  macaco_jaru_hn$`Hermite polinomial`,
+  macaco_jaru_hr$`Sem termo`,
+  macaco_jaru_hr$Cosseno,
+  macaco_jaru_hr$`Polinomial simples`
 )
 ```
 
 ### Teste de bondade de ajuste
 
 ```{r}
-sagui_mont_tumuc_hn |> 
+macaco_jaru_hn |> 
   purrr::map(\(.x) gof_ds(model = .x))
 ```
 
 ```{r}
-sagui_mont_tumuc_hr |> 
+macaco_jaru_hr |> 
   purrr::map(\(.x) gof_ds(model = .x))
 ```
 
@@ -1009,36 +1003,250 @@ sagui_mont_tumuc_hr |>
 
 ```{r}
 # área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
-sagui_mont_tumuc_hn$`Sem termo`$dht$individuals$summary[1:9]
+macaco_jaru_hn$`Sem termo`$dht$individuals$summary[1:9]
 ```
 
 ```{r}
 # área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
-sagui_mont_tumuc_hn$`Sem termo`$dht$individuals$Nhat.by.sample[1:8]
+macaco_jaru_hn$`Sem termo`$dht$individuals$Nhat.by.sample[1:8]
 ```
 
 ```{r}
 # total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
-sagui_mont_tumuc_hn$`Sem termo`$dht$individuals$D
+macaco_jaru_hn$`Sem termo`$dht$individuals$D
 
 ```
 
 ```{r}
 # área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
-sagui_mont_tumuc_hr$`Sem termo`$dht$individuals$summary[1:9]
+macaco_jaru_hr$`Sem termo`$dht$individuals$summary[1:9]
 ```
 
 ```{r}
 # área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
-sagui_mont_tumuc_hr$`Sem termo`$dht$individuals$Nhat.by.sample[1:8]
+macaco_jaru_hr$`Sem termo`$dht$individuals$Nhat.by.sample[1:8]
 ```
-```{r}
-(125.8 + 67.6 + 240.8)/4e+07
-```
-
 
 ```{r}
 # total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
-sagui_mont_tumuc_hr$`Sem termo`$dht$individuals$D
+macaco_jaru_hr$`Sem termo`$dht$individuals$D
+
+```
+
+# Quarta espécie para dados com repetição
+
+## *Mazama americana* na **Resex Tapajos-Arapiuns**
+
+![Fonte: zoochat.com](https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.V7M0mCIe5bFtJMv4O04jgAHaE8%26pid%3DApi&f=1&ipt=81f27ed3e2882badba619d12c798f2c29c896bd70cb71f6da91902c13dfbb06f&ipo=images)
+
+### Carregar dados
+
+```{r}
+cervo_tap_arap <- transformar_para_distanceR_covariaveis() |> 
+  filter(
+    Region.Label == "Resex Tapajos-Arapiuns",
+    sp_name == "Mazama americana"
+  ) |> 
+  drop_na(distance)
+```
+
+### Distribuição das distâncias perpendiculares
+
+```{r}
+cervo_tap_arap |> 
+  plotar_distribuicao_distancia_interativo()
+```
+
+### Ajustando modelo distance com função de detecção Half-Normal e distancia de truncamento 13
+
+```{r}
+cervo_tap_arap_hn <- cervo_tap_arap |> 
+  ajuste_modelos_distance_hn(truncamento = 13)
+```
+
+### Ajustando modelo distance com função de detecção Hazard-rate e distancia de truncamento 13
+
+```{r}
+cervo_tap_arap_hr <- cervo_tap_arap |> 
+  ajuste_modelos_distance_hr(truncamento = 13)
+```
+
+### Plot dos modelos
+
+```{r}
+cervo_tap_arap_hn |> 
+  purrr::map(\(.x) plot(.x)) 
+```
+
+```{r}
+cervo_tap_arap_hr |> 
+  purrr::map(\(.x) plot(.x)) 
+```
+
+### Seleção de modelos
+
+```{r}
+summarize_ds_models(
+  cervo_tap_arap_hn$`Sem termo`,
+  cervo_tap_arap_hn$Cosseno,
+  cervo_tap_arap_hn$`Hermite polinomial`,
+  cervo_tap_arap_hr$`Sem termo`,
+  cervo_tap_arap_hr$Cosseno,
+  cervo_tap_arap_hr$`Polinomial simples`
+)
+```
+
+### Teste de bondade de ajuste
+
+```{r}
+cervo_tap_arap_hn |> 
+  purrr::map(\(.x) gof_ds(model = .x))
+```
+
+```{r}
+cervo_tap_arap_hr |> 
+  purrr::map(\(.x) gof_ds(model = .x))
+```
+
+### Estimando a abundancia
+
+```{r}
+# área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
+cervo_tap_arap_hn$`Sem termo`$dht$individuals$summary[1:9]
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
+cervo_tap_arap_hn$`Sem termo`$dht$individuals$Nhat.by.sample[1:8]
+```
+
+```{r}
+# total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
+cervo_tap_arap_hn$`Sem termo`$dht$individuals$D
+
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
+cervo_tap_arap_hr$`Sem termo`$dht$individuals$summary[1:9]
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
+cervo_tap_arap_hr$`Sem termo`$dht$individuals$Nhat.by.sample[1:8]
+```
+
+```{r}
+# total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
+cervo_tap_arap_hr$`Sem termo`$dht$individuals$D
+
+```
+
+# Quinta espécie para dados com repetição
+
+## *Tinamus major* na **Parna Montanhas do Tumucumaque**
+
+![Fonte: pinterest.com](https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIP.3mG-yVZq9vN0aOITB7ltpgHaEr%26pid%3DApi&f=1&ipt=bdec34d393bcaddd9cedcedb81daa6496680619f13d704b6d419ff516e5b5210&ipo=images)
+
+### Carregar dados
+
+```{r}
+inambu_mont_tumuc <- transformar_para_distanceR_covariaveis() |> 
+  filter(
+    Region.Label == "Parna Montanhas do Tumucumaque",
+    sp_name == "Tinamus major"
+  ) |> 
+  drop_na(distance)
+```
+
+### Distribuição das distâncias perpendiculares
+
+```{r}
+inambu_mont_tumuc |> 
+  plotar_distribuicao_distancia_interativo()
+```
+
+### Ajustando modelo distance com função de detecção Half-Normal e distancia de truncamento 15
+
+```{r}
+inambu_mont_tumuc_hn <- inambu_mont_tumuc |> 
+  ajuste_modelos_distance_hn(truncamento = 15)
+```
+
+### Ajustando modelo distance com função de detecção Hazard-rate e distancia de truncamento 15
+
+```{r}
+inambu_mont_tumuc_hr <- inambu_mont_tumuc |> 
+  ajuste_modelos_distance_hr(truncamento = 15)
+```
+
+### Plot dos modelos
+
+```{r}
+inambu_mont_tumuc_hn |> 
+  purrr::map(\(.x) plot(.x)) 
+```
+
+```{r}
+inambu_mont_tumuc_hr |> 
+  purrr::map(\(.x) plot(.x)) 
+```
+
+### Seleção de modelos
+
+```{r}
+summarize_ds_models(
+  inambu_mont_tumuc_hn$`Sem termo`,
+  inambu_mont_tumuc_hn$Cosseno,
+  inambu_mont_tumuc_hn$`Hermite polinomial`,
+  inambu_mont_tumuc_hr$`Sem termo`,
+  inambu_mont_tumuc_hr$Cosseno,
+  inambu_mont_tumuc_hr$`Polinomial simples`
+)
+```
+
+### Teste de bondade de ajuste
+
+```{r}
+inambu_mont_tumuc_hn |> 
+  purrr::map(\(.x) gof_ds(model = .x))
+```
+
+```{r}
+inambu_mont_tumuc_hr |> 
+  purrr::map(\(.x) gof_ds(model = .x))
+```
+
+### Estimando a abundancia
+
+```{r}
+# área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
+inambu_mont_tumuc_hn$`Sem termo`$dht$individuals$summary[1:9]
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
+inambu_mont_tumuc_hn$`Sem termo`$dht$individuals$Nhat.by.sample[1:8]
+```
+
+```{r}
+# total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
+inambu_mont_tumuc_hn$`Sem termo`$dht$individuals$D
+
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
+inambu_mont_tumuc_hr$`Sem termo`$dht$individuals$summary[1:9]
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
+inambu_mont_tumuc_hr$`Sem termo`$dht$individuals$Nhat.by.sample[1:8]
+```
+
+```{r}
+# total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
+inambu_mont_tumuc_hr$`Sem termo`$dht$individuals$D
 
 ```
