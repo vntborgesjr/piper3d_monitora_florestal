@@ -713,9 +713,119 @@ purrr::map_df(
 
 ```
 
-# Primeira espécie modelo 
+# Primeira espécie para dados com repetição 
 
 ## *Saguinus midas* no **Parna Montanhas do Tumucumaque**
+
+### Carregar dados
+
+```{r}
+sagui_mont_tumuc <- transformar_para_distanceR_covariaveis() |> 
+  filter(
+    Region.Label == "Parna Montanhas do Tumucumaque",
+    sp_name == "Saguinus midas"
+  ) |> 
+  drop_na(distance)
+```
+
+### Distribuição das distâncias perpendiculares
+
+```{r}
+sagui_mont_tumuc |> 
+  plotar_distribuicao_distancia_interativo()
+```
+
+### Ajustando modelo distance com função de detecção Half-Normal e distancia de truncamento 10
+
+```{r}
+sagui_mont_tumuc_hn <- sagui_mont_tumuc |> 
+  ajuste_modelos_distance_hn(truncamento = 10)
+```
+
+### Ajustando modelo distance com função de detecção Hazard-rate e distancia de truncamento 10
+
+```{r}
+sagui_mont_tumuc_hr <- sagui_mont_tumuc |> 
+  ajuste_modelos_distance_hr(truncamento = 10)
+```
+### Plot dos modelos
+
+```{r}
+sagui_mont_tumuc_hn |> 
+  purrr::map(\(.x) plot(.x)) 
+```
+
+```{r}
+sagui_mont_tumuc_hr |> 
+  purrr::map(\(.x) plot(.x)) 
+```
+
+### Seleção de modelos
+
+```{r}
+summarize_ds_models(
+  sagui_mont_tumuc_hn$`Sem termo`,
+  sagui_mont_tumuc_hn$Cosseno,
+  sagui_mont_tumuc_hn$`Hermite polinomial`,
+  sagui_mont_tumuc_hr$`Sem termo`,
+  sagui_mont_tumuc_hr$Cosseno,
+  sagui_mont_tumuc_hr$`Polinomial simples`
+)
+```
+
+### Teste de bondade de ajuste
+
+```{r}
+sagui_mont_tumuc_hn |> 
+  purrr::map(\(.x) gof_ds(model = .x))
+```
+
+```{r}
+sagui_mont_tumuc_hr |> 
+  purrr::map(\(.x) gof_ds(model = .x))
+```
+
+### Estimando a abundancia
+
+```{r}
+# área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
+sagui_mont_tumuc_hn$`Sem termo`$dht$individuals$summary[1:9]
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
+sagui_mont_tumuc_hn$`Sem termo`$dht$individuals$Nhat.by.sample[1:8]
+```
+
+```{r}
+# total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
+sagui_mont_tumuc_hn$`Sem termo`$dht$individuals$D
+
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
+sagui_mont_tumuc_hr$`Sem termo`$dht$individuals$summary[1:9]
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
+sagui_mont_tumuc_hr$`Sem termo`$dht$individuals$Nhat.by.sample[1:8]
+```
+```{r}
+(125.8 + 67.6 + 240.8)/4e+07
+```
+
+
+```{r}
+# total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
+sagui_mont_tumuc_hr$`Sem termo`$dht$individuals$D
+
+```
+
+# Segunda espécie para dados com repetição
+
+## *Myoprocta pratti* na **Resex Alto Tarauacá**
 
 ### Carregar dados
 
@@ -833,9 +943,3 @@ dados_entre_60_130 <- transformar_para_distanceR_covariaveis() |>
   ) |> 
   drop_na(distance)
 ```
-
-```{r}
-dados_entre_60_130_aninhado_especie <- dados_entre_60_130 |> 
-  nest(sp_name)
-```
-
