@@ -1,5 +1,5 @@
 ---
-title: "Esboço do fluxo de trabalho de produção dos códigos"
+title: "Fluxo de trabalho: de producao dos codigos dos dados de Amostragem por Distancia - Programa Monitora ICMBio/MMA"
 date: "Criado em 31 de março de 2023, atualizado em `r format(Sys.time(), '%d de %B de %Y')`"
 author: "Luciana Fusinatto \n Vitor Borges-Júnior"
 output: 
