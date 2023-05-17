@@ -33,7 +33,7 @@ ajuste_modelos_distance_hn <- function(
     lista_termos_ajuste = list(
       `Sem termo` = NULL, 
       Cosseno = "cos", 
-      `Hermite polinomial` = "herm", 
+      `Hermite polinomial` = "herm"
     ),
     truncamento = NULL
 ) {
