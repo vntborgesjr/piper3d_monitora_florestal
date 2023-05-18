@@ -497,9 +497,48 @@ variações temporais entre as amostragens.
 Uma forma de lidar com o excesso de amostragens repetidas é tratar as
 repetições como efeitos aleatórios dos modelos. Isso requer o uso de
 abordagens que vão além da amostragem por distância convecional, como o
-uso de Mixed Effect Models e Modelos Hierárquicos. Essas abordagens
-ainda não foram implementadas em nosso fluxo de trabalho até a presente
-versão e pretendemos testá-la até a oficina de capacitação.
+uso de Mixed Effect Models e Modelos Hierárquicos (p. ex. OEDEKOVEN et.
+al. 2013, 2014) Essas abordagens ainda não foram implementadas em nosso
+fluxo de trabalho até a presente versão e pretendemos testá-la até a
+oficina de capacitação.
+
+**Distribuição de frequência das ocorrências em relação à distância -
+efeitos indesejados**
+
+A distribuição ideal das frequências de ocorrência em relação à
+distância deve apresentar as seguintes características: a frequência de
+ocorrência deve ser maior próximo a zero, apresentar um longo platô
+(ombro), e decair gradativamente com o aumento da distância. Isso
+significa que os animais são totalmente detectáveis na distância zero,
+seguem sendo bem detectáveis a distâncias curtas e vão perdendo
+detectabilidade gradativamente com o aumento da distância.
+
+Por isso, uma das etapas exploratórias é avaliar o histograma de
+frequências de ocorrência ao longo da distância em relação ao transecto
+(opção abaixo). Algumas distribuições indicam problemas nos dados que
+podem dificultar o ajuste das funções de detecção. Tais como:
+
+*Pico de ocorrências próximos à distância zero - spike near zero
+distance*
+
+Isso ocorre quando o número de observações próximos à distância zero é
+inflado em relação às demais distâncias. O efeito gráfico será um pico
+no histograma em zero ou próximo a zero, conforme o exemplo abaixo para
+os dados extraídos das cutias (*Dasyprocta croconota*) na Resex
+Tapajós-Arapiuns.
+
+![Distribuicao de Frequencia para *Dasyprocta croconota* na Resex
+Tapajos-Arapiuns](C:%5CUsers%5Clufus%5COneDrive%5CConsultorias%5CWWF_Especies%5CProduto2_Codigos%5CDistribuicao_freq_Dasyprocta_ResexTapajos.png){width="75%"}
+
+Este tipo de distribuição foi um padrão para as espécies com o maior
+número de ocorrência nos dados de aves e mamíferos do Programa Monitora
+Florestal. Acreditamos que existem dois fatores que podem estar causando
+esse acúmulo de dados em zero ou próximo a ele. Um deles seria um viés
+para avistamento de animais na trilha em ambientes de floresta. As
+trilhas podem atrair animais, e também oferecem melhor visibilidade em
+relação à floresta, especialmente se o sub-bosque for denso . O outro,
+de menor efeito, seria um possível arredondamento nas distâncias
+próximas a zero.
 
 Recomenda-se também que valores de distância perpendicular nunca sejam
 arredondados. Isso acaba levando a um efeito de "amontoar" as
@@ -512,7 +551,8 @@ exploração prévia dos dados para verificar a distribuição na frequência
 das observações em relação à distância (p. ex. Figura 2). O esperado é a
 diminuição na frequência com o aumento da distância em relação à trilha.
 
--   espécies com maior volume de dados total
+espécies com maior volume de dados total
+
 -   maior volume de dados por UC -- exploração_01.nb.html (acho que o
     .Rmd para gerar esse html não está na pasta Monitora). Eu tinha
     gostado bastante desse documento, com as tabelas dinâmicas. Talvez
