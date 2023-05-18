@@ -2505,6 +2505,73 @@ transformar_para_distanceR_covariaveis <- function(
   return(dados_transformados_dist_r_cov)
 }
 
+# Documentacao da funcao transformar_para_distanceR_covariaveis() --------------------
+#' Gera uma tabela no formato para analise no pacote Distance do R, com duas covariaveis, a partir dos dados selecionados
+#'
+#' @description
+#' A funcao \code{} ...
+#'
+#' @param dados Descircao
+#'
+#' @details
+#' Additional details...
+#'
+#' @return Retorna um objeto do tipo \code{tibble}...
+#' @author
+#' Vitor N. T. Borges-Junior
+#' Julia L. Luz
+#' Luciana A. Fusinatto
+#'
+#' @export
+#'
+#' @examples \dontrun{transformar_para_distanceR_covariaveis_sem_repeticao()}
+# transforma para o formato para analise no pacote distance do R
+# adicionando duas covariaveis e mantendo o esforco sem contar as repeticoes
+transformar_para_distanceR_covariaveis_sem_repeticao <- function(
+    dados = readr::read_rds(
+      file = paste0(
+        here::here(),
+        "/data/dados_selecionados.rds"
+      )
+    )
+) {
+  dados_transformados_dist_r_cov_sem_repeticao <- dados |>
+    dplyr::select(
+      Region.Label = uc_name,
+      Sample.Label = `ea_name`,
+      Effort = day_effort,
+      sampling_day,
+      uc_name_abv,
+      sp_name,
+      sp_name_abv,
+      distance,
+      season = season,
+      year,
+      size = group_size,
+      cense_time
+    ) |>
+    dplyr::mutate(
+      Area = 0,
+      # Sample.Label = lubridate::date(Sample.Label),
+      object = 1:nrow(dados)
+    ) |>
+    dplyr::relocate(
+      Area,
+      .before = Sample.Label
+    )
+  
+  # # garvar no diretorio inst/extdata/ arquivo dados_transformados_dist_r_cov.rds
+  # readr::write_rds(
+  #   dados_transformados_dist_r_cov,
+  #   file = paste0(
+  #     here::here(),
+  #     "/data/dados_selecionados_transformados_dist_r_cov.rds"
+  #   )
+  # )
+  # retorna o data.frame
+  return(dados_transformados_dist_r_cov_sem_repeticao)
+}
+
 # Documentacao da funcao transformar_para_distanceR() --------------------
 #' Gera uma tabela no formato para analise no pacote Distance do R, sem covariaveis, a partir dos dados selecionados
 #'
