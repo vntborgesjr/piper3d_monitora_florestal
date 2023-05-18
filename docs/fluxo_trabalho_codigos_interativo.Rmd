@@ -9,6 +9,9 @@ output:
     toc_float: false
     number_section: true
     code_folding: show
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r configuração, include=FALSE, warning=FALSE, message=FALSE}
@@ -48,16 +51,21 @@ source(paste0(here::here(), "/R/minhas_funcoes.R"))
 
 ```
 
-# **PARTE I – Cuidados antes de começar a rodar os códigos no R**
+# **PARTE I -- Cuidados antes de começar a rodar os códigos no R**
 
-Pensar quais orientações são mais gerais e quais são importantes de acompanhar cada código.
+Pensar quais orientações são mais gerais e quais são importantes de
+acompanhar cada código.
 
 ## **Rstudio/Pacotes/versões/sistemas operacionais**
 
-Sobre os pacotes, seria bom ter uma listinha de ‘library’ no início de cada código?
-Talvez com uma breve explicação do que cada pacote faz, versão mínima... não sei.
+Sobre os pacotes, seria bom ter uma listinha de 'library' no início de
+cada código? Talvez com uma breve explicação do que cada pacote faz,
+versão mínima... não sei.
 
-**OBS**: essa tabela é uma referência para obtermos as versões dos pacotes ao final do desenvolvimento do script. Ela está automatizada, então quando terminarmos ele precisamos refaze-lo de forma que não gere mais mudança nas versões (tem que fazer a tabela na mão mesmo...).
+**OBS**: essa tabela é uma referência para obtermos as versões dos
+pacotes ao final do desenvolvimento do script. Ela está automatizada,
+então quando terminarmos ele precisamos refaze-lo de forma que não gere
+mais mudança nas versões (tem que fazer a tabela na mão mesmo...).
 
 ```{r}
 # gerar informações sobre os pacotes carregados
@@ -86,12 +94,30 @@ tribble(
   )
 ```
 
+## **Cuidados com a planilha .xlsx que será importada (para que mantenha o padrão da planilha de referência do ICMBio)**
 
-## **Cuidados com a planilha .xlsx que será importada (para que mantenha o padrão da planilha de referência do ICMBio)** 
+A primeira função que utilizaremos, `carregar_dados_brutos_xlsx()`, irá
+carregar a a planilha em formato excel,
+`Planilha Oficial consolidada de Masto-aves 2014-21 Validada CEMAVE CPB CENAP.xlsx`,
+e gerar automaticamente o arquivo `dados_brutos.rds` na pasta
+`data-raw`. A função seguinte a ser utilizada,
+`carregar_dados_completos()` que irá carregar o arquivo
+`dados_brutos.rds`. Essa função foi escrita para carrega os dados e
+operar uma série de transformações para devolve-lo no formato
+padronizado do programa **DISTANCE** para Windows. Portanto, para
+garantir a reprodutibilidade dos códigos produzidos em versões
+atualizadas da base de dados do Monitora, é importante tomar alguns
+cuidados.
 
-A primeira função que utilizaremos, `carregar_dados_brutos_xlsx()`, irá carregar a a planilha em formato excel, `Planilha Oficial consolidada de Masto-aves 2014-21 Validada CEMAVE CPB CENAP.xlsx`, e gerar automaticamente o arquivo `dados_brutos.rds` na pasta `data-raw`. A função seguinte a ser utilizada, `carregar_dados_completos()` que irá carregar o arquivo `dados_brutos.rds`. Essa função foi escrita para carrega os dados e operar uma série de transformações para devolve-lo no formato padronizado do programa **DISTANCE** para Windows. Portanto, para garantir a reprodutibilidade dos códigos produzidos em versões atualizadas da base de dados do Monitora, é importante tomar alguns cuidados. 
-
-O primeiro e mais importante cuidado é **manter a consistência dos nomes das colunas** em versões atualizadas da base de dados do Monitora. Além de carregar os dados, a função `carregar_dados_completos()` aplica uma série de transformações nas colunas. Seus nomes são alterados, e a essas são atribuídos tipos apropriados (data, caracter, fator, inteiro e numérico), linhas são eliminadas e novas colunas são gereadas. Para exemplificar, veja o código abaixo. Ele foi escrito para executar as primeiras transformações nos dados e constitui o corpo da função `carregar_dados_filtrados()`. 
+O primeiro e mais importante cuidado é **manter a consistência dos nomes
+das colunas** em versões atualizadas da base de dados do Monitora. Além
+de carregar os dados, a função `carregar_dados_completos()` aplica uma
+série de transformações nas colunas. Seus nomes são alterados, e a essas
+são atribuídos tipos apropriados (data, caracter, fator, inteiro e
+numérico), linhas são eliminadas e novas colunas são gereadas. Para
+exemplificar, veja o código abaixo. Ele foi escrito para executar as
+primeiras transformações nos dados e constitui o corpo da função
+`carregar_dados_filtrados()`.
 
 ```{r}
 # carregar a base de dados do Monitora
@@ -256,34 +282,71 @@ dados_filtrados |>
   )
 ```
 
-O trecho do código que vai da linha 103 a 115 serve selecionar apenas as colunas de interesse presente nos dados originais. Note que os nomes das planilhas originais constam nesse trecho. Caso o nome de qualque uma dessas colunas seja alterado a função deixará de funcionar.
+O trecho do código que vai da linha 103 a 115 serve selecionar apenas as
+colunas de interesse presente nos dados originais. Note que os nomes das
+planilhas originais constam nesse trecho. Caso o nome de qualque uma
+dessas colunas seja alterado a função deixará de funcionar.
 
-Outro aspecto importante é a presença de observações não preenchidas (ex. células vazias) nos dados originais. A função foi desenha para resolver alguns problemas presentes nos dados originais. Por exemplo, nas o trecho do código das linhas xx a xx as observações vazias (`NA`s) são substituidas pelo valor correto na coluna `day_effort`. Essa correção continnuará sendo realizada em versões atualizadas dos dados do Monitora. Porém, se outras colunas além das que estão sendo corrigidas possuirem observações vazias os dados serão carregados e transformados, porém outras funções podem ter o seu funcionamento comprometido. Por exemplo... (funções de visualização e do pacote distance que podem naõ funcionar devido a ausência de observação)
+Outro aspecto importante é a presença de observações não preenchidas
+(ex. células vazias) nos dados originais. A função foi desenha para
+resolver alguns problemas presentes nos dados originais. Por exemplo,
+nas o trecho do código das linhas xx a xx as observações vazias (`NA`s)
+são substituidas pelo valor correto na coluna `day_effort`. Essa
+correção continnuará sendo realizada em versões atualizadas dos dados do
+Monitora. Porém, se outras colunas além das que estão sendo corrigidas
+possuirem observações vazias os dados serão carregados e transformados,
+porém outras funções podem ter o seu funcionamento comprometido. Por
+exemplo... (funções de visualização e do pacote distance que podem naõ
+funcionar devido a ausência de observação)
 
-Dentre todas as funções de carregamento de dados, apenas `carregar_dados_brutos_xlsx()` carrega a base de dados originais do Monitora, diretamente do diretório `data-raw/monitora_masto_aves_2023_04_04.xlsx`. Ao mesmo tempo que carrega e transforma os dados, essa função gera uma versão em um formato mais leve, `.rds`, no diretório `data-raw` (`data-raw/monitora_masto_aves_2023_04_04.rds`). A função seguinte no fluxo de trabalho carrega a base a partir dessa versão mais leve. Logo, sempre que houver atualizações no arquivo original de dados brutos é necessário iniciar a rotina de carregamento de dados necessariamente com a função `carregar_dados_brutos_xlsx()`.
+Dentre todas as funções de carregamento de dados, apenas
+`carregar_dados_brutos_xlsx()` carrega a base de dados originais do
+Monitora, diretamente do diretório
+`data-raw/monitora_masto_aves_2023_04_04.xlsx`. Ao mesmo tempo que
+carrega e transforma os dados, essa função gera uma versão em um formato
+mais leve, `.rds`, no diretório `data-raw`
+(`data-raw/monitora_masto_aves_2023_04_04.rds`). A função seguinte no
+fluxo de trabalho carrega a base a partir dessa versão mais leve. Logo,
+sempre que houver atualizações no arquivo original de dados brutos é
+necessário iniciar a rotina de carregamento de dados necessariamente com
+a função `carregar_dados_brutos_xlsx()`.
 
 Outros cuidados...
 
-Imaginando que a planilha de dados do monitora é algo dinâmico, que o nome das colunas pode ser editado...
+Imaginando que a planilha de dados do monitora é algo dinâmico, que o
+nome das colunas pode ser editado...
 
 ## **Como abrir os arquivos: como salvar e descompactar a pasta. Abrir projeto**
 
-Um passo a passo de como salvar arquivo com os códigos e abrir.. Por exemplo, da forma como está é interessante descompactar a pasta e acessar os arquivos abrindo o projeto. Acho que isso pode mudar, dependendo de como viermos a entregar o produto final. Então podemos pensar nessa explicação no final.
+Um passo a passo de como salvar arquivo com os códigos e abrir.. Por
+exemplo, da forma como está é interessante descompactar a pasta e
+acessar os arquivos abrindo o projeto. Acho que isso pode mudar,
+dependendo de como viermos a entregar o produto final. Então podemos
+pensar nessa explicação no final.
 
 ## **Cuidados com diretório**
 
-Se a gente ainda precisar ter algum tipo de preocupação quanto a isso. Acho que não.
-Explicar a estrtura de diretórios do projeto.
+Se a gente ainda precisar ter algum tipo de preocupação quanto a isso.
+Acho que não. Explicar a estrtura de diretórios do projeto.
 
 ## **Como rodar cada tipo de arquivo (markdown, shiny)**
 
-Não é trivial para quem não está acostumado... usar runApp, knit... até mesmo o shift+enter para rodar as linhas de comando uma a uma
+Não é trivial para quem não está acostumado... usar runApp, knit... até
+mesmo o shift+enter para rodar as linhas de comando uma a uma
 
-# **PARTE II – Carregando os dados para o R**
+# **PARTE II -- Carregando os dados para o R**
 
 ## **Dados brutos**
- 
-Não precisa se assustar com a infnidade de códigos no exemplo acima. Serviu apenas para ilustrar que construir essas funções facilita a execução e a reprodutibilidade das análise dos dados do Monitora. Para cada tarefa existe uma função cujo funcionamento não necessita de preenchimento dos argumentos (embora seja possível fornece-los). Por traz das cortinas, as funções executam as tarafas necessárias para se obter o resultado desejado. Por exemplo, o mesmo resultado pode ser obtido utilizando apenas duas funções: `carregar_dados_brutos_xlsx()`e `gerar_tabdin_dados_brutos()`. 
+
+Não precisa se assustar com a infnidade de códigos no exemplo acima.
+Serviu apenas para ilustrar que construir essas funções facilita a
+execução e a reprodutibilidade das análise dos dados do Monitora. Para
+cada tarefa existe uma função cujo funcionamento não necessita de
+preenchimento dos argumentos (embora seja possível fornece-los). Por
+traz das cortinas, as funções executam as tarafas necessárias para se
+obter o resultado desejado. Por exemplo, o mesmo resultado pode ser
+obtido utilizando apenas duas funções: `carregar_dados_brutos_xlsx()`e
+`gerar_tabdin_dados_brutos()`.
 
 ```{r}
 # carregar dados brutos
@@ -293,7 +356,14 @@ dados_brutos <- carregar_dados_brutos_xlsx()
 gerar_tabdin_dados_brutos()
 ```
 
-A função `gerar_tabdin_dados_brutos()`, por configuração, gera uma tabela dinâmica com 1000 linhas. Você pode controlar o número de linhas pelo argumento `n_linhas = `. Mas atenção! Ela não funcionará com um número superior a **4.500 linhas**. Ao mudar a entrada de dados usando o argumento `dados = `, certifique-se de que seu número de linhas não exceda esse limite (ex. **4.500**). INSERIR NOTA (após testar em máquinas diferentes) Esse valor pode varia de acordo com as configurações da sua máquina.
+A função `gerar_tabdin_dados_brutos()`, por configuração, gera uma
+tabela dinâmica com 1000 linhas. Você pode controlar o número de linhas
+pelo argumento `n_linhas =`. Mas atenção! Ela não funcionará com um
+número superior a **4.500 linhas**. Ao mudar a entrada de dados usando o
+argumento `dados =`, certifique-se de que seu número de linhas não
+exceda esse limite (ex. **4.500**). INSERIR NOTA (após testar em
+máquinas diferentes) Esse valor pode varia de acordo com as
+configurações da sua máquina.
 
 ```{r}
 gerar_tabdin_dados_brutos(
@@ -303,8 +373,8 @@ gerar_tabdin_dados_brutos(
 
 ## **Dados completos**
 
-- todas espécies/UCs – carrega_dados_1.Rmd
-Descrever o que os dados trazem e porque foram formatados dessa forma. 
+-   todas espécies/UCs -- carrega_dados_1.Rmd Descrever o que os dados
+    trazem e porque foram formatados dessa forma.
 
 ```{r}
 # carregar dados para o R
@@ -316,9 +386,9 @@ gerar_tabdin_dados_completos()
 
 ## **Dados filtrados**
 
-- por espécie/UC – carrega_dados_2.Rmd
-até o momento usado com o exemplo da cutia na Resex Tapajós-Arapiuns
-Descrever o que os dados trazem e porque foram formatados dessa forma.
+-   por espécie/UC -- carrega_dados_2.Rmd até o momento usado com o
+    exemplo da cutia na Resex Tapajós-Arapiuns Descrever o que os dados
+    trazem e porque foram formatados dessa forma.
 
 ```{r}
 # carregar dados para o R
@@ -328,11 +398,11 @@ dados_filtrados <- carregar_dados_filtrados()
 gerar_tabdin_dados_filtrados()
 ```
 
-# **Parte III – Transformando dados para Distance**
+# **Parte III -- Transformando dados para Distance**
 
 ## **Dados completos**
 
-- todas espécies/UCs – transformar_para_distanceR.Rmd
+-   todas espécies/UCs -- transformar_para_distanceR.Rmd
 
 ```{r}
 # transformar os dados para o formato do Distance
@@ -352,50 +422,121 @@ dados_distance_r_covariaveis <- transformar_para_distanceR_covariaveis()
 gerar_tabdin_dados_selecionados_distanceR_cov()
 ```
 
-# **PARTE IV – Explorando e selecionando os dados para as análises**
+# **PARTE IV -- Explorando e selecionando os dados para as análises**
 
 ## **Selecionando os melhores modelos de estudo de acordo com os dados**
 
-Alguns cuidados devem ser tomados na preparação dos dados antes de serem analisados. O primeiro deles é o cuidado taxonômico. Para os dados do Monitora recomenda-se o uso dos dados das espécies validadas para análise pelo ICMBio, conforme o modelo utilizado para este fluxo de trabalho. 
+Alguns cuidados devem ser tomados na preparação dos dados antes de serem
+analisados. O primeiro deles é o cuidado taxonômico. Para os dados do
+Monitora recomenda-se o uso dos dados das espécies validadas para
+análise pelo ICMBio, conforme o modelo utilizado para este fluxo de
+trabalho.
 
-Alguns problemas com os dados, que podem trazer efeitos indesejados sobre as análises, podem ser detectados durante a fase de exploração. Ao selecionar os dados que serão analisados, é importante observar os seguintes aspectos:
+Alguns problemas com os dados, que podem trazer efeitos indesejados
+sobre as análises, podem ser detectados durante a fase de exploração. Ao
+selecionar os dados que serão analisados, é importante observar os
+seguintes aspectos:
 
-**Suficência Amostral - número de ocorrências por espécie:** 
+**Suficência Amostral - número de ocorrências por espécie:**
 
-Para que o método de análise por distância possa ser utilizado para estimativas baseadas em modelos, são recomendadas quantidades mínimas de registros de ocorrência e de transectos (Unidades Amostrais). Segundo BUCKLAND et. al. (2015), o número mínimo sugerido de animais ou grupos (ocorrências) é de 60 – 80 animais (ou grupos) quando a amostragem é feita pelo método dos transectos lineares. É possível utilizar números menores que estes para realizar as análises, porém deve-se ter o cuidado de verificar se as funções de detecção estão bem modeladas. 
+Para que o método de análise por distância possa ser utilizado para
+estimativas baseadas em modelos, são recomendadas quantidades mínimas de
+registros de ocorrência e de transectos (Unidades Amostrais). Segundo
+BUCKLAND et. al. (2015), o número mínimo sugerido de animais ou grupos
+(ocorrências) é de 60 -- 80 animais (ou grupos) quando a amostragem é
+feita pelo método dos transectos lineares. É possível utilizar números
+menores que estes para realizar as análises, porém deve-se ter o cuidado
+de verificar se as funções de detecção estão bem modeladas.
 
-Para dados que serão estratificados (divididos em subconjuntos), estes números recomendados se aplicam a cada subconjunto. Isso ocorre porque as funções de detecção serão modeladas para cada estrato (p.ex.`Region.Label`), além da função de detecção para os dados globais. Um exemplo seria a análise dos dados, para uma mesma espécie, em diferentes UCs. Neste caso, o ideal seria ter a suficiência amostral mínima em cada UC para usar estratificação e estimar abundâncias e densidades em cada uma das UCs. 
+Para dados que serão estratificados (divididos em subconjuntos), estes
+números recomendados se aplicam a cada subconjunto. Isso ocorre porque
+as funções de detecção serão modeladas para cada estrato
+(p.ex.`Region.Label`), além da função de detecção para os dados globais.
+Um exemplo seria a análise dos dados, para uma mesma espécie, em
+diferentes UCs. Neste caso, o ideal seria ter a suficiência amostral
+mínima em cada UC para usar estratificação e estimar abundâncias e
+densidades em cada uma das UCs.
 
+**Suficiência amostral - réplicas e repetições**
 
-**Suficiência amostral - réplicas**
+Para que haja uma boa cobertura da área de estudo e também uma boa
+quantidade de amostras independentes para estimar as abundâncias e
+densidades das espécies, é desejável um número satisfatório de réplicas.
+Segundo BUCKLAND et al. (2015), o número mínimo de réplicas para os
+transectos deve ser de 10-20, o que deve aumentar para espécies cujas
+populações são distribuídas em manchas.
 
-Para que haja uma boa cobertura da área de estudo e também uma boa quantidade de amostras independentes para estimar as abundâncias e densidades das espécies, é desejável um número satisfatório de réplicas. Segundo BUCKLAND et al. (2015), o número mínimo de réplicas para os transectos deve ser de 10-20, o que deve aumentar para espécies cujas populações são distribuídas em manchas.
+De forma geral, para cada UC, o número de réplicas do Programa Monitora
+está abaixo do recomendado. O delinamento amostral atual para a
+compontente Florestal do subprograma Terrestre estabelece um número
+mínimo de três Estações Amostrais por Unidade de Conservação, o que é o
+caso de muitas UCs, chegando ao máximo de XX estações amostrais por UC.
+O baixo número de réplicas não chega a ser um problema na estimativa de
+densidade da Área Coberta pela amostragem (*Covered Area*), mas limita
+uma boa estimativa de densidade total para a Unidade de Conservação
+(*Study Area*).
 
-De forma geral, para cada UC, o número de réplicas do Programa Monitora está abaixo do recomendado. O delinamento amostral atual para a compontente Florestal do subprograma Terrestre estabelece um número mínimo de três Estações Amostrais por Unidade de Conservação, o que é o caso de muitas UCs, chegando ao máximo de XX estações amostrais por UC. O baixo número de réplicas não chega a ser um problema na estimativa de densidade da Área Coberta pela amostragem (*Covered Area*), mas limita uma boa estimativa de densidade total para a Unidade de Conservação (*Study Area*).
+Um outro aspecto relacionado a amostragem é o número de repetições por
+transecto. Segundo BUKLAND et al (2001, pg 79), as repetições devem ser
+incorporadas no esforço amostral multiplicando-se o número de vezes que
+o transecto foi percorrido pelo comprimento do transecto. A mesma
+recomendação é dada pelo Curso Online em Distance Sampling
+[link](https://workshops.distancesampling.org/online-course/lecturepdfs/Ch4/L4-3%20Sample%20Size.pdf).
+Esse ajuste no esforço amostral não deve ter grandes consequências para
+um baixo número de repetições. Porém, para números altos, leva a uma
+inflagem no tamanho da área coberta. Apenas para ilustar com um exemplo,
+para os dados da Resex Tapajós-Arapinuns, a Estação Amostral Boim foi
+percorrida durante 70 dias de amostragem. Isso significa que ajustando o
+comprimento do transecto de 5 km pelo número de repetições, o esforço
+amostral passou para 350 km. A área coberta aumentou em 70x, o que terá
+consequências sobre a estimativa densidade, que tenderá a ser
+subestimada. Além disso, o coeficiente de variação das estimativas de
+abundância e densidade também tenderá a aumentar pelo efeito das
+variações temporais entre as amostragens.
 
-Um outro aspecto relacionado a amostragem é o número de repetições por Transecto. Segundo BUCKLAND et al. (2015), e repetição deve ser incorporada no esforço amostral multiplicando-se o número de vezes que o Transecto foi percorrido pelo comprimento do transecto. 
+Uma forma de lidar com o excesso de amostragens repetidas é tratar as
+repetições como efeitos aleatórios dos modelos. Isso requer o uso de
+abordagens que vão além da amostragem por distância convecional, como o
+uso de Mixed Effect Models e Modelos Hierárquicos. Essas abordagens
+ainda não foram implementadas em nosso fluxo de trabalho até a presente
+versão e pretendemos testá-la até a oficina de capacitação.
 
+Recomenda-se também que valores de distância perpendicular nunca sejam
+arredondados. Isso acaba levando a um efeito de "amontoar" as
+observações sobre os mesmos valores de distância, o que interfere nas
+estimativas dos modelos. Para espécies que podem apresentar resposta de
+deslocamento em relação ao observador, um dos efeitos indesejados nos
+dados é o deslocamento das maiores frequências de observações para as
+distâncias perpendiculares intermediárias. É recomendável, assim, uma
+exploração prévia dos dados para verificar a distribuição na frequência
+das observações em relação à distância (p. ex. Figura 2). O esperado é a
+diminuição na frequência com o aumento da distância em relação à trilha.
 
-Recomenda-se também que valores de distância perpendicular nunca sejam arredondados. Isso acaba levando a um efeito de “amontoar” as observações sobre os mesmos valores de distância, o que interfere nas estimativas dos modelos. Para espécies que podem apresentar resposta de deslocamento em relação ao observador, um dos efeitos indesejados nos dados é o deslocamento das maiores frequências de observações para as distâncias perpendiculares intermediárias. É recomendável, assim, uma exploração prévia dos dados para verificar a distribuição na frequência das observações em relação à distância (p. ex. Figura 2). O esperado é a diminuição na frequência com o aumento da distância em relação à trilha.
-
-- espécies com maior volume de dados total
-- maior volume de dados por UC
- –  exploração_01.nb.html (acho que o .Rmd para gerar esse html não está na pasta Monitora). Eu tinha gostado bastante desse documento, com as tabelas dinâmicas. Talvez dê para selecionar as perguntas que são válidas de deixar/ tirar/ incluir.
-WWF - Projeto Monitora
-- espécies validadas
-- ...
+-   espécies com maior volume de dados total
+-   maior volume de dados por UC -- exploração_01.nb.html (acho que o
+    .Rmd para gerar esse html não está na pasta Monitora). Eu tinha
+    gostado bastante desse documento, com as tabelas dinâmicas. Talvez
+    dê para selecionar as perguntas que são válidas de deixar/ tirar/
+    incluir. WWF - Projeto Monitora
+-   espécies validadas
+-   ...
 
 ### **Exploração e seleção de dados**
 
 #### **Aspectos relacionados ao número total de observações**
 
-Sistematizar os critérios utilizados para eliminar observações (linhas). 
+Sistematizar os critérios utilizados para eliminar observações (linhas).
 
-Pensar num esquema de árvore de decisão para se chegar ao subconjunto de dados que será analisados.
+Pensar num esquema de árvore de decisão para se chegar ao subconjunto de
+dados que será analisados.
 
 #### **Quantas observações foram validadas para quais níveis taxonômicos?**
 
-Essas operações são realizadas sobre a tabela de dados `dados_completos` pois os dados que foram transformados para o formato do distace no R não possuem a coluna `validation`, necessária para essas opereações. Mais a frente o procedimento de como obter os dados selecionados e transformatos para o formato das análises será demonstrado.
+Essas operações são realizadas sobre a tabela de dados `dados_completos`
+pois os dados que foram transformados para o formato do distace no R não
+possuem a coluna `validation`, necessária para essas opereações. Mais a
+frente o procedimento de como obter os dados selecionados e
+transformatos para o formato das análises será demonstrado.
 
 ```{r}
 # contar observações validadas ao nível de espécie
@@ -403,14 +544,16 @@ n_obs_validadas <- contar_n_obs_validadas()
 n_obs_validadas
 ```
 
-Foram selecionadas apenas as observações validadas ao nível de espécie, somando um total `r n_obs_validadas[1]` observações.
+Foram selecionadas apenas as observações validadas ao nível de espécie,
+somando um total `r n_obs_validadas[1]` observações.
 
 ```{r}
 # gerar gráfico com número observações validadas para cada nível taxonômico
 plotar_n_obs_validadas_interativo()
 ```
 
-Filnalmente chegamos ao subconjunto dos dados que será utilizado para selecionar quais espécies serão analisadas.
+Filnalmente chegamos ao subconjunto dos dados que será utilizado para
+selecionar quais espécies serão analisadas.
 
 ```{r}
 # gerar tabela de dados selecionados
@@ -441,9 +584,11 @@ Até aqui temos dados para `r n_sp` espécies.
 
 #### **Quantas observações por unidade de conservação ao todo?**
 
-As UC's foram filtradas de acordo com o número de observações permitir a visualização.
+As UC's foram filtradas de acordo com o número de observações permitir a
+visualização.
 
-A função de contagem de UC's gerou 40 UC's, mas só há observações para 38. *Lembrar de verificar isso*.
+A função de contagem de UC's gerou 40 UC's, mas só há observações para
+38. *Lembrar de verificar isso*.
 
 ```{r}
 # contar número de observações por UC
@@ -454,14 +599,14 @@ gerar_tabdin_n_obs_uc()
 ```
 
 *Adicionar o nome completo da UC na caixa interativa do gráfico*.
-*Identificar os plotes com subtítulos ex tentar adicionar título aos plotes*
-**Adicionar nomes das UCs nos 3 primeiros gáficos (descompartilhar eixo x)** 
+*Identificar os plotes com subtítulos ex tentar adicionar título aos
+plotes* **Adicionar nomes das UCs nos 3 primeiros gáficos
+(descompartilhar eixo x)**
 
 ```{r, fig.height=20, fig.align='center'}
 # plotar o número de observações por UC
 plotar_n_obs_uc_interativo()
 ```
-
 
 #### **Quantas observações para cada espécie?**
 
@@ -481,7 +626,8 @@ n_obs_sp <- contar_n_obs_sp()
 gerar_tabdin_n_obs_sp()
 ```
 
-Esse gráfico pode melhorar. Compartilhar o eixo x? Adicionar título ao eixo x...
+Esse gráfico pode melhorar. Compartilhar o eixo x? Adicionar título ao
+eixo x...
 
 ```{r, fig.height=20}
 # plotar o o número de observações por UC
@@ -489,6 +635,7 @@ plotar_n_obs_sp_interativo()
 ```
 
 Tabela interativa para consulta do número de observações por espécie.
+
 ```{r}
 gerar_tabdin_n_obs_sp()
 ```
@@ -515,14 +662,12 @@ gerar_tabdin_n_obs_sp_uc()
 
 #### **Quantas unidades de conservação foram amostradas em cada ano?**
 
-Gerar função para visualizar número de UCs amostradas em cada ano.
-**Por agora não precisa** 
-Se der tempo incluir ao final.
+Gerar função para visualizar número de UCs amostradas em cada ano. **Por
+agora não precisa** Se der tempo incluir ao final.
 
 ```{r}
 
 ```
-
 
 ```{r, echo=FALSE}
 # gerar tabela com o número de unidades de conservação amostradas em cada ano
@@ -538,9 +683,8 @@ gerar_tabdin_n_uc_ano()
 
 #### **Quais unidades de conservação foram amostradas em um maior número de anos?**
 
-Gerar gráfico com o número de anos em que cada UC foi amostrada.
-**Por agora não precisa**
-Se sobrar tempo acrescentar ao final.
+Gerar gráfico com o número de anos em que cada UC foi amostrada. **Por
+agora não precisa** Se sobrar tempo acrescentar ao final.
 
 ```{r}
 
@@ -559,7 +703,6 @@ Gerar tabela dinamica.
 gerar_tabdin_n_ano_uc()
 ```
 
-
 #### **Quantas observações foram realizadas por UC em cada ano?**
 
 ```{r}
@@ -567,7 +710,9 @@ n_obs_uc_ano <- contar_n_obs_uc_ano()
 n_obs_uc_ano
 ```
 
-Tabela interativa para consultar quantas observações foram realizadas por ano em cada UC
+Tabela interativa para consultar quantas observações foram realizadas
+por ano em cada UC
+
 ```{r}
 gerar_tabdin_n_obs_uc_ano()
 ```
@@ -579,7 +724,9 @@ n_obs_sp_ano <- contar_n_obs_sp_ano()
 n_obs_sp_ano
 ```
 
-Tabela interativa para consultar quantas observações foram realizadas para cada espécie em cada ano
+Tabela interativa para consultar quantas observações foram realizadas
+para cada espécie em cada ano
+
 ```{r}
 gerar_tabdin_n_obs_sp_ano()
 ```
@@ -591,7 +738,8 @@ n_obs_sp_uc_ano <- contar_n_obs_sp_uc_ano()
 n_obs_sp_uc_ano
 ```
 
-Tabela interativa para consultar quantas observações foram realizadas para cada espécie em cada ano
+Tabela interativa para consultar quantas observações foram realizadas
+para cada espécie em cada ano
 
 ```{r}
 gerar_tabdin_n_obs_sp_uc_ano()
@@ -610,17 +758,23 @@ gerar_tabdin_n_obs_sp_uc_estacao_ano()
 
 #### **Avaliando número de réplicas (Estações Amostrais) por UC**
 
-#### **Selecionando melhores modelos de estudo considerando estratificação espacial/temporal – se há suficiência amostral (60-80 observações) por estrato**
+#### **Selecionando melhores modelos de estudo considerando estratificação espacial/temporal -- se há suficiência amostral (60-80 observações) por estrato**
 
-- Possíveis estratificações espaciais – EAs/UCs
+-   Possíveis estratificações espaciais -- EAs/UCs
 
-					    - UCs/Espécies
+    ```         
+                      - UCs/Espécies
+    ```
 
-	- Possíveis estratificações temporais – Espécie/UC/Ano 
+    -   Possíveis estratificações temporais -- Espécie/UC/Ano
 
 #### **Avaliando distância de truncamento**
 
-- Gráficos de distribuição das frequências de ocorrência x distância perpendicular. Arquivos gráfico-exploratorio1.Rmd e gráfico-exploratorio2.Rmd (eu não sei como você fez para incluir aquela linha vermelha com o valor de w no gráfico exploratório 2, mas ficou legal)
+-   Gráficos de distribuição das frequências de ocorrência x distância
+    perpendicular. Arquivos gráfico-exploratorio1.Rmd e
+    gráfico-exploratorio2.Rmd (eu não sei como você fez para incluir
+    aquela linha vermelha com o valor de w no gráfico exploratório 2,
+    mas ficou legal)
 
 #### **Distribuição de distâncias**
 
@@ -636,84 +790,102 @@ fig
 
 #### **Avaliando covariáveis**
 
-– As covariáveis devem ser pensadas de acordo com o grupo taxonômico. Espécies que formam grupos devem ter a covariável ‘size’. 
+-- As covariáveis devem ser pensadas de acordo com o grupo taxonômico.
+Espécies que formam grupos devem ter a covariável 'size'.
 
-As estratégias de estratificação podem ser substituídas por covariáveis também (estratos espaciais/ ano)
+As estratégias de estratificação podem ser substituídas por covariáveis
+também (estratos espaciais/ ano)
 
-Como covariável temporal, pode se pensar em usar, além do ano, a estação do ano (season), o horário do dia (para animais que variam a atividade). O horário do dia pode ser convertido em tempo após nascer do sol (como no exemplo). Mas para isso é necessário criar essa variável no dataset. E não é trivial porque precisa saber o horário de nascer do sol em cada dia/local para calcular.
+Como covariável temporal, pode se pensar em usar, além do ano, a estação
+do ano (season), o horário do dia (para animais que variam a atividade).
+O horário do dia pode ser convertido em tempo após nascer do sol (como
+no exemplo). Mas para isso é necessário criar essa variável no dataset.
+E não é trivial porque precisa saber o horário de nascer do sol em cada
+dia/local para calcular.
 
 **ATENÇÃO: gerar gráficos distância x covariável**
 
 Exemplo de Gráficos de Marques et al. 2007
 
-# **PARTE V – Ajustando os modelos**
+# **PARTE V -- Ajustando os modelos**
 
-Esse trabalho do Marque et al. 2007 é uma boa referência de como usar as abordagens CDS global, CDS estratificada e MCDS.
+Esse trabalho do Marque et al. 2007 é uma boa referência de como usar as
+abordagens CDS global, CDS estratificada e MCDS.
 
-Aqui, é possível testar alguns caminhos de modelos. A estratificação só faz sentido quando o volume de dados for grande. Ainda assim o uso de covariáveis pode substituir a estratificação. Pensar em como orientar o uso dessas abordagens
+Aqui, é possível testar alguns caminhos de modelos. A estratificação só
+faz sentido quando o volume de dados for grande. Ainda assim o uso de
+covariáveis pode substituir a estratificação. Pensar em como orientar o
+uso dessas abordagens
 
-## **Modelos pela abordagem CDS – dados globais**
+## **Modelos pela abordagem CDS -- dados globais**
 
-- função ds do Distance (argumentos básicos: truncation; key, adjustment, scale... estudar argumentos para ver se mais algum interessa)
+-   função ds do Distance (argumentos básicos: truncation; key,
+    adjustment, scale... estudar argumentos para ver se mais algum
+    interessa)
 
-## **Modelos pela abordagem CDS – dados estratificados**
+## **Modelos pela abordagem CDS -- dados estratificados**
 
-- Aqui precisa ver direitinho os cuidados que precisa ter para ajustar as funções nos dados estratificados. Acho que faz em blocos. Vai aplicando os mesmos parâmetros para todos os estratos a cada modelo.
+-   Aqui precisa ver direitinho os cuidados que precisa ter para ajustar
+    as funções nos dados estratificados. Acho que faz em blocos. Vai
+    aplicando os mesmos parâmetros para todos os estratos a cada modelo.
 
-- para cada estrato (espacial ou temporal) usar - função ds do Distance (argumentos básicos: truncation; key, adjustment, scale... estudar argumentos para ver se mais algum interessa)
+-   para cada estrato (espacial ou temporal) usar - função ds do
+    Distance (argumentos básicos: truncation; key, adjustment, scale...
+    estudar argumentos para ver se mais algum interessa)
 
-## **Modelos pela abordagem MCDS – dados globais**
+## **Modelos pela abordagem MCDS -- dados globais**
 
 Aqui não faz sentido estratificar
 
-- função ds do Distance (argumentos básicos: truncation; key, adjustment, scale... estudar argumentos para ver se mais algum interessa... para as covariáveis entra o argumento formula)
+-   função ds do Distance (argumentos básicos: truncation; key,
+    adjustment, scale... estudar argumentos para ver se mais algum
+    interessa... para as covariáveis entra o argumento formula)
 
 Dicas em Miller et al. 2019 sobre covariáveis (ver arquivo no driver).
 
-# **PARTE VI – Avaliando os modelos**
+# **PARTE VI -- Avaliando os modelos**
 
 ## **Ajuste dos modelos**
 
-- função gof_ds 
+-   função gof_ds
 
-– para gerar Q-Q plots e testes associados
+-- para gerar Q-Q plots e testes associados
 
 ## **Selecionando modelos (AIC)**
 
-– função summarize_ds_models
+-- função summarize_ds_models
 
 DICAS EXTRAS DE MILLER et al. 2019
 
-# **PARTE VII – PRODUTO FINAL**
+# **PARTE VII -- PRODUTO FINAL**
 
-- Como organizar
+-   Como organizar
 
-- Interatividade
+-   Interatividade
 
 **Criar expressões reativas**
 
-reactive()
-eventReactive()
+reactive() eventReactive()
 
-observe()
-observeEvent()
+observe() observeEvent()
 
-reactiveVal()
-reactiveValues()
+reactiveVal() reactiveValues()
 
 isolate()
 
+-   gerar o tal documento automatizado contendo todo esse fluxo mais os
+    resultados das análises;
 
-- gerar o tal documento automatizado contendo todo esse fluxo mais os resultados das análises;
+-   tentar transformar isso num dashboard/aplicativo único integrando
+    cada etapa dessa numa das abas do dashboard
 
-- tentar transformar isso num dashboard/aplicativo único integrando cada etapa dessa numa das abas do dashboard
-
-- Pacote targets seria últil?
+-   Pacote targets seria últil?
 
 # **Glossário**
 
 Descrever as variáveis (colunas), termos técnicos ao longo do texto...
 
- - `Effort` - extensão total percorrida em metros no conjunto de dados seleciodo.
- 
- - 
+-   `Effort` - extensão total percorrida em metros no conjunto de dados
+    seleciodo.
+
+-   
