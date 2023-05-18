@@ -282,7 +282,7 @@ Não é trivial para quem não está acostumado... usar runApp, knit... até mes
 # **PARTE II – Carregando os dados para o R**
 
 ## **Dados brutos**
-
+ 
 Não precisa se assustar com a infnidade de códigos no exemplo acima. Serviu apenas para ilustrar que construir essas funções facilita a execução e a reprodutibilidade das análise dos dados do Monitora. Para cada tarefa existe uma função cujo funcionamento não necessita de preenchimento dos argumentos (embora seja possível fornece-los). Por traz das cortinas, as funções executam as tarafas necessárias para se obter o resultado desejado. Por exemplo, o mesmo resultado pode ser obtido utilizando apenas duas funções: `carregar_dados_brutos_xlsx()`e `gerar_tabdin_dados_brutos()`. 
 
 ```{r}
@@ -356,7 +356,22 @@ gerar_tabdin_dados_selecionados_distanceR_cov()
 
 ## **Selecionando os melhores modelos de estudo de acordo com os dados**
 
-Critŕios:
+Alguns cuidados devem ser tomados na preparação dos dados antes de serem analisados. O primeiro deles é o cuidado taxonômico. Para os dados do Monitora recomenda-se o uso dos dados das espécies validadas para análise pelo ICMBio, conforme o modelo utilizado para este fluxo de trabalho. 
+
+Alguns problemas com os dados, que podem trazer efeitos indesejados sobre as análises, podem ser detectados durante a fase de exploração. Ao selecionar os dados que serão analisados, é importante observar os seguintes aspectos:
+
+**Suficência Amostral - número de ocorrências por espécie:** 
+
+Para que o método de análise por distância possa ser utilizado para estimativas baseadas em modelos, são recomendadas quantidades mínimas de registros de ocorrência e de transectos (Unidades Amostrais). Segundo BUCKLAND et. al. (2015), o número mínimo sugerido de animais ou grupos (ocorrências) é de 60 – 80 animais (ou grupos) quando a amostragem é feita pelo método dos transectos lineares. É possível utilizar números menores que estes para realizar as análises, porém deve-se ter o cuidado de verificar se as funções de detecção estão bem modeladas. 
+
+Para dados que serão estratificados (divididos em subconjuntos), estes números recomendados se aplicam a cada subconjunto. Isso ocorre porque as funções de detecção serão modeladas para cada estrato (p.ex.`Region.Label`), além da função de detecção para os dados globais. Um exemplo seria a análise dos dados, para uma mesma espécie, em diferentes UCs. Neste caso, o ideal seria ter a suficiência amostral mínima em cada UC para usar estratificação e estimar abundâncias e densidades em cada uma das UCs. 
+
+
+**Suficiência amostral - réplicas**
+
+o número mínimo de réplicas para os transectos deve ser de 10-20, o que deve aumentar para espécies cujas populações são distribuídas em manchas.
+
+Recomenda-se também que valores de distância perpendicular nunca sejam arredondados. Isso acaba levando a um efeito de “amontoar” as observações sobre os mesmos valores de distância, o que interfere nas estimativas dos modelos. Para espécies que podem apresentar resposta de deslocamento em relação ao observador, um dos efeitos indesejados nos dados é o deslocamento das maiores frequências de observações para as distâncias perpendiculares intermediárias. É recomendável, assim, uma exploração prévia dos dados para verificar a distribuição na frequência das observações em relação à distância (p. ex. Figura 2). O esperado é a diminuição na frequência com o aumento da distância em relação à trilha.
 
 - espécies com maior volume de dados total
 - maior volume de dados por UC
