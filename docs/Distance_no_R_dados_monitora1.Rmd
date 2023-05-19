@@ -1253,41 +1253,45 @@ inambu_mont_tumuc_hr$`Sem termo`$dht$individuals$D
 
 # Tetnativa de filtragem e seleção de dados para eliminar repetições
 
+Na primeira tentativa de ajuste do modelo distance para dados sem repetição, os dados da cutia *Dasyprocta croconota*, sem estratificação, para o Parna da Serra do Pardo, Esec da Terra do Meio e Resex Riozinho do Anfrísio. Em seguida, os dados da mesma espécie serão analisados para Resex Tapajós-Arapiuns estratificados por ano.
+
 ## *Dasyprocta croconota* na **Parna da Serra do Pardo**
 
-![Fonte: pinterest.com]()
+![Fonte: biolib.cz](https://www.biolib.cz/IMG/GAL/BIG/205849.jpg)
 
 ### Carregar dados
 
 ```{r}
-dasy_croc <- transformar_para_distanceR_covariaveis_sem_repeticao() |> 
-  filter(sp_name == "Dasyprocta croconota") |> 
+dasy_croc_serra_pardo <- transformar_para_distanceR_covariaveis_sem_repeticao() |>   filter(
+    Region.Label == "Parna da Serra do Pardo", 
+    sp_name == "Dasyprocta croconota"
+  ) |> 
   drop_na(distance)
 
-dasy_croc
+dasy_croc_serra_pardo
 ```
 
 ### Verificar o número de observações por data de amostragem
 
 ```{r}
-teste1 <- dasy_croc |> 
+teste1 <- dasy_croc_serra_pardo |> 
   group_by(Sample.Label, sampling_day, year, season) |> 
   count(sampling_day) |> 
   ungroup() |> 
-  arrange(sampling_day)
+  arrange(Sample.Label, sampling_day)
 
 teste1
 ```
 
 ## Verificar as datas com maior número de observações em cada ano
-
+tentar gerar uma nova coluna usando uma condicional que repita uma única data para datas que ocorrem dentro do intervalo amostral. depois basta manter as observações únicas usando distinct()
 ```{r}
-teste2 <- dasy_croc |> 
+teste2 <- dasy_croc_serra_pardo |> 
   group_by(Sample.Label, year, season) |> 
   count(sampling_day) |> 
-  summarize(n_max = max(n)) |> 
-  arrange(year) |> 
-  ungroup()
+  reframe(n_max = max(n)) |> 
+  ungroup() |> 
+  arrange(year)
 
 teste2
 ```
@@ -1296,36 +1300,12 @@ teste2
 
 ```{r}
 dados_para_filtrar_por_data_quase_sem_repeticao <- teste1 |> 
-  right_join(teste2, join_by(Sample.Label, year, season, n == n_max)) |> 
+  semi_join(
+    teste2, 
+    join_by(Sample.Label, year, season, n == n_max),
+  ) |> 
   arrange(sampling_day) |>
-  filter(!(sampling_day %in% as.Date(c("2015-01-03",
-                                       "2015-05-05",
-                                       "2015-10-09",
-                                       "2015-10-23",
-                                       "2016-02-21",
-                                       "2016-03-09",
-                                       "2016-03-10",
-                                       "2016-03-29",
-                                       "2016-03-31",
-                                       "2016-06-13",
-                                       "2016-06-24",
-                                       "2016-06-26",
-                                       "2016-06-28",
-                                       "2016-07-20",
-                                       "2016-11-04",
-                                       "2017-04-18",
-                                       "2017-06-06",
-                                       "2017-10-25",
-                                       "2018-06-07",
-                                       "2018-06-13",
-                                       "2018-06-12",
-                                       "2018-06-20",
-                                       "2018-07-10",
-                                       "2018-07-12",
-                                       "2018-07-13",
-                                       "2018-07-13",
-                                       "2018-07-14",
-                                       "2018-07-15"))))
+  distinct(sampling_day, year, season)
 
 dados_para_filtrar_por_data_quase_sem_repeticao
 ```
@@ -1335,37 +1315,37 @@ dados_para_filtrar_por_data_quase_sem_repeticao
 ```{r}
 filtro_datas_quase_sem_repeticao <- dados_para_filtrar_por_data_quase_sem_repeticao$sampling_day
   
-dasy_croc_quase_sem_repeticao <- dasy_croc |> 
+dasy_croc_serra_pardo_quase_sem_repeticao <- dasy_croc_serra_pardo |> 
   filter(sampling_day %in% filtro_datas_quase_sem_repeticao,
          Region.Label == "Parna da Serra do Pardo")
 
-dasy_croc_quase_sem_repeticao |> 
-  plotar_distribuicao_distancia_interativo()
+dasy_croc_serra_pardo_quase_sem_repeticao |> 
+  plotar_distribuicao_distancia_interativo(largura_caixa = 1)
 ```
 
 ### Ajustando modelo distance com função de detecção Half-Normal e distancia de truncamento 11
 
 ```{r}
-dasy_croc_quase_sem_repeticao_hn <- dasy_croc_quase_sem_repeticao |> 
+dasy_croc_serra_pardo_quase_sem_repeticao_hn <- dasy_croc_serra_pardo_quase_sem_repeticao |> 
   ajuste_modelos_distance_hn(truncamento = 11)
 ```
 
 ### Ajustando modelo distance com função de detecção Hazard-rate e distancia de truncamento 11
 
 ```{r}
-dasy_croc_quase_sem_repeticao_hr <- dasy_croc_quase_sem_repeticao |> 
+dasy_croc_serra_pardo_quase_sem_repeticao_hr <- dasy_croc_serra_pardo_quase_sem_repeticao |> 
   ajuste_modelos_distance_hr(truncamento = 11)
 ```
 
 ### Plot dos modelos
 
 ```{r}
-dasy_croc_quase_sem_repeticao_hn |> 
+dasy_croc_serra_pardo_quase_sem_repeticao_hn |> 
   purrr::map(\(.x) plot(.x)) 
 ```
 
 ```{r}
-dasy_croc_quase_sem_repeticao_hr |> 
+dasy_croc_serra_pardo_quase_sem_repeticao_hr |> 
   purrr::map(\(.x) plot(.x)) 
 ```
 
@@ -1373,24 +1353,24 @@ dasy_croc_quase_sem_repeticao_hr |>
 
 ```{r}
 summarize_ds_models(
-  dasy_croc_quase_sem_repeticao_hn$`Sem termo`,
-  dasy_croc_quase_sem_repeticao_hn$Cosseno,
-  dasy_croc_quase_sem_repeticao_hn$`Hermite polinomial`,
-  dasy_croc_quase_sem_repeticao_hr$`Sem termo`,
-  dasy_croc_quase_sem_repeticao_hr$Cosseno,
-  dasy_croc_quase_sem_repeticao_hr$`Polinomial simples`
+  dasy_croc_serra_pardo_quase_sem_repeticao_hn$`Sem termo`,
+  dasy_croc_serra_pardo_quase_sem_repeticao_hn$Cosseno,
+  dasy_croc_serra_pardo_quase_sem_repeticao_hn$`Hermite polinomial`,
+  dasy_croc_serra_pardo_quase_sem_repeticao_hr$`Sem termo`,
+  dasy_croc_serra_pardo_quase_sem_repeticao_hr$Cosseno,
+  dasy_croc_serra_pardo_quase_sem_repeticao_hr$`Polinomial simples`
 )
 ```
 
 ### Teste de bondade de ajuste
 
 ```{r}
-dasy_croc_quase_sem_repeticao_hn |> 
+dasy_croc_serra_pardo_quase_sem_repeticao_hn |> 
   purrr::map(\(.x) gof_ds(model = .x))
 ```
 
 ```{r}
-dasy_croc_quase_sem_repeticao_hr |> 
+dasy_croc_serra_pardo_quase_sem_repeticao_hr |> 
   purrr::map(\(.x) gof_ds(model = .x))
 ```
 
@@ -1398,33 +1378,491 @@ dasy_croc_quase_sem_repeticao_hr |>
 
 ```{r}
 # área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
-dasy_croc_quase_sem_repeticao_hn$`Sem termo`$dht$individuals$summary[1:9]
+dasy_croc_serra_pardo_quase_sem_repeticao_hn$Cosseno$dht$individuals$summary[1:9]
 ```
 
 ```{r}
 # área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
-dasy_croc_quase_sem_repeticao_hn$`Sem termo`$dht$individuals$Nhat.by.sample[1:8]
+dasy_croc_serra_pardo_quase_sem_repeticao_hn$Cosseno$dht$individuals$Nhat.by.sample[1:8]
 ```
 
 ```{r}
-# total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
-dasy_croc_quase_sem_repeticao_hn$`Sem termo`$dht$individuals$D
+# total, densidade estimada, erro padrão da densidade estimada, coeficiente de variação da densidade estimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
+dasy_croc_serra_pardo_quase_sem_repeticao_hn$Cosseno$dht$individuals$D
 
 ```
 
 ```{r}
 # área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
-dasy_croc_quase_sem_repeticao_hr$`Sem termo`$dht$individuals$summary[1:9]
+dasy_croc_serra_pardo_quase_sem_repeticao_hr$`Polinomial simples`$dht$individuals$summary[1:9]
 ```
 
 ```{r}
 # área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
-dasy_croc_quase_sem_repeticao_hr$`Sem termo`$dht$individuals$Nhat.by.sample[1:8]
+dasy_croc_serra_pardo_quase_sem_repeticao_hr$`Polinomial simples`$dht$individuals$Nhat.by.sample[1:8]
 ```
 
 ```{r}
 # total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
-dasy_croc_quase_sem_repeticao_hr$`Sem termo`$dht$individuals$D
+dasy_croc_serra_pardo_quase_sem_repeticao_hr$`Polinomial simples`$dht$individuals$D
 
 ```
 
+## *Dasyprocta croconota* na **Esec da Terra do Meio**
+
+![Fonte: biolib.cz](https://www.biolib.cz/IMG/GAL/BIG/205849.jpg)
+
+### Carregar dados
+
+```{r}
+dasy_croc_terra_meio <- transformar_para_distanceR_covariaveis_sem_repeticao() |>   filter(
+    Region.Label == "Esec da Terra do Meio", 
+    sp_name == "Dasyprocta croconota"
+  ) |> 
+  drop_na(distance)
+
+dasy_croc_terra_meio
+```
+
+### Verificar o número de observações por data de amostragem
+
+```{r}
+teste1 <- dasy_croc_terra_meio |> 
+  group_by(Sample.Label, sampling_day, year, season) |> 
+  count(sampling_day) |> 
+  ungroup() |> 
+  arrange(Sample.Label, sampling_day)
+
+teste1
+```
+
+## Verificar as datas com maior número de observações em cada ano
+tentar gerar uma nova coluna usando uma condicional que repita uma única data para datas que ocorrem dentro do intervalo amostral. depois basta manter as observações únicas usando distinct()
+```{r}
+teste2 <- dasy_croc_terra_meio |> 
+  group_by(Sample.Label, year, season) |> 
+  count(sampling_day) |> 
+  reframe(n_max = max(n)) |> 
+  ungroup() |> 
+  arrange(year)
+
+teste2
+```
+
+## Juntar as duas data.frames para obter as datas com maior número de observação em cada ano e excluir datas de amostragem repitidas na mesma estação e ano
+
+```{r}
+dados_para_filtrar_por_data_quase_sem_repeticao <- teste1 |> 
+  semi_join(
+    teste2, 
+    join_by(Sample.Label, year, season, n == n_max),
+  ) |> 
+  arrange(sampling_day) |>
+  distinct(sampling_day, year, season)
+
+dados_para_filtrar_por_data_quase_sem_repeticao
+```
+
+### Distribuição das distâncias perpendiculares
+
+```{r}
+filtro_datas_quase_sem_repeticao <- dados_para_filtrar_por_data_quase_sem_repeticao$sampling_day
+  
+dasy_croc_terra_meio_quase_sem_repeticao <- dasy_croc_terra_meio |> 
+  filter(sampling_day %in% filtro_datas_quase_sem_repeticao,
+         Region.Label == "Esec da Terra do Meio")
+
+dasy_croc_terra_meio_quase_sem_repeticao |> 
+  plotar_distribuicao_distancia_interativo(largura_caixa = 1)
+```
+
+### Ajustando modelo distance com função de detecção Half-Normal e distancia de truncamento 10
+
+```{r}
+dasy_croc_terra_meio_quase_sem_repeticao_hn <- dasy_croc_terra_meio_quase_sem_repeticao |> 
+  ajuste_modelos_distance_hn(truncamento = 10)
+```
+
+### Ajustando modelo distance com função de detecção Hazard-rate e distancia de truncamento 10
+
+```{r}
+dasy_croc_terra_meio_quase_sem_repeticao_hr <- dasy_croc_terra_meio_quase_sem_repeticao |> 
+  ajuste_modelos_distance_hr(truncamento = 10)
+```
+
+### Plot dos modelos
+
+```{r}
+dasy_croc_terra_meio_quase_sem_repeticao_hn |> 
+  purrr::map(\(.x) plot(.x)) 
+```
+
+```{r}
+dasy_croc_terra_meio_quase_sem_repeticao_hr |> 
+  purrr::map(\(.x) plot(.x)) 
+```
+
+### Seleção de modelos
+
+```{r}
+summarize_ds_models(
+  dasy_croc_terra_meio_quase_sem_repeticao_hn$`Sem termo`,
+  dasy_croc_terra_meio_quase_sem_repeticao_hn$Cosseno,
+  dasy_croc_terra_meio_quase_sem_repeticao_hn$`Hermite polinomial`,
+  dasy_croc_terra_meio_quase_sem_repeticao_hr$`Sem termo`,
+  dasy_croc_terra_meio_quase_sem_repeticao_hr$Cosseno,
+  dasy_croc_terra_meio_quase_sem_repeticao_hr$`Polinomial simples`
+)
+```
+
+### Teste de bondade de ajuste
+
+```{r}
+dasy_croc_terra_meio_quase_sem_repeticao_hn |> 
+  purrr::map(\(.x) gof_ds(model = .x))
+```
+
+```{r}
+dasy_croc_terra_meio_quase_sem_repeticao_hr |> 
+  purrr::map(\(.x) gof_ds(model = .x))
+```
+
+### Estimando a abundancia
+
+```{r}
+# área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
+dasy_croc_terra_meio_quase_sem_repeticao_hn$`Sem termo`$dht$individuals$summary[1:9]
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
+dasy_croc_terra_meio_quase_sem_repeticao_hn$Cosseno$dht$individuals$Nhat.by.sample[1:8]
+```
+
+```{r}
+# total, densidade estimada, erro padrão da densidade estimada, coeficiente de variação da densidade estimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
+dasy_croc_terra_meio_quase_sem_repeticao_hn$Cosseno$dht$individuals$D
+
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
+dasy_croc_terra_meio_quase_sem_repeticao_hr$`Sem termo`$dht$individuals$summary[1:9]
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
+dasy_croc_terra_meio_quase_sem_repeticao_hr$`Sem termo`$dht$individuals$Nhat.by.sample[1:8]
+```
+
+```{r}
+# total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
+dasy_croc_terra_meio_quase_sem_repeticao_hr$`Sem termo`$dht$individuals$D
+
+```
+
+## *Dasyprocta croconota* na **Resex Riozinho do Anfrísio**
+
+![Fonte: biolib.cz](https://www.biolib.cz/IMG/GAL/BIG/205849.jpg)
+
+### Carregar dados
+
+```{r}
+dasy_croc_rio_anfr <- transformar_para_distanceR_covariaveis_sem_repeticao() |>   filter(
+    Region.Label == "Resex Riozinho do Anfrísio", 
+    sp_name == "Dasyprocta croconota"
+  ) |> 
+  drop_na(distance)
+
+dasy_croc_rio_anfr
+```
+
+### Verificar o número de observações por data de amostragem
+
+```{r}
+teste1 <- dasy_croc_rio_anfr |> 
+  group_by(Sample.Label, sampling_day, year, season) |> 
+  count(sampling_day) |> 
+  ungroup() |> 
+  arrange(Sample.Label, sampling_day)
+
+teste1
+```
+
+## Verificar as datas com maior número de observações em cada ano
+tentar gerar uma nova coluna usando uma condicional que repita uma única data para datas que ocorrem dentro do intervalo amostral. depois basta manter as observações únicas usando distinct()
+```{r}
+teste2 <- dasy_croc_rio_anfr |> 
+  group_by(Sample.Label, year, season) |> 
+  count(sampling_day) |> 
+  reframe(n_max = max(n)) |> 
+  ungroup() |> 
+  arrange(year)
+
+teste2
+```
+
+## Juntar as duas data.frames para obter as datas com maior número de observação em cada ano e excluir datas de amostragem repitidas na mesma estação e ano
+
+```{r}
+dados_para_filtrar_por_data_quase_sem_repeticao <- teste1 |> 
+  semi_join(
+    teste2, 
+    join_by(Sample.Label, year, season, n == n_max),
+  ) |> 
+  arrange(sampling_day) |>
+  distinct(sampling_day, year, season)
+
+dados_para_filtrar_por_data_quase_sem_repeticao
+```
+
+### Distribuição das distâncias perpendiculares
+
+```{r}
+filtro_datas_quase_sem_repeticao <- dados_para_filtrar_por_data_quase_sem_repeticao$sampling_day
+  
+dasy_croc_rio_anfr_quase_sem_repeticao <- dasy_croc_rio_anfr |> 
+  filter(sampling_day %in% filtro_datas_quase_sem_repeticao,
+         Region.Label == "Resex Riozinho do Anfrísio")
+
+dasy_croc_rio_anfr_quase_sem_repeticao |> 
+  plotar_distribuicao_distancia_interativo(largura_caixa = 1)
+```
+
+### Ajustando modelo distance com função de detecção Half-Normal e distancia de truncamento 11
+
+```{r}
+dasy_croc_rio_anfr_quase_sem_repeticao_hn <- dasy_croc_rio_anfr_quase_sem_repeticao |> 
+  ajuste_modelos_distance_hn(truncamento = 11)
+```
+
+### Ajustando modelo distance com função de detecção Hazard-rate e distancia de truncamento 11
+
+```{r}
+dasy_croc_rio_anfr_quase_sem_repeticao_hr <- dasy_croc_rio_anfr_quase_sem_repeticao |> 
+  ajuste_modelos_distance_hr(truncamento = 11)
+```
+
+### Plot dos modelos
+
+```{r}
+dasy_croc_rio_anfr_quase_sem_repeticao_hn |> 
+  purrr::map(\(.x) plot(.x)) 
+```
+
+```{r}
+dasy_croc_rio_anfr_quase_sem_repeticao_hr |> 
+  purrr::map(\(.x) plot(.x)) 
+```
+
+### Seleção de modelos
+
+```{r}
+summarize_ds_models(
+  dasy_croc_rio_anfr_quase_sem_repeticao_hn$`Sem termo`,
+  dasy_croc_rio_anfr_quase_sem_repeticao_hn$Cosseno,
+  dasy_croc_rio_anfr_quase_sem_repeticao_hn$`Hermite polinomial`,
+  dasy_croc_rio_anfr_quase_sem_repeticao_hr$`Sem termo`,
+  dasy_croc_rio_anfr_quase_sem_repeticao_hr$Cosseno,
+  dasy_croc_rio_anfr_quase_sem_repeticao_hr$`Polinomial simples`
+)
+```
+
+### Teste de bondade de ajuste
+
+```{r}
+dasy_croc_rio_anfr_quase_sem_repeticao_hn |> 
+  purrr::map(\(.x) gof_ds(model = .x))
+```
+
+```{r}
+dasy_croc_rio_anfr_quase_sem_repeticao_hr |> 
+  purrr::map(\(.x) gof_ds(model = .x))
+```
+
+### Estimando a abundancia
+
+```{r}
+# área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
+dasy_croc_rio_anfr_quase_sem_repeticao_hn$`Sem termo`$dht$individuals$summary[1:9]
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
+dasy_croc_rio_anfr_quase_sem_repeticao_hn$`Sem termo`$dht$individuals$Nhat.by.sample[1:8]
+```
+
+```{r}
+# total, densidade estimada, erro padrão da densidade estimada, coeficiente de variação da densidade estimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
+dasy_croc_rio_anfr_quase_sem_repeticao_hn$`Sem termo`$dht$individuals$D
+
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
+dasy_croc_rio_anfr_quase_sem_repeticao_hr$`Sem termo`$dht$individuals$summary[1:9]
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
+dasy_croc_rio_anfr_quase_sem_repeticao_hr$`Sem termo`$dht$individuals$Nhat.by.sample[1:8]
+```
+
+```{r}
+# total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
+dasy_croc_rio_anfr_quase_sem_repeticao_hr$`Sem termo`$dht$individuals$D
+
+```
+
+## *Dasyprocta croconota* na **Resex Tapajós Arapiuns** - estratificado por ano
+
+![Fonte: biolib.cz](https://www.biolib.cz/IMG/GAL/BIG/205849.jpg)
+
+### Carregar dados
+
+```{r}
+dasy_croc_tap_arap <- transformar_para_distanceR_covariaveis_sem_repeticao() |>   filter(
+    Region.Label == "Resex Tapajós Arapiuns", 
+    sp_name == "Dasyprocta croconota"
+  ) |> 
+  drop_na(distance)
+
+dasy_croc_tap_arap
+```
+
+### Verificar o número de observações por data de amostragem
+
+```{r}
+teste1 <- dasy_croc_tap_arap |> 
+  group_by(Sample.Label, sampling_day, year, season) |> 
+  count(sampling_day) |> 
+  ungroup() |> 
+  arrange(Sample.Label, sampling_day)
+
+teste1
+```
+
+## Verificar as datas com maior número de observações em cada ano
+tentar gerar uma nova coluna usando uma condicional que repita uma única data para datas que ocorrem dentro do intervalo amostral. depois basta manter as observações únicas usando distinct()
+```{r}
+teste2 <- dasy_croc_tap_arap |> 
+  group_by(Sample.Label, year, season) |> 
+  count(sampling_day) |> 
+  reframe(n_max = max(n)) |> 
+  ungroup() |> 
+  arrange(year)
+
+teste2
+```
+
+## Juntar as duas data.frames para obter as datas com maior número de observação em cada ano e excluir datas de amostragem repitidas na mesma estação e ano
+
+```{r}
+dados_para_filtrar_por_data_quase_sem_repeticao <- teste1 |> 
+  semi_join(
+    teste2, 
+    join_by(Sample.Label, year, season, n == n_max),
+  ) |> 
+  arrange(sampling_day) |>
+  distinct(sampling_day, year, season)
+
+dados_para_filtrar_por_data_quase_sem_repeticao
+```
+
+### Distribuição das distâncias perpendiculares
+
+```{r}
+filtro_datas_quase_sem_repeticao <- dados_para_filtrar_por_data_quase_sem_repeticao$sampling_day
+  
+dasy_croc_tap_arap_quase_sem_repeticao <- dasy_croc_tap_arap |> 
+  filter(sampling_day %in% filtro_datas_quase_sem_repeticao,
+         Region.Label == "Resex Tapajós Arapiuns")
+
+dasy_croc_tap_arap_quase_sem_repeticao |> 
+  plotar_distribuicao_distancia_interativo(largura_caixa = 1)
+```
+
+### Ajustando modelo distance com função de detecção Half-Normal e distancia de truncamento 11
+
+```{r}
+dasy_croc_tap_arap_quase_sem_repeticao_hn <- dasy_croc_tap_arap_quase_sem_repeticao |> 
+  ajuste_modelos_distance_hn(truncamento = 11)
+```
+
+### Ajustando modelo distance com função de detecção Hazard-rate e distancia de truncamento 11
+
+```{r}
+dasy_croc_tap_arap_quase_sem_repeticao_hr <- dasy_croc_tap_arap_quase_sem_repeticao |> 
+  ajuste_modelos_distance_hr(truncamento = 11)
+```
+
+### Plot dos modelos
+
+```{r}
+dasy_croc_tap_arap_quase_sem_repeticao_hn |> 
+  purrr::map(\(.x) plot(.x)) 
+```
+
+```{r}
+dasy_croc_tap_arap_quase_sem_repeticao_hr |> 
+  purrr::map(\(.x) plot(.x)) 
+```
+
+### Seleção de modelos
+
+```{r}
+summarize_ds_models(
+  dasy_croc_tap_arap_quase_sem_repeticao_hn$`Sem termo`,
+  dasy_croc_tap_arap_quase_sem_repeticao_hn$Cosseno,
+  dasy_croc_tap_arap_quase_sem_repeticao_hn$`Hermite polinomial`,
+  dasy_croc_tap_arap_quase_sem_repeticao_hr$`Sem termo`,
+  dasy_croc_tap_arap_quase_sem_repeticao_hr$Cosseno,
+  dasy_croc_tap_arap_quase_sem_repeticao_hr$`Polinomial simples`
+)
+```
+
+### Teste de bondade de ajuste
+
+```{r}
+dasy_croc_tap_arap_quase_sem_repeticao_hn |> 
+  purrr::map(\(.x) gof_ds(model = .x))
+```
+
+```{r}
+dasy_croc_tap_arap_quase_sem_repeticao_hr |> 
+  purrr::map(\(.x) gof_ds(model = .x))
+```
+
+### Estimando a abundancia
+
+```{r}
+# área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
+dasy_croc_tap_arap_quase_sem_repeticao_hn$`Sem termo`$dht$individuals$summary[1:9]
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
+dasy_croc_tap_arap_quase_sem_repeticao_hn$`Sem termo`$dht$individuals$Nhat.by.sample[1:8]
+```
+
+```{r}
+# total, densidade estimada, erro padrão da densidade estimada, coeficiente de variação da densidade estimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
+dasy_croc_tap_arap_quase_sem_repeticao_hn$`Sem termo`$dht$individuals$D
+
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
+dasy_croc_tap_arap_quase_sem_repeticao_hr$`Sem termo`$dht$individuals$summary[1:9]
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
+dasy_croc_tap_arap_quase_sem_repeticao_hr$`Sem termo`$dht$individuals$Nhat.by.sample[1:8]
+```
+
+```{r}
+# total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
+dasy_croc_tap_arap_quase_sem_repeticao_hr$`Sem termo`$dht$individuals$D
+
+```
