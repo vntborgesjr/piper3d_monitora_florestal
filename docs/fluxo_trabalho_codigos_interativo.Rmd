@@ -536,20 +536,20 @@ Florestal. Acreditamos que existem dois fatores que podem estar causando
 esse acúmulo de dados em zero ou próximo a ele. Um deles seria um viés
 para avistamento de animais na trilha em ambientes de floresta. As
 trilhas podem atrair animais, e também oferecem melhor visibilidade em
-relação à floresta, especialmente se o sub-bosque for denso . O outro,
-de menor efeito, seria um possível arredondamento nas distâncias
-próximas a zero.
+relação à floresta, especialmente se o sub-bosque for denso . O outro
+fator seria um possível arredondamento nas distâncias próximas a zero,
+pode gerar um "amontoamento" nos dados (*heaping*). Recomenda-se que
+valores de distância perpendicular nunca sejam arredondados.
 
-Recomenda-se também que valores de distância perpendicular nunca sejam
-arredondados. Isso acaba levando a um efeito de "amontoar" as
-observações sobre os mesmos valores de distância, o que interfere nas
-estimativas dos modelos. Para espécies que podem apresentar resposta de
-deslocamento em relação ao observador, um dos efeitos indesejados nos
-dados é o deslocamento das maiores frequências de observações para as
-distâncias perpendiculares intermediárias. É recomendável, assim, uma
-exploração prévia dos dados para verificar a distribuição na frequência
-das observações em relação à distância (p. ex. Figura 2). O esperado é a
-diminuição na frequência com o aumento da distância em relação à trilha.
+*Resposta evasiva das espécies em relação ao observador*
+
+Para espécies que podem apresentar resposta de deslocamento em relação
+ao observador, um dos efeitos indesejados nos dados é o deslocamento das
+maiores frequências de observações para as distâncias perpendiculares
+intermediárias.
+
+**parei por aqui... continua... ver melhor a estratégia de agrupar os
+dados**
 
 espécies com maior volume de dados total
 
