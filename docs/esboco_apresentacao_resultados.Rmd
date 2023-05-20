@@ -1,0 +1,15 @@
+---
+title: "Estrutura dos Resultados"
+output: html_document
+date: "2023-05-20"
+---
+
+# Criterios para seleção - numero de ocorrencias/UC e Distribuicao dos dados
+
+## Especies com maior numero de ocorrencias/UC
+
+Possibilitam testar, posteriormente, estratificações nos dados, preservando um número de ocorrências satisfatório dentro dos estratos.
+
+### Dasyprocta croconota - Resex Tapajós Arapiuns
+
+#### Testando distância de truncagem w

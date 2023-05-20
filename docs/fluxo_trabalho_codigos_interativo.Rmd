@@ -1,16 +1,22 @@
 ---
-title: "Fluxo de trabalho: de producao dos codigos dos dados de Amostragem por Distancia - Programa Monitora ICMBio/MMA"
-date: "Criado em 31 de março de 2023, atualizado em `r format(Sys.time(), '%d de %B de %Y')`"
+title: "Fluxo de trabalho: de producao dos codigos dos dados de Amostragem por Distancia
+  - Programa Monitora ICMBio/MMA"
 author: "Luciana Fusinatto \n Vitor Borges-Júnior"
-output: 
+date: Criado em 31 de março de 2023, atualizado em `r format(Sys.time(), '%d de %B
+  de %Y')`
+output:
+  html_document:
+    toc: yes
+    toc_depth: '5'
+    df_print: paged
   html_notebook:
-    toc: true
+    toc: yes
     toc_depth: 5
-    toc_float: false
-    number_section: true
+    toc_float: no
+    number_section: yes
     code_folding: show
-editor_options: 
-  markdown: 
+editor_options:
+  markdown:
     wrap: 72
 ---
 
