@@ -6,15 +6,6 @@ output: html_notebook
 Retirado do artigo Miller et al. (2019). Distance sampling in R. Journal of Statistical Sofware 89(1)
 
 ```{r setup}
-# instalar pacotes necessários
-#install.packages("Distance")
-
-# instalar pacotes adicionais
-#install.packages("mrds")
-#install.packages("dsm")
-#install.packages("mads")
-#install.packages("dsims")
-
 # carregar pacotes 
 library(Distance)
 library(dplyr)
@@ -37,54 +28,6 @@ source(
     "/R/minhas_funcoes.R"
   )
 )
-
-# carregar dados
-cutia_tap_arap <- transformar_para_distanceR_covariaveis() |> 
-  filter(
-    Region.Label == "Resex Tapajos-Arapiuns",
-    sp_name == "Dasyprocta croconota"
-  ) |> 
-  drop_na(distance)
-  
-# readr::write_excel_csv(
-#   cutia_tap_arap,
-#   paste0(
-#     here::here(),
-#     "/data/cutia_tap_arap.csv"
-#   ),
-# )
-
-cutia_tap_arap <- cutia_tap_arap |> 
-  select(
-    Region.Label,
-    Area,
-    Sample.Label,
-    Effort,
-    distance
-  ) 
-
-cutia_tap_arap |> 
-  DT::datatable(filter = "top")
-```
-
-```{r}
-dados_completos |> 
-  group_by(
-    uc_name,
-    ea_name
-  ) |> 
-  filter(day_effort == max(day_effort))  |> 
-  drop_na(distance) |> 
-  ungroup()
-```
-
-```{r}
-dados_completos |> 
-  filter(
-    uc_name == "Resex Tapajos-Arapiuns",
-    sp_name == "Dasyprocta croconota"
-  ) |> 
-  datatable(filter = list(position = "top"))
 ```
 
 # Formatação do conjunto de dados
@@ -128,6 +71,22 @@ Transectos que foram amostrados, mas que não tiveram observações (n = 0) deve
 ```
 
 Jogar a imputacao de `NA`s pra dentro da funcao carregar dados completos.
+
+# Primeira espécie para dados com repetição
+
+## *Dasyprocta croconota* na **Resex Tapajós-Arapiuns**
+
+### Carregar dados
+
+```{r}
+# carregar dados
+cutia_tap_arap <- transformar_para_distanceR_covariaveis() |> 
+  filter(
+    Region.Label == "Resex Tapajos-Arapiuns",
+    sp_name == "Dasyprocta croconota"
+  )
+
+```
 
 ## Determinando a distância para truncar os dados
 
@@ -1262,63 +1221,18 @@ Na primeira tentativa de ajuste do modelo distance para dados sem repetição, o
 ### Carregar dados
 
 ```{r}
-dasy_croc_serra_pardo <- transformar_para_distanceR_covariaveis_sem_repeticao() |>   filter(
-    Region.Label == "Parna da Serra do Pardo", 
-    sp_name == "Dasyprocta croconota"
-  ) |> 
-  drop_na(distance)
+dasy_croc_serra_pardo_quase_sem_repeticao <- transforma_para_dsitanceR_quase_sem_repeticao_filtra_uc_sp(
+  dados = dados_selecionados,
+  nome_uc = "Parna da Serra do Pardo",
+  nome_sp = "Dasyprocta croconota"
+)
 
-dasy_croc_serra_pardo
-```
-
-### Verificar o número de observações por data de amostragem
-
-```{r}
-teste1 <- dasy_croc_serra_pardo |> 
-  group_by(Sample.Label, sampling_day, year, season) |> 
-  count(sampling_day) |> 
-  ungroup() |> 
-  arrange(Sample.Label, sampling_day)
-
-teste1
-```
-
-## Verificar as datas com maior número de observações em cada ano
-tentar gerar uma nova coluna usando uma condicional que repita uma única data para datas que ocorrem dentro do intervalo amostral. depois basta manter as observações únicas usando distinct()
-```{r}
-teste2 <- dasy_croc_serra_pardo |> 
-  group_by(Sample.Label, year, season) |> 
-  count(sampling_day) |> 
-  reframe(n_max = max(n)) |> 
-  ungroup() |> 
-  arrange(year)
-
-teste2
-```
-
-## Juntar as duas data.frames para obter as datas com maior número de observação em cada ano e excluir datas de amostragem repitidas na mesma estação e ano
-
-```{r}
-dados_para_filtrar_por_data_quase_sem_repeticao <- teste1 |> 
-  semi_join(
-    teste2, 
-    join_by(Sample.Label, year, season, n == n_max),
-  ) |> 
-  arrange(sampling_day) |>
-  distinct(sampling_day, year, season)
-
-dados_para_filtrar_por_data_quase_sem_repeticao
+dasy_croc_serra_pardo_quase_sem_repeticao
 ```
 
 ### Distribuição das distâncias perpendiculares
 
 ```{r}
-filtro_datas_quase_sem_repeticao <- dados_para_filtrar_por_data_quase_sem_repeticao$sampling_day
-  
-dasy_croc_serra_pardo_quase_sem_repeticao <- dasy_croc_serra_pardo |> 
-  filter(sampling_day %in% filtro_datas_quase_sem_repeticao,
-         Region.Label == "Parna da Serra do Pardo")
-
 dasy_croc_serra_pardo_quase_sem_repeticao |> 
   plotar_distribuicao_distancia_interativo(largura_caixa = 1)
 ```
@@ -1415,63 +1329,18 @@ dasy_croc_serra_pardo_quase_sem_repeticao_hr$`Polinomial simples`$dht$individual
 ### Carregar dados
 
 ```{r}
-dasy_croc_terra_meio <- transformar_para_distanceR_covariaveis_sem_repeticao() |>   filter(
-    Region.Label == "Esec da Terra do Meio", 
-    sp_name == "Dasyprocta croconota"
-  ) |> 
-  drop_na(distance)
+dasy_croc_terra_meio_quase_sem_repeticao <- transforma_para_dsitanceR_quase_sem_repeticao_filtra_uc_sp(
+  dados = dados_selecionados,
+  nome_uc = "Esec da Terra do Meio",
+  nome_sp = "Dasyprocta croconota"
+)
 
-dasy_croc_terra_meio
-```
-
-### Verificar o número de observações por data de amostragem
-
-```{r}
-teste1 <- dasy_croc_terra_meio |> 
-  group_by(Sample.Label, sampling_day, year, season) |> 
-  count(sampling_day) |> 
-  ungroup() |> 
-  arrange(Sample.Label, sampling_day)
-
-teste1
-```
-
-## Verificar as datas com maior número de observações em cada ano
-tentar gerar uma nova coluna usando uma condicional que repita uma única data para datas que ocorrem dentro do intervalo amostral. depois basta manter as observações únicas usando distinct()
-```{r}
-teste2 <- dasy_croc_terra_meio |> 
-  group_by(Sample.Label, year, season) |> 
-  count(sampling_day) |> 
-  reframe(n_max = max(n)) |> 
-  ungroup() |> 
-  arrange(year)
-
-teste2
-```
-
-## Juntar as duas data.frames para obter as datas com maior número de observação em cada ano e excluir datas de amostragem repitidas na mesma estação e ano
-
-```{r}
-dados_para_filtrar_por_data_quase_sem_repeticao <- teste1 |> 
-  semi_join(
-    teste2, 
-    join_by(Sample.Label, year, season, n == n_max),
-  ) |> 
-  arrange(sampling_day) |>
-  distinct(sampling_day, year, season)
-
-dados_para_filtrar_por_data_quase_sem_repeticao
+dasy_croc_terra_meio_quase_sem_repeticao
 ```
 
 ### Distribuição das distâncias perpendiculares
 
 ```{r}
-filtro_datas_quase_sem_repeticao <- dados_para_filtrar_por_data_quase_sem_repeticao$sampling_day
-  
-dasy_croc_terra_meio_quase_sem_repeticao <- dasy_croc_terra_meio |> 
-  filter(sampling_day %in% filtro_datas_quase_sem_repeticao,
-         Region.Label == "Esec da Terra do Meio")
-
 dasy_croc_terra_meio_quase_sem_repeticao |> 
   plotar_distribuicao_distancia_interativo(largura_caixa = 1)
 ```
@@ -1568,63 +1437,18 @@ dasy_croc_terra_meio_quase_sem_repeticao_hr$`Sem termo`$dht$individuals$D
 ### Carregar dados
 
 ```{r}
-dasy_croc_rio_anfr <- transformar_para_distanceR_covariaveis_sem_repeticao() |>   filter(
-    Region.Label == "Resex Riozinho do Anfrísio", 
-    sp_name == "Dasyprocta croconota"
-  ) |> 
-  drop_na(distance)
+dasy_croc_rio_anfr_quase_sem_repeticao <- transforma_para_dsitanceR_quase_sem_repeticao_filtra_uc_sp(
+  dados = dados_selecionados,
+  nome_uc = "Resex Riozinho do Anfrísio", 
+  nome_sp = "Dasyprocta croconota"
+  ) 
 
-dasy_croc_rio_anfr
-```
-
-### Verificar o número de observações por data de amostragem
-
-```{r}
-teste1 <- dasy_croc_rio_anfr |> 
-  group_by(Sample.Label, sampling_day, year, season) |> 
-  count(sampling_day) |> 
-  ungroup() |> 
-  arrange(Sample.Label, sampling_day)
-
-teste1
-```
-
-## Verificar as datas com maior número de observações em cada ano
-tentar gerar uma nova coluna usando uma condicional que repita uma única data para datas que ocorrem dentro do intervalo amostral. depois basta manter as observações únicas usando distinct()
-```{r}
-teste2 <- dasy_croc_rio_anfr |> 
-  group_by(Sample.Label, year, season) |> 
-  count(sampling_day) |> 
-  reframe(n_max = max(n)) |> 
-  ungroup() |> 
-  arrange(year)
-
-teste2
-```
-
-## Juntar as duas data.frames para obter as datas com maior número de observação em cada ano e excluir datas de amostragem repitidas na mesma estação e ano
-
-```{r}
-dados_para_filtrar_por_data_quase_sem_repeticao <- teste1 |> 
-  semi_join(
-    teste2, 
-    join_by(Sample.Label, year, season, n == n_max),
-  ) |> 
-  arrange(sampling_day) |>
-  distinct(sampling_day, year, season)
-
-dados_para_filtrar_por_data_quase_sem_repeticao
+dasy_croc_rio_anfr_quase_sem_repeticao
 ```
 
 ### Distribuição das distâncias perpendiculares
 
 ```{r}
-filtro_datas_quase_sem_repeticao <- dados_para_filtrar_por_data_quase_sem_repeticao$sampling_day
-  
-dasy_croc_rio_anfr_quase_sem_repeticao <- dasy_croc_rio_anfr |> 
-  filter(sampling_day %in% filtro_datas_quase_sem_repeticao,
-         Region.Label == "Resex Riozinho do Anfrísio")
-
 dasy_croc_rio_anfr_quase_sem_repeticao |> 
   plotar_distribuicao_distancia_interativo(largura_caixa = 1)
 ```
@@ -1721,63 +1545,18 @@ dasy_croc_rio_anfr_quase_sem_repeticao_hr$`Sem termo`$dht$individuals$D
 ### Carregar dados
 
 ```{r}
-dasy_croc_tap_arap <- transformar_para_distanceR_covariaveis_sem_repeticao() |>   filter(
-    Region.Label == "Resex Tapajós Arapiuns", 
-    sp_name == "Dasyprocta croconota"
-  ) |> 
-  drop_na(distance)
+dasy_croc_tap_arap_quase_sem_repeticao <- transforma_para_dsitanceR_quase_sem_repeticao_filtra_uc_sp(
+  dados = dados_selecionados,
+  nome_uc = "Resex Tapajos-Arapiuns", 
+  nome_sp = "Dasyprocta croconota"
+  ) 
 
-dasy_croc_tap_arap
-```
-
-### Verificar o número de observações por data de amostragem
-
-```{r}
-teste1 <- dasy_croc_tap_arap |> 
-  group_by(Sample.Label, sampling_day, year, season) |> 
-  count(sampling_day) |> 
-  ungroup() |> 
-  arrange(Sample.Label, sampling_day)
-
-teste1
-```
-
-## Verificar as datas com maior número de observações em cada ano
-tentar gerar uma nova coluna usando uma condicional que repita uma única data para datas que ocorrem dentro do intervalo amostral. depois basta manter as observações únicas usando distinct()
-```{r}
-teste2 <- dasy_croc_tap_arap |> 
-  group_by(Sample.Label, year, season) |> 
-  count(sampling_day) |> 
-  reframe(n_max = max(n)) |> 
-  ungroup() |> 
-  arrange(year)
-
-teste2
-```
-
-## Juntar as duas data.frames para obter as datas com maior número de observação em cada ano e excluir datas de amostragem repitidas na mesma estação e ano
-
-```{r}
-dados_para_filtrar_por_data_quase_sem_repeticao <- teste1 |> 
-  semi_join(
-    teste2, 
-    join_by(Sample.Label, year, season, n == n_max),
-  ) |> 
-  arrange(sampling_day) |>
-  distinct(sampling_day, year, season)
-
-dados_para_filtrar_por_data_quase_sem_repeticao
+dasy_croc_tap_arap_quase_sem_repeticao
 ```
 
 ### Distribuição das distâncias perpendiculares
 
 ```{r}
-filtro_datas_quase_sem_repeticao <- dados_para_filtrar_por_data_quase_sem_repeticao$sampling_day
-  
-dasy_croc_tap_arap_quase_sem_repeticao <- dasy_croc_tap_arap |> 
-  filter(sampling_day %in% filtro_datas_quase_sem_repeticao,
-         Region.Label == "Resex Tapajós Arapiuns")
-
 dasy_croc_tap_arap_quase_sem_repeticao |> 
   plotar_distribuicao_distancia_interativo(largura_caixa = 1)
 ```
