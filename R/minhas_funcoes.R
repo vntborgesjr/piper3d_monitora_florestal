@@ -2438,6 +2438,50 @@ plotar_n_obs_validadas_interativo <- function(
   return(grafico_n_sp_validada)
 }
 
+# Documentacao da funcao selecao_distancia_truncamento() ------------------
+#' Title
+#'
+#' @param dados 
+#' @param dist_truncamento 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+selecao_distancia_truncamento <- function(
+    dados,
+    dist_truncamento = list(
+      `25%` = "25%",
+      `20%` = "20%", 
+      `15%` = "15%", 
+      `10%` = "10%",
+      `5%` = "5%"
+    )
+) {
+  
+  # ajustar modelos com funcao de deteccao do tipo Half-normal e sem termos 
+  # de ajuste a diferentes distancias de truncamento 
+  modelos_hn_diferentes_dist_truncamento <- purrr::map(
+    dist_truncamento,
+    \(.x) ds(
+      cutia_tap_arap,
+      key = NULL, 
+      adjustment = NULL,
+      truncation = .x
+    )
+  )
+  
+  # performa a selecao de modelos e gera um data.frame com os resultados
+  tabela_selecao_dist_truncamento <- modelos_hn_diferentes_dist_truncamento |> 
+    purrr::map_df(
+      \(.x) summarize_ds_models(.x)
+    )
+  
+  # retorna um data.frame com a selecao da melhor distancia de truncamento
+  return(tabela_selecao_dist_truncamento)
+  
+}
+
 # Documentacao da funcao transformar_para_distanceR_covariaveis() --------------------
 #' Gera uma tabela no formato para analise no pacote Distance do R, com duas covariaveis, a partir dos dados selecionados
 #'
