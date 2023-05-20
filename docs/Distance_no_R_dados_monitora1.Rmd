@@ -80,12 +80,20 @@ Jogar a imputacao de `NA`s pra dentro da funcao carregar dados completos.
 
 ```{r}
 # carregar dados
-cutia_tap_arap <- transformar_para_distanceR_covariaveis() |> 
-  filter(
-    Region.Label == "Resex Tapajos-Arapiuns",
-    sp_name == "Dasyprocta croconota"
-  )
+cutia_tap_arap <- transforma_para_distanceR_com_repeticao_filtra_uc_sp(
+  nome_uc = "Resex Tapajos-Arapiuns",
+  nome_sp = "Dasyprocta croconota"
+) 
 
+cutia_tap_arap
+```
+
+### Dsitribuição das distâncias perpendiculares
+
+```{r}
+cutia_tap_arap |> 
+  drop_na(distance) |> 
+plotar_distribuicao_distancia_interativo(largura_caixa = 1)
 ```
 
 ## Determinando a distância para truncar os dados
