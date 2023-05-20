@@ -2451,7 +2451,7 @@ plotar_n_obs_validadas_interativo <- function(
 selecao_distancia_truncamento <- function(
     dados,
     dist_truncamento = list(
-      `25%` = "25%",
+      "25%" = "25%",
       `20%` = "20%", 
       `15%` = "15%", 
       `10%` = "10%",
@@ -2464,7 +2464,7 @@ selecao_distancia_truncamento <- function(
   modelos_hn_diferentes_dist_truncamento <- purrr::map(
     dist_truncamento,
     \(.x) ds(
-      cutia_tap_arap,
+      dados,
       key = NULL, 
       adjustment = NULL,
       truncation = .x
@@ -2473,9 +2473,25 @@ selecao_distancia_truncamento <- function(
   
   # performa a selecao de modelos e gera um data.frame com os resultados
   tabela_selecao_dist_truncamento <- modelos_hn_diferentes_dist_truncamento |> 
-    purrr::map_df(
-      \(.x) summarize_ds_models(.x)
-    )
+    purrr::map(
+      \(x) summarize_ds_models(x, delta_only = FALSE)
+    ) |> 
+    list_rbind() |> 
+    mutate(AIC = round(AIC, 3))
+  
+  # gerar uma tabela com os valores da AIC e as distancias de truncamento
+  # correspondentes
+  aic <- modelos_hn_diferentes_dist_truncamento |> 
+    purrr::map(\(x) AIC(x)) |> 
+    list_rbind() |> 
+    mutate(dist_truncamento = names(dist_truncamento),
+           AIC = round(AIC, 3))
+  
+  # corrigir a coluna com as distancias de truncamento adequadas
+  tabela_selecao_dist_truncamento <- tabela_selecao_dist_truncamento |> 
+    left_join(aic, join_by(AIC)) |> 
+    mutate(Model = dist_truncamento) |> 
+    select(!df:dist_truncamento)
   
   # retorna um data.frame com a selecao da melhor distancia de truncamento
   return(tabela_selecao_dist_truncamento)
