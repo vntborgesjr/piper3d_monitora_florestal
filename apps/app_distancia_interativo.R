@@ -95,4 +95,4 @@ server <- function(input, output) {
 }
 
 # Run the application 
-shiny::shinyApp(ui = ui, server = server, options = list(launch.browser = FALSE, port = 5261))
+shiny::shinyApp(ui = ui, server = server, options = list(launch.browser = TRUE, port = 5261))
