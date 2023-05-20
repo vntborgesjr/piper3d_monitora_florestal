@@ -4,12 +4,120 @@ output: html_document
 date: "2023-05-20"
 ---
 
-# Criterios para seleção - numero de ocorrencias/UC e Distribuicao dos dados
+# Amostragem por Distância Convencional - Espécies Modelo
+
+A seguir, apresentamos o fluxo de exploração dos dados, truncamento, ajuste e avaliação de modelos e estimativas de abundância e densidade para as espécies que selecionamos como modelo. Usamos como critérios de seleção tanto o número de ocorrências por Unidade de Conservação quanto a distribuição das frequências de observação, nos casos em que isso foi possível. De forma geral, as espécies com número satisfatório de ocorrências (\>60), apresentaram pico de observações próximos a zero.
+
+Para todas as espécies modelo, nós implementamos duas estratégias para lidar com os efeitos indesejados nos dados: pico próximo a zero (*heaping near zero*) e número excessivo de repetições amostrais na mesma trilha. Para lidar com os picos, testamos o uso dos dados com distâncias exatas e distâncias agrupadas. Para lidar com as repetições, testamos a análise dos dados com todas as repetições e com o número de repetições reduzidas.
 
 ## Especies com maior numero de ocorrencias/UC
 
 Possibilitam testar, posteriormente, estratificações nos dados, preservando um número de ocorrências satisfatório dentro dos estratos.
 
-### Dasyprocta croconota - Resex Tapajós Arapiuns
+### PRIMEIRO MODELO - Dasyprocta croconota - Resex Tapajós Arapiuns
 
-#### Testando distância de truncagem w
+Essa é a espécie com o mair número de ocorrências para uma mesma UC. Apresentou, como a maioria das espécies em diferentes UCs, um pico de ocorrências próximo a zero.
+
+#### Fluxo 1 - Distâncias exatas com todas as repetições
+
+##### Plotando o histograma das frequências de ocorrência pela distância
+
+A distribuição dos dados no histograma permite observar um pico de observações próximo a zero, além de uma considerável perda em detectabilidade a partir dos 20m. Vamos testar diferentes proporções de truncamento.
+
+##### Testando distância de truncamento (*w*)
+
+Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de distribuição half-normal. Optamos por truncar os dados pela percentagem para padronizar a rotina para diferentes espécies. Buckland et al. (2001) sugere um corte entre 5-10% das observações detectadas nas maiores distãncias. Vamos selecionar o valor de corte pelo modelo com melhor ajuste.
+
+###### Tabela com resumo comparativo dos modelos
+
+##### Plotando o histograma com os dados truncados.
+
+##### Ajustando diferentes modelos de funções de deteção
+
+##### Comparando os modelos
+
+###### Tabela com o resumo comparativo dos modelos
+
+###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
+
+###### Teste de bondade de ajuste dos modelos e Q-Q plots
+
+##### Avaliando as estimativas de Abundância e Densidade
+
+#### Fluxo 2 - Distâncias exatas com repetições reduzidas
+
+##### Plotando o histograma das frequências de ocorrência pela distância
+
+A distribuição dos dados no histograma permite observar um pico de observações próximo a zero, além de uma considerável perda em detectabilidade a partir dos 20m. Vamos testar diferentes proporções de truncamento.
+
+##### Testando distância de truncamento (*w*)
+
+Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de distribuição half-normal. Optamos por truncar os dados pela percentagem para padronizar a rotina para diferentes espécies. Buckland et al. (2001) sugere um corte entre 5-10% das observações detectadas nas maiores distãncias. Vamos selecionar o valor de corte pelo modelo com melhor ajuste.
+
+###### Tabela com resumo comparativo dos modelos
+
+##### Plotando o histograma com os dados truncados.
+
+##### Ajustando diferentes modelos de funções de deteção
+
+##### Comparando os modelos
+
+###### Tabela com o resumo comparativo dos modelos
+
+###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
+
+###### Teste de bondade de ajuste dos modelos e Q-Q plots
+
+##### Avaliando as estimativas de Abundância e Densidade
+
+#### Fluxo 3 - Distâncias agrupadas com todas as repetições
+
+##### Plotando o histograma das frequências de ocorrência pela distância
+
+A distribuição dos dados no histograma permite observar um pico de observações próximo a zero, além de uma considerável perda em detectabilidade a partir dos 20m. Vamos testar diferentes proporções de truncamento.
+
+##### Testando distância de truncamento (*w*)
+
+Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de distribuição half-normal. Optamos por truncar os dados pela percentagem para padronizar a rotina para diferentes espécies. Buckland et al. (2001) sugere um corte entre 5-10% das observações detectadas nas maiores distãncias. Vamos selecionar o valor de corte pelo modelo com melhor ajuste.
+
+###### Tabela com resumo comparativo dos modelos
+
+##### Plotando o histograma com os dados truncados.
+
+##### Ajustando diferentes modelos de funções de deteção
+
+##### Comparando os modelos
+
+###### Tabela com o resumo comparativo dos modelos
+
+###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
+
+###### Teste de bondade de ajuste dos modelos e Q-Q plots
+
+##### Avaliando as estimativas de Abundância e Densidade
+
+#### Fluxo 4 - Distâncias agrupadas com repetições reduzidas
+
+##### Plotando o histograma das frequências de ocorrência pela distância
+
+A distribuição dos dados no histograma permite observar um pico de observações próximo a zero, além de uma considerável perda em detectabilidade a partir dos 20m. Vamos testar diferentes proporções de truncamento.
+
+##### Testando distância de truncamento (*w*)
+
+Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de distribuição half-normal. Optamos por truncar os dados pela percentagem para padronizar a rotina para diferentes espécies. Buckland et al. (2001) sugere um corte entre 5-10% das observações detectadas nas maiores distãncias. Vamos selecionar o valor de corte pelo modelo com melhor ajuste.
+
+###### Tabela com resumo comparativo dos modelos
+
+##### Plotando o histograma com os dados truncados.
+
+##### Ajustando diferentes modelos de funções de deteção
+
+##### Comparando os modelos
+
+###### Tabela com o resumo comparativo dos modelos
+
+###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
+
+###### Teste de bondade de ajuste dos modelos e Q-Q plots
+
+##### Avaliando as estimativas de Abundância e Densidade
