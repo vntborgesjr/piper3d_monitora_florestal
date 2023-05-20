@@ -162,18 +162,28 @@ Após testar as quatro estratégias anteriores para lidar com efeitos indesejado
 
 Para o uso de coveriáveis, podemos usar somente as distribuições half-normal ou hazard-rate, pois ambas possuem o parâmetro escalar pelo qual o vetor das covariáveis será multiplicado. Não é recomendável o uso de termos de ajuste com o uso de covariáveis pela grande chance de perda de monotonicidade nas curvas das funções de detecção. Assim, vamos trabalhar com as seguintes combinações de modelos
 
-### Half-normal sem termos de ajuste (HN)
+#### Half-normal sem termos de ajuste (HN)
 
-### HN + Tamanho do grupo (HN + S)
+#### HN + Tamanho do grupo (HN + S)
 
-### HN + Minutos após o início da amostragem (HN + M)
+#### HN + Minutos após o início da amostragem (HN + M)
 
-### HN + Tamanho do grupo + Minutos após início da amostragem (HN + S + M)
+#### HN + Tamanho do grupo + Minutos após início da amostragem (HN + S + M)
 
-### Hazard-rate sem termos de ajuste (HZ)
+#### Hazard-rate sem termos de ajuste (HZ)
 
-### HZ + Tamanho do grupo (HZ + S)
+#### HZ + Tamanho do grupo (HZ + S)
 
-### HZ + Minutos após o início da amostragem (HZ + M)
+#### HZ + Minutos após o início da amostragem (HZ + M)
 
-### HZ + Tamanho do grupo + Minutos após início da amostragem (HZ + S + M)
+#### HZ + Tamanho do grupo + Minutos após início da amostragem (HZ + S + M)
+
+## Comparando os modelos
+
+#### Tabela com o resumo comparativo dos modelos
+
+#### Gráficos de ajuste das funções de deteção às probabilidades de deteção
+
+#### Teste de bondade de ajuste dos modelos e Q-Q plots
+
+## Avaliando as estimativas de Abundância e Densidade
