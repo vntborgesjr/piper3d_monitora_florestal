@@ -37,6 +37,15 @@ ui <- shiny::fluidPage(
         selected = "Dasyprocta croconota",
         label = "Espécie", 
         choices = unique(dados_selecionados$sp_name)
+      ),
+      
+      # caixa de selecao da largura das barras
+      shiny::sliderInput(
+        inputId = "largura_barra",
+        min = 1,
+        max = 10, 
+        value = 1, 
+        label = "Largura das barras"
       )
     ),
     
@@ -64,12 +73,19 @@ server <- function(input, output) {
                     !is.na(distance))
   })
   
+  largura_barra <- reactive({
+    input$largura_barra
+  })
+  
   output$coluna <- plotly::renderPlotly({
     # imprime mensagem
     print("Gerando gráficos...")
     
     # gerar gráficos
-    fig <- plotar_distribuicao_distancia_interativo(dados_filtrados())
+    fig <- plotar_distribuicao_distancia_interativo(
+      dados_filtrados(),
+      largura_caixa = largura_barra()
+    )
     
     # retornar graficos
     fig
