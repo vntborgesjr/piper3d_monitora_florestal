@@ -22,7 +22,7 @@ Essa é a espécie com o mair número de ocorrências para uma mesma UC. Apresen
 
 ##### Plotando o histograma das frequências de ocorrência pela distância
 
-A distribuição dos dados no histograma permite observar um pico de observações próximo a zero, além de uma considerável perda em detectabilidade a partir dos 20m. Vamos testar diferentes proporções de truncamento.
+O histograma interativo está disponível no app em Shiny `app_distancia_interativo.R`. A distribuição dos dados no histograma permite observar um pico de observações próximo a zero, além de uma considerável perda em detectabilidade a partir dos 20m. Vamos testar diferentes proporções de truncamento.
 
 ##### Testando distância de truncamento (*w*)
 
@@ -33,6 +33,12 @@ Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de dis
 ##### Plotando o histograma com os dados truncados.
 
 ##### Ajustando diferentes modelos de funções de deteção
+
+###### Uniforme + Cosseno
+
+###### Half-Normal sem termos de ajuste e com termos de ajuste
+
+###### Hazard-rate sem termos de ajuste e com termos de ajuste
 
 ##### Comparando os modelos
 
@@ -48,7 +54,7 @@ Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de dis
 
 ##### Plotando o histograma das frequências de ocorrência pela distância
 
-A distribuição dos dados no histograma permite observar um pico de observações próximo a zero, além de uma considerável perda em detectabilidade a partir dos 20m. Vamos testar diferentes proporções de truncamento.
+O histograma interativo está disponível no app em Shiny `app_distancia_interativo.R`. A distribuição dos dados no histograma permite observar um pico de observações próximo a zero, além de uma considerável perda em detectabilidade a partir dos 20m. Vamos testar diferentes proporções de truncamento.
 
 ##### Testando distância de truncamento (*w*)
 
@@ -59,6 +65,12 @@ Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de dis
 ##### Plotando o histograma com os dados truncados.
 
 ##### Ajustando diferentes modelos de funções de deteção
+
+###### Uniforme + Cosseno
+
+###### Half-Normal sem termos de ajuste e com termos de ajuste
+
+###### Hazard-rate sem termos de ajuste e com termos de ajuste
 
 ##### Comparando os modelos
 
@@ -74,7 +86,7 @@ Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de dis
 
 ##### Plotando o histograma das frequências de ocorrência pela distância
 
-A distribuição dos dados no histograma permite observar um pico de observações próximo a zero, além de uma considerável perda em detectabilidade a partir dos 20m. Vamos testar diferentes proporções de truncamento.
+O histograma interativo está disponível no app em Shiny `app_distancia_interativo.R`. A distribuição dos dados no histograma permite observar um pico de observações próximo a zero, além de uma considerável perda em detectabilidade a partir dos 20m. Vamos testar diferentes proporções de truncamento.
 
 ##### Testando distância de truncamento (*w*)
 
@@ -85,6 +97,12 @@ Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de dis
 ##### Plotando o histograma com os dados truncados.
 
 ##### Ajustando diferentes modelos de funções de deteção
+
+###### Uniforme + Cosseno
+
+###### Half-Normal sem termos de ajuste e com termos de ajuste
+
+###### Hazard-rate sem termos de ajuste e com termos de ajuste
 
 ##### Comparando os modelos
 
@@ -100,7 +118,7 @@ Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de dis
 
 ##### Plotando o histograma das frequências de ocorrência pela distância
 
-A distribuição dos dados no histograma permite observar um pico de observações próximo a zero, além de uma considerável perda em detectabilidade a partir dos 20m. Vamos testar diferentes proporções de truncamento.
+O histograma interativo está disponível no app em Shiny `app_distancia_interativo.R`. A distribuição dos dados no histograma permite observar um pico de observações próximo a zero, além de uma considerável perda em detectabilidade a partir dos 20m. Vamos testar diferentes proporções de truncamento.
 
 ##### Testando distância de truncamento (*w*)
 
@@ -112,6 +130,12 @@ Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de dis
 
 ##### Ajustando diferentes modelos de funções de deteção
 
+###### Uniforme + Cosseno
+
+###### Half-Normal sem termos de ajuste e com termos de ajuste
+
+###### Hazard-rate sem termos de ajuste e com termos de ajuste
+
 ##### Comparando os modelos
 
 ###### Tabela com o resumo comparativo dos modelos
@@ -121,3 +145,35 @@ Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de dis
 ###### Teste de bondade de ajuste dos modelos e Q-Q plots
 
 ##### Avaliando as estimativas de Abundância e Densidade
+
+# Amostragem por Distância com Múltiplas Covariáveis
+
+Após testar as quatro estratégias anteriores para lidar com efeitos indesejados nos dados, escolhemos a estratégia com melhores resultados, considerando a bondade de ajuste dos modelos e os coeficientes de variação das estimativas de abundância e densidade, para adicionar covariávies. Consideramos, com base nos dados do Programa Monitora, duas covariáveis. A primeira dela, tamanho do grupo, é importante porque além de poder sofrer efeitos com a distância, tendendo para o aumento do tamanho dos grupos com a perda da detectabilidade, ela também é utilizada para corrigir as estimativas de ambudância e densidade. A outra covariável
+
+## Explorando covariáveis
+
+### Gráficos exploratórios
+
+#### Distância x Tamanho do grupo
+
+#### Distância x Minutos após o início da amostragem
+
+## Ajustando diferentes modelos com covariáveis
+
+Para o uso de coveriáveis, podemos usar somente as distribuições half-normal ou hazard-rate, pois ambas possuem o parâmetro escalar pelo qual o vetor das covariáveis será multiplicado. Não é recomendável o uso de termos de ajuste com o uso de covariáveis pela grande chance de perda de monotonicidade nas curvas das funções de detecção. Assim, vamos trabalhar com as seguintes combinações de modelos
+
+### Half-normal sem termos de ajuste (HN)
+
+### HN + Tamanho do grupo (HN + S)
+
+### HN + Minutos após o início da amostragem (HN + M)
+
+### HN + Tamanho do grupo + Minutos após início da amostragem (HN + S + M)
+
+### Hazard-rate sem termos de ajuste (HZ)
+
+### HZ + Tamanho do grupo (HZ + S)
+
+### HZ + Minutos após o início da amostragem (HZ + M)
+
+### HZ + Tamanho do grupo + Minutos após início da amostragem (HZ + S + M)
