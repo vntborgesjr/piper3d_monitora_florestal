@@ -156,13 +156,13 @@ carregar_dados_brutos_xlsx <- function(
     )
 ) {
   # grava uma versao dados_brutos.rds no diretorio inst/extdata
-  readr::write_rds(
-    dados,
-    file = paste0(
-      here::here(),
-      "/data-raw/dados_brutos.rds"
-    )
-  )
+  # readr::write_rds(
+  #   dados,
+  #   file = paste0(
+  #     here::here(),
+  #     "/data-raw/dados_brutos.rds"
+  #   )
+  # )
 
   # retorna os dados butos
   return(dados)
@@ -387,16 +387,15 @@ carregar_dados_completos <- function(
     filter(day_effort == max(day_effort))  |> 
     ungroup()
   
-  
-
   # grava uma versao dados_completos.rds no diretorio inst/extdata
-  readr::write_rds(
-    dados_completos,
-    file = paste0(
-      here::here(),
-      "/data/dados_completos.rds"
-    )
-  )
+  # readr::write_rds(
+  #   dados_completos,
+  #   file = paste0(
+  #     here::here(),
+  #     "/data/dados_completos.rds"
+  #   )
+  # )
+  
   # retornar o data.frame
   return(dados_completos)
 }
@@ -440,13 +439,13 @@ carregar_dados_filtrados <- function(
     )
 
   # grava uma versao dados_filtrados.rds no diretorio inst/extdata
-  readr::write_rds(
-    dados_filtrados,
-    file = paste0(
-      here::here(),
-      "/data/dados_filtrados.rds"
-    )
-  )
+  # readr::write_rds(
+  #   dados_filtrados,
+  #   file = paste0(
+  #     here::here(),
+  #     "/data/dados_filtrados.rds"
+  #   )
+  # )
 
   # retornar o data.frame
   return(dados_filtrados)
@@ -485,13 +484,13 @@ carregar_dados_selecionados <- function(
     dplyr::filter(validation == "Especie")
 
   # grava uma versao dados_completos.rds no diretorio inst/extdata
-  readr::write_rds(
-    dados_selecionados,
-    file = paste0(
-      here::here(),
-      "/data/dados_selecionados.rds"
-    )
-  )
+  # readr::write_rds(
+  #   dados_selecionados,
+  #   file = paste0(
+  #     here::here(),
+  #     "/data/dados_selecionados.rds"
+  #   )
+  # )
 
   # retornar o data.frame
   return(dados_selecionados)
@@ -544,13 +543,13 @@ contar_n_ano_uc <- function(
     )
 
   # grava a tabela n_ano_uc.rds no diretorio inst/extdata/
-  readr::write_rds(
-    n_ano_uc,
-    file = paste0(
-      here::here(),
-      "/data/n_ano_uc.rds"
-    )
-  )
+  # readr::write_rds(
+  #   n_ano_uc,
+  #   file = paste0(
+  #     here::here(),
+  #     "/data/n_ano_uc.rds"
+  #   )
+  # )
 
   # retorna o numero de UCs por ano
   return(n_ano_uc)
@@ -592,13 +591,13 @@ contar_n_obs_sp_ano <- function(
     )
 
   # grava a tabela n_obs_uc.rds no diretorio inst/extdata/
-  readr::write_rds(
-    n_obs_sp_ano,
-    file = paste0(
-      here::here(),
-      "/data/n_obs_sp_ano.rds"
-    )
-  )
+  # readr::write_rds(
+  #   n_obs_sp_ano,
+  #   file = paste0(
+  #     here::here(),
+  #     "/data/n_obs_sp_ano.rds"
+  #   )
+  # )
 
   # retorna a tabela com o numero de observacoes por UC
   return(n_obs_sp_ano)
@@ -642,13 +641,13 @@ contar_n_obs_sp_uc_ano <- function(
     )
 
   # grava a tabela n_obs_sp_uc.rds no diretorio inst/extdata/
-  readr::write_rds(
-    n_obs_sp_uc_ano,
-    file = paste0(
-      here::here(),
-      "/data/n_obs_sp_uc_ano.rds"
-    )
-  )
+  # readr::write_rds(
+  #   n_obs_sp_uc_ano,
+  #   file = paste0(
+  #     here::here(),
+  #     "/data/n_obs_sp_uc_ano.rds"
+  #   )
+  # )
 
   # retorna o numero de observacoes por especie, por Uc e por ano
   return(n_obs_sp_uc_ano)
@@ -693,13 +692,13 @@ contar_n_obs_sp_uc_estacao_ano <- function(
     )
 
   # grava a tabela n_obs_uc_sp_estacao_ano.rds no diretorio inst/extdata/
-  readr::write_rds(
-    n_obs_sp_uc_estacao_ano,
-    file = paste0(
-      here::here(),
-      "/data/n_obs_sp_uc_estacao_ano.rds"
-    )
-  )
+  # readr::write_rds(
+  #   n_obs_sp_uc_estacao_ano,
+  #   file = paste0(
+  #     here::here(),
+  #     "/data/n_obs_sp_uc_estacao_ano.rds"
+  #   )
+  # )
 
   # retorna o numero de observacoes por especie, por Uc, por estacao e por ano
   return(n_obs_sp_uc_estacao_ano)
@@ -742,13 +741,13 @@ contar_n_obs_sp_uc <- function(
     )
 
   # grava a tabela n_obs_sp_uc.rds no diretorio inst/extdata/
-  readr::write_rds(
-    n_obs_sp_uc,
-    file = paste0(
-      here::here(),
-      "/data/n_obs_sp_uc.rds"
-    )
-  )
+  # readr::write_rds(
+  #   n_obs_sp_uc,
+  #   file = paste0(
+  #     here::here(),
+  #     "/data/n_obs_sp_uc.rds"
+  #   )
+  # )
 
   # retorna o numero de observacoes por especie
   return(n_obs_sp_uc)
@@ -789,13 +788,13 @@ contar_n_obs_sp <- function(
     )
 
   # grava a tabela n_uc_ano.rds no diretorio inst/extdata/
-  readr::write_rds(
-    n_obs_sp,
-    file = paste0(
-      here::here(),
-      "/data/n_obs_sp.rds"
-    )
-  )
+  # readr::write_rds(
+  #   n_obs_sp,
+  #   file = paste0(
+  #     here::here(),
+  #     "/data/n_obs_sp.rds"
+  #   )
+  # )
 
   return(n_obs_sp)
 }
@@ -836,13 +835,13 @@ contar_n_obs_uc_ano <- function(
     )
 
   # grava a tabela n_obs_uc.rds no diretorio inst/extdata/
-  readr::write_rds(
-    n_obs_uc_ano,
-    file = paste0(
-      here::here(),
-      "/data/n_obs_uc_ano.rds"
-    )
-  )
+  # readr::write_rds(
+  #   n_obs_uc_ano,
+  #   file = paste0(
+  #     here::here(),
+  #     "/data/n_obs_uc_ano.rds"
+  #   )
+  # )
 
   # retorna a tabela com o numero de observacoes por UC
   return(n_obs_uc_ano)
@@ -883,13 +882,13 @@ contar_n_obs_uc <- function(
     )
 
   # grava a tabela n_obs_uc.rds no diretorio inst/extdata/
-  readr::write_rds(
-    n_obs_uc,
-    file = paste0(
-      here::here(),
-      "/data/n_obs_uc.rds"
-    )
-  )
+  # readr::write_rds(
+  #   n_obs_uc,
+  #   file = paste0(
+  #     here::here(),
+  #     "/data/n_obs_uc.rds"
+  #   )
+  # )
 
   # retorna a tabela com o numero de observacoes por UC
   return(n_obs_uc)
@@ -1023,13 +1022,13 @@ contar_n_uc_ano <- function(
     )
 
   # grava a tabela n_uc_ano.rds no diretorio inst/extdata/
-  readr::write_rds(
-    n_uc_ano,
-    file = paste0(
-      here::here(),
-      "/data/n_uc_ano.rds"
-    )
-  )
+  # readr::write_rds(
+  #   n_uc_ano,
+  #   file = paste0(
+  #     here::here(),
+  #     "/data/n_uc_ano.rds"
+  #   )
+  # )
 
   # retorna uma tabela com o numero de UCs por ano
   return(n_uc_ano)
@@ -2494,13 +2493,14 @@ transformar_para_distanceR_covariaveis <- function(
     )
 
   # garvar no diretorio inst/extdata/ arquivo dados_transformados_dist_r_cov.rds
-  readr::write_rds(
-    dados_transformados_dist_r_cov,
-    file = paste0(
-      here::here(),
-      "/data/dados_selecionados_transformados_dist_r_cov.rds"
-    )
-  )
+  # readr::write_rds(
+  #   dados_transformados_dist_r_cov,
+  #   file = paste0(
+  #     here::here(),
+  #     "/data/dados_selecionados_transformados_dist_r_cov.rds"
+  #   )
+  # )
+  
   # retorna o data.frame
   return(dados_transformados_dist_r_cov)
 }
@@ -2625,14 +2625,14 @@ transformar_para_distanceR <- function(
       .before = Sample.Label
     )
 
-  # grava uma versao dados_transformados_dist_r.rds no diretorio data
-  readr::write_rds(
-    dados_transformados_dist_r,
-    file = paste0(
-      here::here(),
-      "/data/dados_selecionados_transformados_dist_r.rds"
-    )
-  )
+  # # grava uma versao dados_transformados_dist_r.rds no diretorio data
+  # readr::write_rds(
+  #   dados_transformados_dist_r,
+  #   file = paste0(
+  #     here::here(),
+  #     "/data/dados_selecionados_transformados_dist_r.rds"
+  #   )
+  # )
 
   # retorna o data.frame
   return(dados_transformados_dist_r)
