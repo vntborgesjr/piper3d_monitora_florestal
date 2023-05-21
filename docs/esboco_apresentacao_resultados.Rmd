@@ -30,7 +30,7 @@ Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de dis
 
 ###### Tabela com resumo comparativo dos modelos
 
-##### Plotando o histograma com os dados truncados.
+###### Plotando o histograma com os dados truncados.
 
 Histogramas resultantes dos modelos, com todas as distâncias de truncagem, para auxiliar na seleção da melhor distãncia.
 
@@ -64,7 +64,7 @@ Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de dis
 
 ###### Tabela com resumo comparativo dos modelos
 
-##### Plotando o histograma com os dados truncados.
+###### Plotando o histograma com os dados truncados.
 
 ##### Ajustando diferentes modelos de funções de deteção
 
@@ -96,7 +96,7 @@ Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de dis
 
 ###### Tabela com resumo comparativo dos modelos
 
-##### Plotando o histograma com os dados truncados.
+###### Plotando o histograma com os dados truncados.
 
 ##### Ajustando diferentes modelos de funções de deteção
 
@@ -128,7 +128,7 @@ Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de dis
 
 ###### Tabela com resumo comparativo dos modelos
 
-##### Plotando o histograma com os dados truncados.
+###### Plotando o histograma com os dados truncados.
 
 ##### Ajustando diferentes modelos de funções de deteção
 
@@ -218,4 +218,100 @@ Até agora, exploramos diferentes abordagens para a Amostragem por Distância co
 
 Para o uso de covariáveis, as estimativas de abundância/densidade devem ser feitas através do bootstrap.
 
-Estratificação dos dados
+#### Estratificação dos dados por Unidade de Conservação
+
+Aqui, vamos explorar para uma mesma espécie, dados de diferentes Unidades de Conservação ao mesmo tempo.
+
+##### Explorando os dados dentro de cada estrato espacial:
+
+Antes de ajustar os modelos e gerar as estimativas, é importante verificar o número de ocorrências dentro de cada UC. Pois, ao estratificar, ajustaremos uma função de detecção para cada estrato. Caso tenham UCs com um número muito baixo de ocorrências (\<30), considerar não incluir na análise.
+
+###### Tabela com número de ocorrências por Unidade de Conservaçaõ para Dasyprocta croconota
+
+Tabela com dados filtrados. Tabela dinâmica disponível na **Parte XXX**
+
+##### Plotando o histograma das frequências de ocorrência pela distância
+
+O histograma interativo está disponível no app em Shiny `app_distancia_interativo.R`. A distribuição dos dados no histograma permite observar um pico de observações próximo a zero, além de uma considerável perda em detectabilidade a partir dos 20m. Vamos testar diferentes proporções de truncamento.
+
+##### Testando distância de truncamento (*w*)
+
+Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de distribuição half-normal. Optamos por truncar os dados pela percentagem para padronizar a rotina para diferentes espécies. Buckland et al. (2001) sugere um corte entre 5-10% das observações detectadas nas maiores distãncias. Vamos selecionar o valor de corte pelo modelo com melhor ajuste.
+
+###### Tabela com resumo comparativo dos modelos
+
+###### Plotando o histograma com os dados truncados.
+
+##### Ajustando diferentes modelos para dados Globais
+
+**AQUI A GENTE PRECISA TOMAR UMA DECISÃO IMPORTANTE**
+
+É necessário testar os quatro fluxos: todas/poucas repetições x distancias exatas/agrupadas? Preciso ver os resultados dos fluxos anteriores para planejar melhor esta etapa.
+
+Para a estratificação, vamos testar diretamento os modelos com e sem covariáveis. Vamos nos limitar às distribuições half-normal e hazard-rate, pois são as únicas que comportam o uso das covariáveis.
+
+###### Half-normal sem termos de ajuste (HN)
+
+###### HN + Tamanho do grupo (HN + S)
+
+###### HN + Minutos após o início da amostragem (HN + M)
+
+###### HN + Tamanho do grupo + Minutos após início da amostragem (HN + S + M)
+
+###### Hazard-rate sem termos de ajuste (HZ)
+
+###### HZ + Tamanho do grupo (HZ + S)
+
+###### HZ + Minutos após o início da amostragem (HZ + M)
+
+###### HZ + Tamanho do grupo + Minutos após início da amostragem (HZ + S + M)
+
+##### Comparando os modelos
+
+###### Tabela com o resumo comparativo dos modelos
+
+###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
+
+###### Teste de bondade de ajuste dos modelos e Q-Q plots
+
+##### Avaliando as estimativas de Abundância e Densidade
+
+Para modelos com covariáveis as estimativas de abundância e densidade devem ser feitas por bootstrap
+
+##### Ajustando diferentes modelos para os dados Estratificados
+
+A redução no tamanho amostral geralmente faz com que os modelos para os dados globais tenham um ajuste melhor que os modelos ajustados aos estratos. Um critério para avaliar este ajuste é comparar o somatório dos valores de AIC para cada estrato com o valor de AIC do modelo global. Se a soma dos valores de AIC dos estratos for menor que o AIC global, significa que o ajuste foi melhor para os dados estratificados.
+
+**AQUI TAMBÉM PRECISA TOMAR UMA DECISÃO IMPORTANTE**
+
+Rodamos todos os modelos para os dados estratificados? Ou partimos do melhor modelo para dados globais?
+
+###### Half-normal sem termos de ajuste (HN)
+
+###### HN + Tamanho do grupo (HN + S)
+
+###### HN + Minutos após o início da amostragem (HN + M)
+
+###### HN + Tamanho do grupo + Minutos após início da amostragem (HN + S + M)
+
+###### Hazard-rate sem termos de ajuste (HZ)
+
+###### HZ + Tamanho do grupo (HZ + S)
+
+###### HZ + Minutos após o início da amostragem (HZ + M)
+
+###### HZ + Tamanho do grupo + Minutos após início da amostragem (HZ + S + M)
+
+##### Comparando os modelos
+
+###### Tabela com o resumo comparativo dos modelos
+
+Olhar também valores brutos de AIC dos modelos globais e comparar com os estratificados.
+
+###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
+
+###### Teste de bondade de ajuste dos modelos e Q-Q plots
+
+##### Avaliando as estimativas de Abundância e Densidade
+
+Para modelos com covariáveis as estimativas de abundância e densidade devem ser feitas por bootstrap
