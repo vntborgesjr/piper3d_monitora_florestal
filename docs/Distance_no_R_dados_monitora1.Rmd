@@ -96,51 +96,31 @@ cutia_tap_arap |>
 plotar_distribuicao_distancia_interativo(largura_caixa = 1)
 ```
 
-## Determinando a distância para truncar os dados
+### Determinando a distância para truncar os dados
 
 ```{r, fig.height=15, fig.width=10, warning=FALSE}
-# desenha o grafico com a distribuicao de distancias perpendiculares
-cutia_tap_arap |> 
-  filter(distance >= 1,
-         distance <= 14) |> 
-  plotar_distribuicao_distancia_interativo()
+# conduz a selecao da melhor distancia de truncamento a partir do ajsute de modelos com funcao de deteccao half-normal sem termos de ajuste
+cutia_tap_arap_dist_trunc <- cutia_tap_arap |> 
+  selecionar_distancia_truncamento()
+
+cutia_tap_arap_dist_trunc$selecao
 ```
 
 ```{r}
-summary(cutia_tap_arap$distance)
+cutia_tap_arap_dist_trunc$modelos |> 
+  purrr::map(
+    \(.x) plot(.x)
+  )
 ```
 
-## Ajustando funções de detecção no R
+### Ajustando funções de detecção no R com a melhor distância de truncamento
 
-### Cutias da Resex Tapajós-Arapiuns para diferentes distâncias de truncamento
-
-#### *Half-Normal* sem termos de ajuste e com termos de ajuste Cosseno e Polinomial de Hermite
-
-Ajustando um modelo ao dados das cutias *Dasyprocta croconota*, configurando uma distância limite de 20m e usando *Half-normal* como *key function* usando o argumento `key`, sem termo de ajuste.
+#### *Half-Normal* sem termos de ajuste e com termos de ajuste Cosseno e Polinomial de Hermite truncando os dados de distância em 25%
 
 ```{r}
-
-cutia_tap_arap_filtrado <- cutia_tap_arap |> 
-  filter(distance >= 1,
-         distance <= 14)
-
-# ajustando a função de detecção para uma distancia de truncamento de 20, 15, 10 e 5 metros
-# dsitancias de truncamento
-dist_truncamento <- list(
-  `14 metros` = 14, 
-  `12 metros` = 12, 
-  `10 metros` = 10,
-  `7 metros` = 7
-)
-
-# Key function - Half-normal 
-cutia_tap_arap_hn <- purrr::map(
-  dist_truncamento,
-  \(.x) ajuste_modelos_distance_hn(
-    cutia_tap_arap_filtrado, 
-    truncamento = .x
-  )
-  )
+# ajustando a função de detecção half-normal para um truncamento de 25% dos dados
+cutia_tap_arap_hn <- cutia_tap_arap |> 
+  ajuste_modelos_distance_hn(truncamento = "25%")
 ```
 
 ```{r}
@@ -149,18 +129,10 @@ cutia_tap_arap_hn
 
 #### *Hazard-Rate* sem termos de ajuste e com termos de ajuste Cosseno e Polinomial de Hermite
 
-Ajustando um modelo ao dados da cutia *Dasyprocta croconota*, configurando uma distância limite de 20m e usando *Hazard rate* como *key function* usando o argumento `key`.
-
 ```{r}
-# ajustando a função de detecção para uma distancia de truncamento de 20, 15, 10 e 5 metros
-# Key function - Hazard-rate
-cutia_tap_arap_hr <- purrr::map(
-  dist_truncamento,
-  \(.x) ajuste_modelos_distance_hr(
-    cutia_tap_arap_filtrado, 
-    truncamento = .x
-  )
-  )
+# ajustando a função de detecção hazard-rate para um truncamento de 25% dos dados
+cutia_tap_arap_hr <- cutia_tap_arap |> 
+  ajuste_modelos_distance_hr(truncamento = "25%")
 ```
 
 #### *Uniform* sem termos de ajuste e com termos de ajuste Cosseno e Polinomial de Hermite
@@ -168,69 +140,23 @@ cutia_tap_arap_hr <- purrr::map(
 Ajustando um modelo ao dados das cutias *Dasyprocta croconota*, configurando uma distância limite de 20m e usando *Uniform* como *key function* usando o argumento `key`, sem termo de ajuste.
 
 ```{r}
-# ajustando a função de detecção para uma distancia de truncamento de 20, 15, 10 e 5 metros
-# Key function - Uniform
-cutia_tap_arap_unif <- purrr::map(
-  dist_truncamento,
-  \(.x) ajuste_modelos_distance_unif(
-    cutia_tap_arap, 
-    truncamento = .x
-  )
-)
+# ajustando a função de detecção uniforme para um truncamento de 25% dos dados
+cutia_tap_arap_unif <- cutia_tap_arap |> 
+  ajuste_modelos_distance_unif(truncamento = "25%")
 ```
 
-###### Seleção de modelos
+###### Seleção de modelos com funções de detecção e termos de ajuste com melhor ajuste aos dados
 
 ```{r}
-summarize_ds_models(
-  cutia_tap_arap_hn$`14 metros`$`Sem termo`,
-cutia_tap_arap_hn$`14 metros`$Cosseno,
-  cutia_tap_arap_hn$`14 metros`$`Hermite polinomial`,
-cutia_tap_arap_hr$`14 metros`$`Sem termo`,
-cutia_tap_arap_hr$`14 metros`$Cosseno,
-cutia_tap_arap_hr$`14 metros`$`Polinomial simples`,
-cutia_tap_arap_unif$`14 metros`$Cosseno,
-cutia_tap_arap_unif$`14 metros`$`Polinomial simples`
+lista_modelos_ajustados <- list(
+  `half-normal` = cutia_tap_arap_hn, 
+  `hazard-rate` = cutia_tap_arap_hr, 
+  uniforme = cutia_tap_arap_unif
 )
-```
 
-```{r}
-summarize_ds_models(
-  cutia_tap_arap_hn$`12 metros`$`Sem termo`,
-cutia_tap_arap_hn$`12 metros`$Cosseno,
-  cutia_tap_arap_hn$`12 metros`$`Hermite polinomial`,
-cutia_tap_arap_hr$`12 metros`$`Sem termo`,
-cutia_tap_arap_hr$`12 metros`$Cosseno,
-cutia_tap_arap_hr$`12 metros`$`Polinomial simples`,
-cutia_tap_arap_unif$`12 metros`$Cosseno,
-cutia_tap_arap_unif$`12 metros`$`Polinomial simples`
-)
-```
+selecao_funcao_deteccao_termo_ajsute <- selecionar_funcao_deteccao_termo_ajuste(lista_modelos_ajustados)
 
-```{r}
-summarize_ds_models(
-  cutia_tap_arap_hn$`10 metros`$`Sem termo`,
-cutia_tap_arap_hn$`10 metros`$Cosseno,
-  cutia_tap_arap_hn$`10 metros`$`Hermite polinomial`,
-cutia_tap_arap_hr$`10 metros`$`Sem termo`,
-cutia_tap_arap_hr$`10 metros`$Cosseno,
-cutia_tap_arap_hr$`10 metros`$`Polinomial simples`,
-cutia_tap_arap_unif$`10 metros`$Cosseno,
-cutia_tap_arap_unif$`10 metros`$`Polinomial simples`
-)
-```
-
-```{r}
-summarize_ds_models(
-  cutia_tap_arap_hn$`7 metros`$`Sem termo`,
-cutia_tap_arap_hn$`7 metros`$Cosseno,
-  cutia_tap_arap_hn$`7 metros`$`Hermite polinomial`,
-cutia_tap_arap_hr$`7 metros`$`Sem termo`,
-cutia_tap_arap_hr$`7 metros`$Cosseno,
-cutia_tap_arap_hr$`7 metros`$`Polinomial simples`,
-cutia_tap_arap_unif$`7 metros`$Cosseno,
-cutia_tap_arap_unif$`7 metros`$`Polinomial simples`
-)
+selecao_funcao_deteccao_termo_ajsute
 ```
 
 #### Resumir o resultado dos modelos
@@ -248,39 +174,6 @@ plot(cutia_tap_arap_hr_poly, breaks = seq(0, 20, 2.5))
 plot(cutia_tap_arap_hr_cos, breaks = seq(0, 20, 2.5))
 ```
 
-## Checagem e seleção de modelos
-
-Podemos usar a função `summary` para obter informações importantes sobre o modelo.
-
-```{r}
-
-lista_modelos <- list(
-  cutia_tap_arap_hn,
-  cutia_tap_arap_hn_herm,
-  cutia_tap_arap_hn_cos,
-  cutia_tap_arap_hr,
-  cutia_tap_arap_hr_poly,
-  cutia_tap_arap_hr_cos
-)
-
-purrr::map(lista_modelos, \(x) summary(x))
-```
-
-```{r}
-summarize_ds_models(
-  cutia_tap_arap_hn,
-  cutia_tap_arap_hn_herm,
-  cutia_tap_arap_hn_cos,
-  cutia_tap_arap_hr,
-  cutia_tap_arap_hr_poly,
-  cutia_tap_arap_hr_cos
-)
-
-
-```
-
-O resultado inclui detalhes sobre o dado e a especificação do modelo, assim como dos coeficientes ($\beta_{j}$) e sua inceteza, a média do valor de detectabilidade e sua incerteza e uma estimativa da abundância na área coberta pela amostragem (sem levar em consideração o tamanho dos agrupamentos, ou bandos).
-
 ### Bondade de ajuste
 
 Para visualizar quão bem a função de detecção se ajusta aos dados quanto temos as distâncias exatas podemos usar um plot de quantis empíricos x teóricos (Q-Q plot). Ele compara a função de distribuição cumulativa (CDF) dos valores ajustados da função detecção a distribuição empírica dos dados (EDF).
@@ -288,17 +181,8 @@ Para visualizar quão bem a função de detecção se ajusta aos dados quanto te
 Também podemos usar o teste de Cramér-von Mises para testar se os pontos da EDF e da CDF tem origem na mesma distribuição. O teste usa a soma de todas as distâncias entre um ponto e a linha y = x para formar a estatística a ser testada. Um resultado significativo fornece evidência contra a hiipótese nula, sugerindo que o modelo não se ajusta bem aos dados.
 
 ```{r}
-# ajustando um modelo Half-normal
-cutia_hn <- ds(data = cutia_tap_arap_15,
-                 truncation = 20,
-                 transect = "line",
-                 key = "hn", 
-                 adjustment = NULL)
-
 # conduzindo o teste dfe bondadede ajuste de Cramer-von Mises
-gof_ds(cutia_hn)
-
-gof_ds(cutia_hr_time)
+gof_ds(cutia_tap_arap_hn$`Sem termo`)
 ```
 
 O resutlado do teste aponta que o modelo *Half-normal* deve ser descartado.
