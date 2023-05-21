@@ -1722,8 +1722,10 @@ plotar_distribuicao_distancia_interativo <- function(
   box <- dados |>
     ggplot2::ggplot() +
     ggplot2::aes(x = distance) +
-    ggplot2::geom_boxplot(col = "black",
-                          fill = "chartreuse4") +
+    ggplot2::geom_boxplot(
+      col = "black",
+      fill = "chartreuse4"
+    ) +
     ggplot2::scale_y_continuous(
       breaks = NULL,
       limits = c(-.8, .8)) +
