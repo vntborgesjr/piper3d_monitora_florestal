@@ -62,13 +62,31 @@ cutia_tap_arap_dist_trunc$selecao
 
 Histogramas resultantes dos modelos, com todas as distâncias de truncagem, para auxiliar na seleção da melhor distãncia.
 
+```{r}
+plotar_funcao_deteccao_selecao_distancia_truncamento(cutia_tap_arap_dist_trunc)
+```
+
 ##### Ajustando diferentes modelos de funções de deteção
 
-###### Uniforme + Cosseno
+###### Uniforme com termos de ajuste Cosseno e polinomial simples
 
-###### Half-Normal sem termos de ajuste e com termos de ajuste
 
-###### Hazard-rate sem termos de ajuste e com termos de ajuste
+
+###### Half-Normal sem termos de ajuste e com termos de ajuste Cosseno e Polinomial de Hermite
+
+```{r}
+# ajustando a função de detecção half-normal para um truncamento de 25% dos dados
+cutia_tap_arap_hn <- cutia_tap_arap |> 
+  ajuste_modelos_distance_hn(truncamento = "25%")
+```
+
+###### Hazard-rate sem termos de ajuste e com termos de ajuste Cosseno e Polinomial de Hermite
+
+```{r}
+# ajustando a função de detecção hazard-rate para um truncamento de 25% dos dados
+cutia_tap_arap_hr <- cutia_tap_arap |> 
+  ajuste_modelos_distance_hr(truncamento = "25%")
+```
 
 ##### Comparando os modelos
 
