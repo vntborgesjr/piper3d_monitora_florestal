@@ -1,0 +1,432 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+title: "Estrutura dos Resultados"
+output: html_document
+date: "2023-05-20"
+---
+
+# Fluxo de análise dos dados:
+
+A seguir, apresentamos o fluxo de análise dos dados que envolve a fase exploratória, truncamento, ajuste e avaliação de modelos e estimativas de abundância e densidade para as espécies que selecionamos como modelo. Usamos como critérios de seleção tanto o número de ocorrências por Unidade de Conservação quanto a distribuição das frequências de observação, nos casos em que isso foi possível. De forma geral, as espécies com número satisfatório de ocorrências (\>60), apresentaram pico de observações próximos a zero.
+
+Para todas as espécies modelo, nós implementamos duas estratégias para lidar com os efeitos indesejados nos dados: pico próximo a zero (*heaping near zero*) e número excessivo de repetições amostrais na mesma trilha. Para lidar com os picos, testamos o uso dos dados com distâncias exatas e distâncias agrupadas. Para lidar com as repetições, testamos a análise dos dados com todas as repetições e com o número de repetições reduzidas.
+
+Especies com maior numero de ocorrencias/UC possibilitam testar, posteriormente, estratificações nos dados, preservando um número de ocorrências satisfatório dentro dos estratos. Por isso começamos apresentando um fluxo completo de análise, incluindo Amostragem por Distância Convencional, Amostragem por Distância com Múltiplas Covariáveis e Amostragem por Distância com Estratificação nos dados com as espécies com maior número de ocorrência.
+
+## PRIMEIRO MODELO - Dasyprocta croconota - Resex Tapajós Arapiuns
+
+Essa é a espécie com o mair número de ocorrências para uma mesma UC. Apresentou, como a maioria das espécies em diferentes UCs, um pico de ocorrências próximo a zero.
+
+### Carregar Dados
+
+Para selecionar do conjunto de dados da espécie e a Unidade de conservação de interesse, usar a função `transforma_para_distanceR_com_repeticao_filtra_uc_sp()`, especificando o nome da Unidade de conservação através do argumento `nome_uc` e o nome da espécie através do argumento `nome_sp`.
+
+```{r}
+# carregar dados
+cutia_tap_arap <- transforma_para_distanceR_com_repeticao_filtra_uc_sp(
+  nome_uc = "Resex Tapajos-Arapiuns",
+  nome_sp = "Dasyprocta croconota"
+) 
+
+cutia_tap_arap
+```
+
+### Amostragem por Distância Convencional
+
+#### Fluxo 1 - Distâncias exatas com todas as repetições
+
+##### Plotando o histograma das frequências de ocorrência pela distância
+
+O histograma interativo está disponível no app em Shiny `app_distancia_interativo.R`. A distribuição dos dados no histograma permite observar um pico de observações próximo a zero, além de uma considerável perda em detectabilidade a partir dos 20m. Vamos testar diferentes proporções de truncamento.
+
+```{r, fig.height=15, fig.width=10}
+cutia_tap_arap |> 
+  drop_na(distance) |> 
+plotar_distribuicao_distancia_interativo(largura_caixa = 1)
+```
+
+```{r}
+
+```
+
+##### Testando distância de truncamento (*w*)
+
+Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de distribuição half-normal. Optamos por truncar os dados pela percentagem para padronizar a rotina para diferentes espécies. Buckland et al. (2001) sugere um corte entre 5-10% das observações detectadas nas maiores distãncias. Vamos selecionar o valor de corte pelo modelo com melhor ajuste.
+
+###### Tabela com resumo comparativo dos modelos
+
+```{r}
+# conduz a selecao da melhor distancia de truncamento a partir do ajsute de modelos com funcao de deteccao half-normal sem termos de ajuste
+cutia_tap_arap_dist_trunc <- cutia_tap_arap |> 
+  selecionar_distancia_truncamento()
+
+cutia_tap_arap_dist_trunc$selecao
+```
+
+###### Plotando o histograma com os dados truncados.
+
+Histogramas resultantes dos modelos, com todas as distâncias de truncagem, para auxiliar na seleção da melhor distãncia.
+
+```{r}
+plotar_funcao_deteccao_selecao_distancia_truncamento(cutia_tap_arap_dist_trunc)
+```
+
+##### Ajustando diferentes modelos de funções de deteção
+
+###### Uniforme com termos de ajuste Cosseno e polinomial simples
+
+```{r}
+# ajustando a função de detecção uniforme para um truncamento de 25% dos dados
+cutia_tap_arap_unif <- cutia_tap_arap |> 
+  ajuste_modelos_distance_unif(truncamento = "10%")
+```
+
+###### Half-Normal sem termos de ajuste e com termos de ajuste Cosseno e Polinomial de Hermite
+
+```{r}
+# ajustando a função de detecção half-normal para um truncamento de 25% dos dados
+cutia_tap_arap_hn <- cutia_tap_arap |> 
+  ajuste_modelos_distance_hn(truncamento = "10%")
+```
+
+###### Hazard-rate sem termos de ajuste e com termos de ajuste Cosseno e Polinomial de Hermite
+
+```{r}
+# ajustando a função de detecção hazard-rate para um truncamento de 25% dos dados
+cutia_tap_arap_hr <- cutia_tap_arap |> 
+  ajuste_modelos_distance_hr(truncamento = "10%")
+```
+
+##### Comparando os modelos
+
+###### Tabela com o resumo comparativo dos modelos
+
+```{r}
+lista_modelos_ajustados <- list(
+  `half-normal` = cutia_tap_arap_hn, 
+  `hazard-rate` = cutia_tap_arap_hr, 
+  uniforme = cutia_tap_arap_unif
+)
+
+selecao_funcao_deteccao_termo_ajsute <- selecionar_funcao_deteccao_termo_ajuste(lista_modelos_ajustados)
+
+selecao_funcao_deteccao_termo_ajsute
+```
+
+###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
+
+###### Teste de bondade de ajuste dos modelos e Q-Q plots
+
+##### Avaliando as estimativas de Abundância e Densidade
+
+```{r}
+# área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
+sagui_mont_tumuc_hn$`Sem termo`$dht$individuals$summary[1:9]
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
+sagui_mont_tumuc_hn$`Sem termo`$dht$individuals$Nhat.by.sample[1:8]
+```
+
+```{r}
+# total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
+sagui_mont_tumuc_hn$`Sem termo`$dht$individuals$D
+
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
+sagui_mont_tumuc_hr$`Sem termo`$dht$individuals$summary[1:9]
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
+sagui_mont_tumuc_hr$`Sem termo`$dht$individuals$Nhat.by.sample[1:8]
+```
+
+```{r}
+# total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
+sagui_mont_tumuc_hr$`Sem termo`$dht$individuals$D
+```
+
+#### Fluxo 2 - Distâncias exatas com repetições reduzidas
+
+##### Plotando o histograma das frequências de ocorrência pela distância
+
+O histograma interativo está disponível no app em Shiny `app_distancia_interativo.R`. A distribuição dos dados no histograma permite observar um pico de observações próximo a zero, além de uma considerável perda em detectabilidade a partir dos 20m. Vamos testar diferentes proporções de truncamento.
+
+##### Testando distância de truncamento (*w*)
+
+Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de distribuição half-normal. Optamos por truncar os dados pela percentagem para padronizar a rotina para diferentes espécies. Buckland et al. (2001) sugere um corte entre 5-10% das observações detectadas nas maiores distãncias. Vamos selecionar o valor de corte pelo modelo com melhor ajuste.
+
+###### Tabela com resumo comparativo dos modelos
+
+###### Plotando o histograma com os dados truncados.
+
+##### Ajustando diferentes modelos de funções de deteção
+
+###### Uniforme + Cosseno
+
+###### Half-Normal sem termos de ajuste e com termos de ajuste
+
+###### Hazard-rate sem termos de ajuste e com termos de ajuste
+
+##### Comparando os modelos
+
+###### Tabela com o resumo comparativo dos modelos
+
+###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
+
+###### Teste de bondade de ajuste dos modelos e Q-Q plots
+
+##### Avaliando as estimativas de Abundância e Densidade
+
+#### Fluxo 3 - Distâncias agrupadas com todas as repetições
+
+##### Plotando o histograma das frequências de ocorrência pela distância
+
+O histograma interativo está disponível no app em Shiny `app_distancia_interativo.R`. A distribuição dos dados no histograma permite observar um pico de observações próximo a zero, além de uma considerável perda em detectabilidade a partir dos 20m. Vamos testar diferentes proporções de truncamento.
+
+##### Testando distância de truncamento (*w*)
+
+Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de distribuição half-normal. Optamos por truncar os dados pela percentagem para padronizar a rotina para diferentes espécies. Buckland et al. (2001) sugere um corte entre 5-10% das observações detectadas nas maiores distãncias. Vamos selecionar o valor de corte pelo modelo com melhor ajuste.
+
+###### Tabela com resumo comparativo dos modelos
+
+###### Plotando o histograma com os dados truncados.
+
+##### Ajustando diferentes modelos de funções de deteção
+
+###### Uniforme + Cosseno
+
+###### Half-Normal sem termos de ajuste e com termos de ajuste
+
+###### Hazard-rate sem termos de ajuste e com termos de ajuste
+
+##### Comparando os modelos
+
+###### Tabela com o resumo comparativo dos modelos
+
+###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
+
+###### Teste de bondade de ajuste dos modelos e Q-Q plots
+
+##### Avaliando as estimativas de Abundância e Densidade
+
+#### Fluxo 4 - Distâncias agrupadas com repetições reduzidas
+
+##### Plotando o histograma das frequências de ocorrência pela distância
+
+O histograma interativo está disponível no app em Shiny `app_distancia_interativo.R`. A distribuição dos dados no histograma permite observar um pico de observações próximo a zero, além de uma considerável perda em detectabilidade a partir dos 20m. Vamos testar diferentes proporções de truncamento.
+
+##### Testando distância de truncamento (*w*)
+
+Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de distribuição half-normal. Optamos por truncar os dados pela percentagem para padronizar a rotina para diferentes espécies. Buckland et al. (2001) sugere um corte entre 5-10% das observações detectadas nas maiores distãncias. Vamos selecionar o valor de corte pelo modelo com melhor ajuste.
+
+###### Tabela com resumo comparativo dos modelos
+
+###### Plotando o histograma com os dados truncados.
+
+##### Ajustando diferentes modelos de funções de deteção
+
+###### Uniforme + Cosseno
+
+###### Half-Normal sem termos de ajuste e com termos de ajuste
+
+###### Hazard-rate sem termos de ajuste e com termos de ajuste
+
+##### Comparando os modelos
+
+###### Tabela com o resumo comparativo dos modelos
+
+###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
+
+###### Teste de bondade de ajuste dos modelos e Q-Q plots
+
+##### Avaliando as estimativas de Abundância e Densidade
+
+### Amostragem por Distância com Múltiplas Covariáveis
+
+Após testar as quatro estratégias anteriores para lidar com efeitos indesejados nos dados, escolhemos a estratégia com melhores resultados, considerando a bondade de ajuste dos modelos e os coeficientes de variação das estimativas de abundância e densidade, para adicionar covariávies. Consideramos, com base nos dados do Programa Monitora, duas covariáveis. A primeira dela, tamanho do grupo. De forma geral, pode existir uma tendência a um viés no tamanho do grupo com a distância, com a perda de detectabilidade para grupos menores. Além disso, o tamanho do grupo também é utilizado para corrigir as estimativas de abudância e densidade. A outra covariável criamos a partir dos dados de horário de início e horário de registro das espécies, calculando os minutos após o início da amostragem. Muitas espécies variam sua atividade ao longo do dia, e podem ser mais ou menos detectáveis de acordo com o horário.
+
+#### Explorando covariáveis
+
+##### Gráficos exploratórios
+
+###### Distância x Tamanho do grupo
+
+###### Distância x Minutos após o início da amostragem
+
+##### Ajustando diferentes modelos com covariáveis
+
+Para o uso de coveriáveis, podemos usar somente as distribuições half-normal ou hazard-rate, pois ambas possuem o parâmetro escalar pelo qual o vetor das covariáveis será multiplicado. Não é recomendável o uso de termos de ajuste com o uso de covariáveis pela grande chance de perda de monotonicidade nas curvas das funções de detecção. Assim, vamos trabalhar com as seguintes combinações de modelos
+
+###### Half-normal sem termos de ajuste (HN)
+
+###### HN + Tamanho do grupo (HN + S)
+
+###### HN + Minutos após o início da amostragem (HN + M)
+
+###### HN + Tamanho do grupo + Minutos após início da amostragem (HN + S + M)
+
+###### Hazard-rate sem termos de ajuste (HZ)
+
+###### HZ + Tamanho do grupo (HZ + S)
+
+###### HZ + Minutos após o início da amostragem (HZ + M)
+
+###### HZ + Tamanho do grupo + Minutos após início da amostragem (HZ + S + M)
+
+##### Comparando os modelos
+
+###### Tabela com o resumo comparativo dos modelos
+
+###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
+
+###### Teste de bondade de ajuste dos modelos e Q-Q plots
+
+##### Avaliando as estimativas de Abundância e Densidade
+
+Para o uso de covariáveis, as estimativas de abundância/densidade devem ser feitas através do bootstrap.
+
+### Amostragem por Distância com Estratificação
+
+O uso da estratificação, no caso dos dados do progama monitora, pode ser usado a partir de duas abordagens. A primeira delas seria focada na dinâmica populacional, para estimar abundâncias e densidades em períodos amostrais diferentes e acompanhar o tamanho da população ao longo do tempo. Para essa abordagem, estratificar os dados por ano permite que sejam feitas estas estimativas. O pacote Distance para o R é mais limitado que o programa Distance para o Windows em termos de opções de comando para estratificar os dados por amostragem, e entende a estratificação através da variável `Region.Label`, usada para informar estratificação espacial. Como a nossa intenção é estratificar por ano, vamos inserir os anos como estratos na variável `Region.Label`, assumindo que se tratam de amostras diferentes, pois nosso interesse está na variação nos dados, independente da fonte de variação ser espacial ou temporal.
+
+Uma outra abordagem possível é usar a estratificação espacial. No caso dos dados do Programa Monitora, a variação entre as UCs para uma mesma espécie parece ser mais relevante que a variação dentro de uma mesma UC, pois entendemos que não há um desenho amostral sistematizado para a distriubuição das Estações Amostrais em cada UC que justifique testar hipóteses sobre variação nas abundâncias e densidades. Assim, optamos por usar a estratificação espacial para dados de uma mesma espécie em diferentes UCs. Exploramos em maiores detalhes as duas abordagens a seguir.
+
+#### Estraficação dos dados por Ano de amostragem:
+
+##### Explorando os dados dentro de cada estrato temporal:
+
+Antes de ajustar os modelos e gerar as estimativas, é importante verificar o número de ocorrências dentro de cada ano. Pois, ao estratificar, ajustaremos uma função de detecção para cada estrato.
+
+###### Tabela com número de ocorrências por ano para Dasyprocta croconota na Resex Tapajós-Arapiuns
+
+Tabela com dados filtrados. Tabela dinâmica disponível na **Parte XXX**
+
+##### Ajustando a função de detecção para os dados estratificados
+
+Até agora, exploramos diferentes abordagens para a Amostragem por Distância convencional e com o uso de Múltiplas Covariávies, e selecionamos o modelo que melhor se ajustou aos dados. Nesta etapa, não vamos testar novos modelos de ajuste. Iremos ajustar o melhor modelo do fluxo anterior aos dados estratificados.
+
+###### Tabela com o resumo dos resultados de ajuste do modelo para cada ano
+
+##### Avaliando as estimativas de Abundância e Densidade
+
+Para o uso de covariáveis, as estimativas de abundância/densidade devem ser feitas através do bootstrap.
+
+#### Estratificação dos dados por Unidade de Conservação
+
+Aqui, vamos explorar para uma mesma espécie, dados de diferentes Unidades de Conservação ao mesmo tempo.
+
+##### Explorando os dados dentro de cada estrato espacial:
+
+Antes de ajustar os modelos e gerar as estimativas, é importante verificar o número de ocorrências dentro de cada UC. Pois, ao estratificar, ajustaremos uma função de detecção para cada estrato. Caso tenham UCs com um número muito baixo de ocorrências (\<30), considerar não incluir na análise.
+
+###### Tabela com número de ocorrências por Unidade de Conservaçaõ para Dasyprocta croconota
+
+Tabela com dados filtrados. Tabela dinâmica disponível na **Parte XXX**
+
+##### Plotando o histograma das frequências de ocorrência pela distância
+
+O histograma interativo está disponível no app em Shiny `app_distancia_interativo.R`. A distribuição dos dados no histograma permite observar um pico de observações próximo a zero, além de uma considerável perda em detectabilidade a partir dos 20m. Vamos testar diferentes proporções de truncamento.
+
+##### Testando distância de truncamento (*w*)
+
+Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de distribuição half-normal. Optamos por truncar os dados pela percentagem para padronizar a rotina para diferentes espécies. Buckland et al. (2001) sugere um corte entre 5-10% das observações detectadas nas maiores distãncias. Vamos selecionar o valor de corte pelo modelo com melhor ajuste.
+
+###### Tabela com resumo comparativo dos modelos
+
+###### Plotando o histograma com os dados truncados.
+
+##### Ajustando diferentes modelos para dados Globais
+
+\#**AQUI A GENTE PRECISA TOMAR UMA DECISÃO IMPORTANTE**
+
+É necessário testar os quatro fluxos: todas/poucas repetições x distancias exatas/agrupadas? Preciso ver os resultados dos fluxos anteriores para planejar melhor esta etapa.
+
+Para a estratificação, vamos testar diretamento os modelos com e sem covariáveis. Vamos nos limitar às distribuições half-normal e hazard-rate, pois são as únicas que comportam o uso das covariáveis.
+
+###### Half-normal sem termos de ajuste (HN)
+
+###### HN + Tamanho do grupo (HN + S)
+
+###### HN + Minutos após o início da amostragem (HN + M)
+
+###### HN + Tamanho do grupo + Minutos após início da amostragem (HN + S + M)
+
+###### Hazard-rate sem termos de ajuste (HZ)
+
+###### HZ + Tamanho do grupo (HZ + S)
+
+###### HZ + Minutos após o início da amostragem (HZ + M)
+
+###### HZ + Tamanho do grupo + Minutos após início da amostragem (HZ + S + M)
+
+##### Comparando os modelos
+
+###### Tabela com o resumo comparativo dos modelos
+
+###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
+
+###### Teste de bondade de ajuste dos modelos e Q-Q plots
+
+##### Avaliando as estimativas de Abundância e Densidade
+
+Para modelos com covariáveis as estimativas de abundância e densidade devem ser feitas por bootstrap
+
+##### Ajustando diferentes modelos para os dados Estratificados
+
+A redução no tamanho amostral geralmente faz com que os modelos para os dados globais tenham um ajuste melhor que os modelos ajustados aos estratos. Um critério para avaliar este ajuste é comparar o somatório dos valores de AIC para cada estrato com o valor de AIC do modelo global. Se a soma dos valores de AIC dos estratos for menor que o AIC global, significa que o ajuste foi melhor para os dados estratificados.
+
+\#**AQUI TAMBÉM PRECISA TOMAR UMA DECISÃO IMPORTANTE**
+
+Rodamos todos os modelos para os dados estratificados? Ou partimos do melhor modelo para dados globais?
+
+###### Half-normal sem termos de ajuste (HN)
+
+###### HN + Tamanho do grupo (HN + S)
+
+###### HN + Minutos após o início da amostragem (HN + M)
+
+###### HN + Tamanho do grupo + Minutos após início da amostragem (HN + S + M)
+
+###### Hazard-rate sem termos de ajuste (HZ)
+
+###### HZ + Tamanho do grupo (HZ + S)
+
+###### HZ + Minutos após o início da amostragem (HZ + M)
+
+###### HZ + Tamanho do grupo + Minutos após início da amostragem (HZ + S + M)
+
+##### Comparando os modelos
+
+###### Tabela com o resumo comparativo dos modelos
+
+Olhar também valores brutos de AIC dos modelos globais e comparar com os estratificados.
+
+###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
+
+###### Teste de bondade de ajuste dos modelos e Q-Q plots
+
+##### Avaliando as estimativas de Abundância e Densidade
+
+Para modelos com covariáveis as estimativas de abundância e densidade devem ser feitas por bootstrap
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+plot(cars)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
