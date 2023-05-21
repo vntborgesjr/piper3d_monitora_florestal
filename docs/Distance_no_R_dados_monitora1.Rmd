@@ -107,12 +107,7 @@ cutia_tap_arap_dist_trunc$selecao
 ```
 
 ```{r}
-cutia_tap_arap_dist_trunc$modelos |> 
-  purrr::map(
-    \(.x) plot(
-      .x
-    )
-  )
+plotar_funcao_deteccao_selecao_distancia_truncamento(cutia_tap_arap_dist_trunc)
 ```
 
 ### Ajustando funções de detecção no R com a melhor distância de truncamento
@@ -162,14 +157,16 @@ O que tem que ter?
 Os gráficos (probabilidade de detecção pela distância, com a curva ajustada, exemplo abaixo, fazer no ggplot), resultado do goodness of fit (gof_ds()), cada modelo vai ter que ter um nome diferente numa tabela(?)
 
 ```{r}
-plot(cutia_tap_arap_hn, breaks = seq(0, 20, 2.5))
-plot(cutia_tap_arap_hn_herm, breaks = seq(0, 20, 2.5))
-plot(cutia_tap_arap_hn_cos, breaks = seq(0, 20, 2.5))
-plot(cutia_tap_arap_hr, breaks = seq(0, 20, 2.5))
-plot(cutia_tap_arap_hr_poly, breaks = seq(0, 20, 2.5))
-plot(cutia_tap_arap_hr_cos, breaks = seq(0, 20, 2.5))
-```
+modelos_selecionados <- list(
+  cutia_tap_arap_hr$`Sem termo`,
+  cutia_tap_arap_unif$Cosseno,
+  cutia_tap_arap_hn$Cosseno,
+  cutia_tap_arap_unif$`Polinomial simples`,
+  cutia_tap_arap_hn$`Sem termo`
+)
 
+plotar_funcao_deteccao_modelos_selecionados(modelos_selecionados)
+```
 ### Bondade de ajuste
 
 Para visualizar quão bem a função de detecção se ajusta aos dados quanto temos as distâncias exatas podemos usar um plot de quantis empíricos x teóricos (Q-Q plot). Ele compara a função de distribuição cumulativa (CDF) dos valores ajustados da função detecção a distribuição empírica dos dados (EDF).
