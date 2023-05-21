@@ -258,7 +258,7 @@ Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de dis
 
 ##### Ajustando diferentes modelos para dados Globais
 
-**AQUI A GENTE PRECISA TOMAR UMA DECISÃO IMPORTANTE**
+#**AQUI A GENTE PRECISA TOMAR UMA DECISÃO IMPORTANTE**
 
 É necessário testar os quatro fluxos: todas/poucas repetições x distancias exatas/agrupadas? Preciso ver os resultados dos fluxos anteriores para planejar melhor esta etapa.
 
@@ -296,7 +296,7 @@ Para modelos com covariáveis as estimativas de abundância e densidade devem se
 
 A redução no tamanho amostral geralmente faz com que os modelos para os dados globais tenham um ajuste melhor que os modelos ajustados aos estratos. Um critério para avaliar este ajuste é comparar o somatório dos valores de AIC para cada estrato com o valor de AIC do modelo global. Se a soma dos valores de AIC dos estratos for menor que o AIC global, significa que o ajuste foi melhor para os dados estratificados.
 
-**AQUI TAMBÉM PRECISA TOMAR UMA DECISÃO IMPORTANTE**
+#**AQUI TAMBÉM PRECISA TOMAR UMA DECISÃO IMPORTANTE**
 
 Rodamos todos os modelos para os dados estratificados? Ou partimos do melhor modelo para dados globais?
 
