@@ -109,7 +109,9 @@ cutia_tap_arap_dist_trunc$selecao
 ```{r}
 cutia_tap_arap_dist_trunc$modelos |> 
   purrr::map(
-    \(.x) plot(.x)
+    \(.x) plot(
+      .x
+    )
   )
 ```
 
@@ -123,10 +125,6 @@ cutia_tap_arap_hn <- cutia_tap_arap |>
   ajuste_modelos_distance_hn(truncamento = "25%")
 ```
 
-```{r}
-cutia_tap_arap_hn
-```
-
 #### *Hazard-Rate* sem termos de ajuste e com termos de ajuste Cosseno e Polinomial de Hermite
 
 ```{r}
@@ -137,8 +135,6 @@ cutia_tap_arap_hr <- cutia_tap_arap |>
 
 #### *Uniform* sem termos de ajuste e com termos de ajuste Cosseno e Polinomial de Hermite
 
-Ajustando um modelo ao dados das cutias *Dasyprocta croconota*, configurando uma distância limite de 20m e usando *Uniform* como *key function* usando o argumento `key`, sem termo de ajuste.
-
 ```{r}
 # ajustando a função de detecção uniforme para um truncamento de 25% dos dados
 cutia_tap_arap_unif <- cutia_tap_arap |> 
@@ -146,7 +142,7 @@ cutia_tap_arap_unif <- cutia_tap_arap |>
 ```
 
 ###### Seleção de modelos com funções de detecção e termos de ajuste com melhor ajuste aos dados
-
+ 
 ```{r}
 lista_modelos_ajustados <- list(
   `half-normal` = cutia_tap_arap_hn, 
