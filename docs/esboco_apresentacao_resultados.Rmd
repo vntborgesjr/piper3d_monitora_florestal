@@ -32,6 +32,8 @@ Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de dis
 
 ##### Plotando o histograma com os dados truncados.
 
+Histogramas resultantes dos modelos, com todas as distâncias de truncagem, para auxiliar na seleção da melhor distãncia.
+
 ##### Ajustando diferentes modelos de funções de deteção
 
 ###### Uniforme + Cosseno
@@ -148,7 +150,7 @@ Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de dis
 
 ### Amostragem por Distância com Múltiplas Covariáveis
 
-Após testar as quatro estratégias anteriores para lidar com efeitos indesejados nos dados, escolhemos a estratégia com melhores resultados, considerando a bondade de ajuste dos modelos e os coeficientes de variação das estimativas de abundância e densidade, para adicionar covariávies. Consideramos, com base nos dados do Programa Monitora, duas covariáveis. A primeira dela, tamanho do grupo, é importante porque além de poder sofrer efeitos com a distância, tendendo para o aumento do tamanho dos grupos com a perda da detectabilidade, ela também é utilizada para corrigir as estimativas de ambudância e densidade. A outra covariável criamos a partir dos dados de horário de início e horário de registro das espécies, calculando os minutos após o início da amostragem. Muitas espécies variam sua atividade ao longo do dia, e podem ser mais ou menos detectáveis de acordo com o horário.
+Após testar as quatro estratégias anteriores para lidar com efeitos indesejados nos dados, escolhemos a estratégia com melhores resultados, considerando a bondade de ajuste dos modelos e os coeficientes de variação das estimativas de abundância e densidade, para adicionar covariávies. Consideramos, com base nos dados do Programa Monitora, duas covariáveis. A primeira dela, tamanho do grupo. De forma geral, pode existir uma tendência a um viés no tamanho do grupo com a distância, com a perda de detectabilidade para grupos menores. Além disso, o tamanho do grupo também é utilizado para corrigir as estimativas de abudância e densidade. A outra covariável criamos a partir dos dados de horário de início e horário de registro das espécies, calculando os minutos após o início da amostragem. Muitas espécies variam sua atividade ao longo do dia, e podem ser mais ou menos detectáveis de acordo com o horário.
 
 #### Explorando covariáveis
 
