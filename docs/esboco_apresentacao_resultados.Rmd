@@ -16,6 +16,20 @@ Especies com maior numero de ocorrencias/UC possibilitam testar, posteriormente,
 
 Essa é a espécie com o mair número de ocorrências para uma mesma UC. Apresentou, como a maioria das espécies em diferentes UCs, um pico de ocorrências próximo a zero.
 
+### Carregar Dados
+
+Para selecionar do conjunto de dados da espécie e a Unidade de conservação de interesse, usar a função `transforma_para_distanceR_com_repeticao_filtra_uc_sp()`, especificando o nome da Unidade de conservação através do argumento `nome_uc` e o nome da espécie através do argumento `nome_sp`.
+
+```{r}
+# carregar dados
+cutia_tap_arap <- transforma_para_distanceR_com_repeticao_filtra_uc_sp(
+  nome_uc = "Resex Tapajos-Arapiuns",
+  nome_sp = "Dasyprocta croconota"
+) 
+
+cutia_tap_arap
+```
+
 ### Amostragem por Distância Convencional
 
 #### Fluxo 1 - Distâncias exatas com todas as repetições
