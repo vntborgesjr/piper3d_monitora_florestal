@@ -2448,10 +2448,10 @@ plotar_n_obs_validadas_interativo <- function(
 #' @export
 #'
 #' @examples
-selecao_distancia_truncamento <- function(
+selecionar_distancia_truncamento <- function(
     dados,
     dist_truncamento = list(
-      "25%" = "25%",
+      `25%` = "25%",
       `20%` = "20%", 
       `15%` = "15%", 
       `10%` = "10%",
@@ -2494,7 +2494,47 @@ selecao_distancia_truncamento <- function(
     select(!df:dist_truncamento)
   
   # retorna um data.frame com a selecao da melhor distancia de truncamento
-  return(tabela_selecao_dist_truncamento)
+  return(list(
+    modelos = modelos_hn_diferentes_dist_truncamento,
+    selecao = tabela_selecao_dist_truncamento
+  ))
+  
+}
+
+# Documentacao da funcao selecionar_funcao_deteccao_termo_ajuste() ------------------
+#' Title
+#'
+#' @param dados 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+selecionar_funcao_deteccao_termo_ajuste <- function(
+    dados
+) {
+  
+  # gerar rank das funcoes de deteccao e termos de ajuste
+  selecao_funcao_deteccao_termo_ajuste <- summarize_ds_models(
+    dados$`half-normal`$`Sem termo`,
+    dados$`half-normal`$Cosseno,
+    dados$`half-normal`$`Hermite polinomial`,
+    dados$`hazard-rate`$`Sem termo`,
+    dados$`hazard-rate`$Cosseno,
+    dados$`hazard-rate`$`Polinomial simples`,
+    dados$uniforme$Cosseno,
+    dados$uniforme$`Polinomial simples`
+  )
+  
+  # 
+  tabela_selecao_funcao_deteccao_termo_ajuste <- selecao_funcao_deteccao_termo_ajuste |> 
+    select(!1) |> 
+    rename(Model = `Key function`) |> 
+    distinct()
+  
+  # retorna um data.frame com a selecao das funcoes de deteccao e termos
+  # de ajuste
+  return(tabela_selecao_funcao_deteccao_termo_ajuste)
   
 }
 
