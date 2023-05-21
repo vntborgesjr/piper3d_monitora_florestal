@@ -5,10 +5,6 @@ author: "Luciana Fusinatto \n Vitor Borges-Júnior"
 date: Criado em 31 de março de 2023, atualizado em `r format(Sys.time(), '%d de %B
   de %Y')`
 output:
-  html_document:
-    toc: yes
-    toc_depth: '5'
-    df_print: paged
   html_notebook:
     toc: yes
     toc_depth: 5
@@ -536,7 +532,7 @@ Tapajós-Arapiuns.
 ![Distribuicao de Frequencia para *Dasyprocta croconota* na Resex
 Tapajos-Arapiuns](C:%5CUsers%5Clufus%5COneDrive%5CConsultorias%5CWWF_Especies%5CProduto2_Codigos%5CDistribuicao_freq_Dasyprocta_ResexTapajos.png){width="75%"}
 
-Este tipo de distribuição foi um padrão para as espécies com o maior
+Este tipo de distribuição foi predominante para as espécies com o maior
 número de ocorrência nos dados de aves e mamíferos do Programa Monitora
 Florestal. Acreditamos que existem dois fatores que podem estar causando
 esse acúmulo de dados em zero ou próximo a ele. Um deles seria um viés
@@ -552,20 +548,23 @@ valores de distância perpendicular nunca sejam arredondados.
 Para espécies que podem apresentar resposta de deslocamento em relação
 ao observador, um dos efeitos indesejados nos dados é o deslocamento das
 maiores frequências de observações para as distâncias perpendiculares
-intermediárias.
+intermediárias ao mesmo tempo que as frequências próximas ao observador
+são baixas. Uma alternativa, nesse caso, é constranger a função de
+deteção para monotonicidade, evitando que ela suba para se ajustar ao
+pico de frequência nas distâncias intermediárias.
 
-**parei por aqui... continua... ver melhor a estratégia de agrupar os
-dados**
+*Viés de tamanho de grupo*
 
-espécies com maior volume de dados total
-
--   maior volume de dados por UC -- exploração_01.nb.html (acho que o
-    .Rmd para gerar esse html não está na pasta Monitora). Eu tinha
-    gostado bastante desse documento, com as tabelas dinâmicas. Talvez
-    dê para selecionar as perguntas que são válidas de deixar/ tirar/
-    incluir. WWF - Projeto Monitora
--   espécies validadas
--   ...
+Um dos efeitos que pode ocorrer para espécies que formam grupos, é que
+grupos menores perdem a detectabilidade mais fácil do que grupos maiores
+com o aumento da distância. Esse viés pode ser testado na exploração dos
+dados das covariávies, plotando-se um gráfico de tamanho de grupo pela
+distância. Caso o viés ocorra, será uma observa uma tendência de
+registros somente de grupos maiores nas distâncias maiores. Nós adotamos
+a estratégia de tratar tamanho de grupo como covariável para espécies
+que formam grupos. Neste caso, ao mesmo tempo que lidamos com o efeito
+do tamanho do grupo na detectabilidade, incorporamos também o tamanho do
+grupo nas estimativas de densidade e abundância.
 
 ### **Exploração e seleção de dados**
 
