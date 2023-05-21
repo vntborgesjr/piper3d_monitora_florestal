@@ -44,7 +44,6 @@ cutia_tap_arap |>
 plotar_distribuicao_distancia_interativo(largura_caixa = 1)
 ```
 
-
 ##### Testando distância de truncamento (*w*)
 
 Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de distribuição half-normal. Optamos por truncar os dados pela percentagem para padronizar a rotina para diferentes espécies. Buckland et al. (2001) sugere um corte entre 5-10% das observações detectadas nas maiores distãncias. Vamos selecionar o valor de corte pelo modelo com melhor ajuste.
