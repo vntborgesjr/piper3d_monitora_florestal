@@ -32,6 +32,8 @@ Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de dis
 
 ##### Plotando o histograma com os dados truncados.
 
+Histogramas resultantes dos modelos, com todas as distâncias de truncagem, para auxiliar na seleção da melhor distãncia.
+
 ##### Ajustando diferentes modelos de funções de deteção
 
 ###### Uniforme + Cosseno
@@ -148,7 +150,7 @@ Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de dis
 
 ### Amostragem por Distância com Múltiplas Covariáveis
 
-Após testar as quatro estratégias anteriores para lidar com efeitos indesejados nos dados, escolhemos a estratégia com melhores resultados, considerando a bondade de ajuste dos modelos e os coeficientes de variação das estimativas de abundância e densidade, para adicionar covariávies. Consideramos, com base nos dados do Programa Monitora, duas covariáveis. A primeira dela, tamanho do grupo, é importante porque além de poder sofrer efeitos com a distância, tendendo para o aumento do tamanho dos grupos com a perda da detectabilidade, ela também é utilizada para corrigir as estimativas de ambudância e densidade. A outra covariável criamos a partir dos dados de horário de início e horário de registro das espécies, calculando os minutos após o início da amostragem. Muitas espécies variam sua atividade ao longo do dia, e podem ser mais ou menos detectáveis de acordo com o horário.
+Após testar as quatro estratégias anteriores para lidar com efeitos indesejados nos dados, escolhemos a estratégia com melhores resultados, considerando a bondade de ajuste dos modelos e os coeficientes de variação das estimativas de abundância e densidade, para adicionar covariávies. Consideramos, com base nos dados do Programa Monitora, duas covariáveis. A primeira dela, tamanho do grupo. De forma geral, pode existir uma tendência a um viés no tamanho do grupo com a distância, com a perda de detectabilidade para grupos menores. Além disso, o tamanho do grupo também é utilizado para corrigir as estimativas de abudância e densidade. A outra covariável criamos a partir dos dados de horário de início e horário de registro das espécies, calculando os minutos após o início da amostragem. Muitas espécies variam sua atividade ao longo do dia, e podem ser mais ou menos detectáveis de acordo com o horário.
 
 #### Explorando covariáveis
 
@@ -188,6 +190,32 @@ Para o uso de coveriáveis, podemos usar somente as distribuições half-normal 
 
 ##### Avaliando as estimativas de Abundância e Densidade
 
+Para o uso de covariáveis, as estimativas de abundância/densidade devem ser feitas através do bootstrap.
+
 ### Amostragem por Distância com Estratificação
 
-### 
+O uso da estratificação, no caso dos dados do progama monitora, pode ser usado a partir de duas abordagens. A primeira delas seria focada na dinâmica populacional, para estimar abundâncias e densidades em períodos amostrais diferentes e acompanhar o tamanho da população ao longo do tempo. Para essa abordagem, estratificar os dados por ano permite que sejam feitas estas estimativas. O pacote Distance para o R é mais limitado que o programa Distance para o Windows em termos de opções de comando para estratificar os dados por amostragem, e entende a estratificação através da variável `Region.Label`, usada para informar estratificação espacial. Como a nossa intenção é estratificar por ano, vamos inserir os anos como estratos na variável `Region.Label`, assumindo que se tratam de amostras diferentes, pois nosso interesse está na variação nos dados, independente da fonte de variação ser espacial ou temporal.
+
+Uma outra abordagem possível é usar a estratificação espacial. No caso dos dados do Programa Monitora, a variação entre as UCs para uma mesma espécie parece ser mais relevante que a variação dentro de uma mesma UC, pois entendemos que não há um desenho amostral sistematizado para a distriubuição das Estações Amostrais em cada UC que justifique testar hipóteses sobre variação nas abundâncias e densidades. Assim, optamos por usar a estratificação espacial para dados de uma mesma espécie em diferentes UCs. Exploramos em maiores detalhes as duas abordagens a seguir.
+
+#### Estraficação dos dados por Ano de amostragem:
+
+##### Explorando os dados dentro de cada estrato temporal:
+
+Antes de ajustar os modelos e gerar as estimativas, é importante verificar o número de ocorrências dentro de cada ano. Pois, ao estratificar, ajustaremos uma função de detecção para cada estrato.
+
+###### Tabela com número de ocorrências por ano para Dasyprocta croconota na Resex Tapajós-Arapiuns
+
+Tabela com dados filtrados. Tabela dinâmica disponível na **Parte XXX**
+
+##### Ajustando a função de detecção para os dados estratificados
+
+Até agora, exploramos diferentes abordagens para a Amostragem por Distância convencional e com o uso de Múltiplas Covariávies, e selecionamos o modelo que melhor se ajustou aos dados. Nesta etapa, não vamos testar novos modelos de ajuste. Iremos ajustar o melhor modelo do fluxo anterior aos dados estratificados.
+
+###### Tabela com o resumo dos resultados de ajuste do modelo para cada ano
+
+##### Avaliando as estimativas de Abundância e Densidade
+
+Para o uso de covariáveis, as estimativas de abundância/densidade devem ser feitas através do bootstrap.
+
+Estratificação dos dados
