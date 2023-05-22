@@ -2713,7 +2713,8 @@ testar_bondade_ajuste <- function(
     dados, 
     plot = FALSE,
     chisq = FALSE,
-    nc = NULL
+    nc = NULL,
+    breaks = breaks
     ) {
   
   # gera uma lista com os resultados dos testes de bondade de ajuste
@@ -2723,7 +2724,8 @@ testar_bondade_ajuste <- function(
         x, 
         plot = plot, 
         chisq = chisq,
-        nc = nc
+        nc = nc,
+        breaks = breaks
       )
     ) |> 
     # gerar o data.frame com os resultados dos testes de bondade de ajuste
