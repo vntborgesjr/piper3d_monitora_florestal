@@ -1070,6 +1070,30 @@ contar_n_uc <- function(
   return(n_ucs)
 }
 
+
+# Documentacaoda funcao gerar_caracteristicas_area_estudo_taxa_enc --------
+#' Title
+#'
+#' @param dados 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+gerar_caracteristicas_area_estudo_taxa_encontro <- function(dados) {
+  # área de estudo, tamanho da área de estudo, area coberta pelo esforço
+  # amostral, esforço amostral em metros, número de detecções, número de
+  # transectos (ea), taxa de encontro, coeficiente de variação da taxa
+  # de encontro  
+  caracteristicas_area_estudo_taxa_encontro <- dados$dht$individuals$summary[1:9]
+  
+  # retornar área de estudo, tamanho da área de estudo, area coberta pelo esforço
+  # amostral, esforço amostral em metros, número de detecções, número de
+  # transectos (ea), taxa de encontro, coeficiente de variação da taxa
+  # de encontro  
+  return(caracteristicas_area_estudo_taxa_encontro)
+}
+
 # Documentacao da funcao gerar_tabdin_dados_brutos() --------------------
 #' Gera uma tabela dinamica dos dados brutos
 #'
