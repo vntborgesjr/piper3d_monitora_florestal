@@ -1152,7 +1152,7 @@ gerar_caracteristicas_densidade <- function(
       `N de deteccoes` = n
     )
   
-  caracteristicas_densidade <- caracteristicas_esforco_abundancia_deteccao |>
+  caracteristicas_densidade <- caracteristicas_densidade |>
     mutate(Modelo = rep(resultado_selecao_modelos$Model, each = length(unique(caracteristicas_esforco_abundancia_deteccao$`Estacao amostral`)))) |> # pode ser um argumento da função
     relocate(Modelo, .before = Regiao)
   
