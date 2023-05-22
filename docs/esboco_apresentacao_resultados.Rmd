@@ -8,7 +8,7 @@ date: "2023-05-20"
 
 A seguir, apresentamos o fluxo de análise dos dados que envolve a fase exploratória, truncamento, ajuste e avaliação de modelos e estimativas de abundância e densidade para as espécies que selecionamos como modelo. Usamos como critérios de seleção tanto o número de ocorrências por Unidade de Conservação quanto a distribuição das frequências de observação, nos casos em que isso foi possível. De forma geral, as espécies com número satisfatório de ocorrências (\>60), apresentaram pico de observações próximos a zero.
 
-Para todas as espécies modelo, nós implementamos duas estratégias para lidar com os efeitos indesejados nos dados: pico próximo a zero (*heaping near zero*) e número excessivo de repetições amostrais na mesma trilha. Para lidar com os picos, testamos o uso dos dados com distâncias exatas e distâncias agrupadas. Para lidar com as repetições, testamos a análise dos dados com todas as repetições e com o número de repetições reduzidas.
+Nós usamos como modelo para este fluxo Dasyprocta croconota da Resex Tapajós-Arapiuns, pelo grande número de ocorrências para uma mesma UC. Nós implementamos duas estratégias para lidar com os efeitos indesejados nos dados: pico próximo a zero (*heaping near zero*) e número excessivo de repetições amostrais na mesma trilha. Para lidar com os picos, testamos o uso dos dados com distâncias exatas e distâncias agrupadas. Para lidar com as repetições, testamos a análise dos dados com todas as repetições e com o número de repetições reduzidas.
 
 Especies com maior numero de ocorrencias/UC possibilitam testar, posteriormente, estratificações nos dados, preservando um número de ocorrências satisfatório dentro dos estratos. Por isso começamos apresentando um fluxo completo de análise, incluindo Amostragem por Distância Convencional, Amostragem por Distância com Múltiplas Covariáveis e Amostragem por Distância com Estratificação nos dados com as espécies com maior número de ocorrência.
 
@@ -925,7 +925,6 @@ cutia_cov_hr_s <- cutia_tap_arap_quase_sem_repeticao |>
 ```
 
 ##### Comparando os modelos
-
 
 ```{r}
 
