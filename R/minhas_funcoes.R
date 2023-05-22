@@ -2714,7 +2714,7 @@ testar_bondade_ajuste <- function(
     plot = FALSE,
     chisq = FALSE,
     nc = NULL,
-    breaks = breaks
+    breaks = NULL
     ) {
   
   # gera uma lista com os resultados dos testes de bondade de ajuste
