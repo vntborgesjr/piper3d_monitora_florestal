@@ -1079,26 +1079,44 @@ contar_n_uc <- function(
 }
 
 
-# Documentacaoda funcao gerar_caracteristicas_area_estudo_taxa_encontro() --------
+# Documentacao da funcao gerar_caracteristicas_area_estudo_taxa_encontro() --------
 #' Title
 #'
 #' @param dados 
+#' @param resultado_selecao_modelos 
 #'
 #' @return
 #' @export
 #'
 #' @examples
-gerar_caracteristicas_area_estudo_taxa_encontro <- function(dados) {
-  # área de estudo, tamanho da área de estudo, area coberta pelo esforço
-  # amostral, esforço amostral em metros, número de detecções, número de
-  # transectos (ea), taxa de encontro, coeficiente de variação da taxa
-  # de encontro  
-  caracteristicas_area_estudo_taxa_encontro <- dados$dht$individuals$summary[1:9]
+gerar_caracteristicas_area_estudo_taxa_encontro <- function(
+    dados,
+    resultado_selecao_modelos
+) {
+  # arae total, densidade estimada, erro padrão da densidade estimada, 
+  # coeficiente de variação da densidade destimada, intervalo de
+  # confiança inferior e superior do coeficiente de variação, 
+  # gruas de liberdade
+  caracteristicas_area_estudo_taxa_encontro <- lista_modelos_ajustados_termos |> 
+    purrr::map(
+      \(dados) dados$dht$individuals$summary[1:9]
+    ) |> 
+    list_rbind() |> 
+    mutate(Modelo = resultado_selecao_modelos$Model) |> # pode ser um argumento da função
+    relocate(Modelo, .before = Region) |> 
+    rename(
+      Regiao = Region,
+      `Area coberta` = CoveredArea,
+      Esforco = Effort,
+      `Taxa de encontro` = ER,
+      `ep da Taxa de encontro` = se.ER,
+      `cv. da Taxa de encontro` = cv.ER
+    )
   
-  # retornar área de estudo, tamanho da área de estudo, area coberta pelo esforço
-  # amostral, esforço amostral em metros, número de detecções, número de
-  # transectos (ea), taxa de encontro, coeficiente de variação da taxa
-  # de encontro  
+  # área de estudo, tamanho da área de estudo, trilhas ou estações
+  # amostrais, esforço total em cada trilha, abundância estimada em cada
+  # estação amostral, número de detecções em cada estação amostral, 
+  # área total amostrada
   return(caracteristicas_area_estudo_taxa_encontro)
 }
 
