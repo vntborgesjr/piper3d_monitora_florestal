@@ -140,17 +140,15 @@ plotar_funcao_deteccao_modelos_selecionados(modelos_selecionados)
 ###### Teste de bondade de ajuste dos modelos e Q-Q plots
 
 ```{r}
+bondade_ajuste_fluxo1 <- testar_bondade_ajuste(modelos_selecionados)
+bondade_ajuste_fluxo1
+```
+
+```{r}
 bondade_ajuste <- modelos_selecionados |> 
   purrr::map(
     \(x) gof_ds(x, plot = FALSE)
   )
-
-teste_gf <- gof_ds(modelos_selecionados[[1]], plot = FALSE)
-bondade_ajuste
-```
-
-```{r}
-names(modelos_selecionados) <- selecao_funcao_deteccao_termo_ajsute$Model
 
 bondade_ajuste |> 
   purrr::map(
