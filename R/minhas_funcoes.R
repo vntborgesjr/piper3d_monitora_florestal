@@ -1153,7 +1153,7 @@ gerar_caracteristicas_densidade <- function(
     )
   
   caracteristicas_densidade <- caracteristicas_densidade |>
-    mutate(Modelo = rep(resultado_selecao_modelos$Model, each = length(unique(caracteristicas_esforco_abundancia_deteccao$`Estacao amostral`)))) |> # pode ser um argumento da função
+    mutate(Modelo = rep(resultado_selecao_modelos$Model, each = length(unique(caracteristicas_densidade$`Estacao amostral`)))) |> # pode ser um argumento da função
     relocate(Modelo, .before = Regiao)
   
   # área de estudo, tamanho da área de estudo, trilhas ou estações
