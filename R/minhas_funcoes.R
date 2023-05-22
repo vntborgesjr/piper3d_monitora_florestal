@@ -37,7 +37,8 @@ ajuste_modelos_distance_hn <- function(
       Cosseno = "cos", 
       `Hermite polinomial` = "herm"
     ),
-    truncamento = NULL
+    truncamento = NULL,
+    formula = ~ 1
 ) {
   # ajustando a função de detecção
   # Key function - Half-normal 
@@ -46,6 +47,7 @@ ajuste_modelos_distance_hn <- function(
     \(.x) Distance::ds(
       data = dados,
       truncation = truncamento,
+      formula = formula,
       key = "hn",
       adjustment = .x
     )
@@ -74,7 +76,8 @@ ajuste_modelos_distance_hr <- function(
       Cosseno = "cos", 
       `Polinomial simples` = "poly" 
     ),
-    truncamento = NULL
+    truncamento = NULL,
+    formula = ~ 1
 ) {
   # ajustando a função de detecção
   # Key function - Hazard-rate
@@ -83,6 +86,7 @@ ajuste_modelos_distance_hr <- function(
     \(.x) Distance::ds(
       data = dados,
       truncation = truncamento,
+      formula = formula,
       key = "hr",
       adjustment = .x
     )
@@ -111,7 +115,8 @@ ajuste_modelos_distance_unif <- function(
       Cosseno = "cos", 
       `Polinomial simples` = "poly" 
     ),
-    truncamento = NULL
+    truncamento = NULL,
+    formula = ~ 1
 ) {
   # ajustando a função de detecção
   # Key function - Uniforme
@@ -120,6 +125,7 @@ ajuste_modelos_distance_unif <- function(
     \(.x) Distance::ds(
       data = dados,
       truncation = truncamento,
+      formula = formula,
       key = "unif",
       adjustment = .x
     )
