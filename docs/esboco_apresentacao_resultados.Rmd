@@ -149,7 +149,6 @@ Olhando para os histogramas com modelos ajustados, é possível observar o efeit
 
 ###### Teste de bondade de ajuste dos modelos e Q-Q plots
 
-
 ```{r}
 bondade_ajuste_fluxo1 <- testar_bondade_ajuste(fluxo1_modelos_selecionados, plot = TRUE)
 bondade_ajuste_fluxo1
@@ -178,6 +177,8 @@ fluxo1_caracteristicas_area_estudo_taxa_encontro
 
 ##### Características de abundância, esforço e detecção
 
+#### VER ERRO
+
 ```{r}
 # área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
 
@@ -198,8 +199,6 @@ fluxo1_caracteristicas_densidade <- fluxo1_lista_modelos_ajustados_termos |>
 
 fluxo1_caracteristicas_densidade
 ```
-
-
 
 ##### AQUI FALTA AJUSTAR
 
@@ -289,15 +288,13 @@ cutia_tap_arap_hn$`Sem termo` |>
   gerar_caracteristicas_densidade()
 ```
 
-
-
 #### Fluxo 2 - Distâncias exatas com repetições reduzidas
 
 ##### Filtrando os dados para reduzir as repetições
 
 ```{r}
 dados_selecionados <- carregar_dados_selecionados()
-cutia_tap_arap_quase_sem_repeticao <- transforma_para_dsitanceR_quase_sem_repeticao_filtra_uc_sp(
+cutia_tap_arap_quase_sem_repeticao <- transforma_para_dsitanceR_quase_sem_repeticao_filtra_uc_sp_covariavel(
   dados = dados_selecionados,
   nome_uc = "Resex Tapajos-Arapiuns",
   nome_sp = "Dasyprocta croconota"
@@ -305,7 +302,6 @@ cutia_tap_arap_quase_sem_repeticao <- transforma_para_dsitanceR_quase_sem_repeti
 
 cutia_tap_arap_quase_sem_repeticao
 ```
-
 
 ##### Plotando o histograma das frequências de ocorrência pela distância
 
@@ -326,7 +322,6 @@ cutia_tap_arap_quase_sem_repeticao_dist_trunc <- cutia_tap_arap_quase_sem_repeti
 
 cutia_tap_arap_quase_sem_repeticao_dist_trunc$selecao
 ```
-
 
 ###### Plotando o histograma com os dados truncados.
 
@@ -362,8 +357,6 @@ cutia_tap_arap_quase_sem_repeticao_hr <- cutia_tap_arap_quase_sem_repeticao |>
   ajuste_modelos_distance_hr(truncamento = "10%")
 ```
 
-
-
 ##### Comparando os modelos
 
 ###### Tabela com o resumo comparativo dos modelos
@@ -380,9 +373,7 @@ fluxo2_selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_termo_
 fluxo2_selecao_funcao_deteccao_termo_ajuste
 ```
 
-
 ###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
-
 
 ```{r}
 # gerar uma lista com os modelos selecionados ordenados do melhor para o pior modelo
@@ -402,9 +393,7 @@ names(fluxo2_modelos_selecionados) <- fluxo2_selecao_funcao_deteccao_termo_ajust
 plotar_funcao_deteccao_modelos_selecionados(fluxo2_modelos_selecionados)
 ```
 
-
 ###### Teste de bondade de ajuste dos modelos e Q-Q plots
-
 
 ```{r}
 bondade_ajuste_fluxo2 <- testar_bondade_ajuste(fluxo2_modelos_selecionados, plot = TRUE)
@@ -448,8 +437,6 @@ fluxo2_caracteristicas_densidade <- fluxo2_lista_modelos_ajustados_termos |>
 
 fluxo2_caracteristicas_densidade
 ```
-
-
 
 #### AQUI FALTA AJUSTAR
 
@@ -539,8 +526,6 @@ cutia_tap_arap_quase_sem_repeticao_hn$`Sem termo` |>
   gerar_caracteristicas_densidade()
 ```
 
-
-
 #### Fluxo 3 - Distâncias agrupadas com todas as repetições
 
 Aqui vamos partir do mesmo conjunto de dados do Fluxo 1 (`cutia_tap_arap`), com todas as repetições, mas vamos agrupar as distâncias em intervalos. Vamos usar o mesmo valor de truncamento, removendo 10% das observações nas maiores distâncias, o que significa que aproveitaremos as observações feitas até 15m de distância do observador.
@@ -573,20 +558,25 @@ plotar_distribuicao_distancia_interativo(largura_caixa = 5)
 ##### Definindo os intevalos de distância de agrupamento
 
 ###### Primeira binagem - Intervalos iguais de 1.5m
+
 ```{r}
 cutia_tap_arap_bin1 <- create_bins(
   cutia_tap_arap[!is.na(cutia_tap_arap$distance),], 
   c(0, 1.5, 3, 4.5, 6, 7.5, 9, 10.5, 12, 13.5, 15)
 )
 ```
+
 ###### Segunda binagem - Primeiro intervalo de 1m e demais intervalos de 1.4m
+
 ```{r}
 cutia_tap_arap_bin2 <- create_bins(
   cutia_tap_arap[!is.na(cutia_tap_arap$distance),], 
   c(0, 1, 2.4, 3.8, 5.2, 6.6, 8, 9.4, 10.8, 12.2, 13.6, 15)
 )
 ```
+
 ###### Terceira binagem - Intervalos iguais de 2.5m
+
 ```{r}
 cutia_tap_arap_bin3 <- create_bins(
   cutia_tap_arap[!is.na(cutia_tap_arap$distance),], 
@@ -599,6 +589,7 @@ cutia_tap_arap_bin3 <- create_bins(
 ###### Uniforme + Cosseno
 
 Primeira Binagem
+
 ```{r}
 
 cutia_tap_arap_bin1_unif <- cutia_tap_arap_bin1 |> 
@@ -607,13 +598,16 @@ cutia_tap_arap_bin1_unif <- cutia_tap_arap_bin1 |>
 ```
 
 Segunda binagem
+
 ```{r}
 
 cutia_tap_arap_bin2_unif <- cutia_tap_arap_bin2 |> 
   ajuste_modelos_distance_unif(truncamento = 15)
 
 ```
+
 Terceira binagem
+
 ```{r}
 
 cutia_tap_arap_bin3_unif <- cutia_tap_arap_bin3 |> 
@@ -624,6 +618,7 @@ cutia_tap_arap_bin3_unif <- cutia_tap_arap_bin3 |>
 ###### Half-Normal sem termos de ajuste e com termos de ajuste
 
 Primeira binagem
+
 ```{r}
 
 cutia_tap_arap_bin1_hn <- cutia_tap_arap_bin1 |> 
@@ -632,22 +627,27 @@ cutia_tap_arap_bin1_hn <- cutia_tap_arap_bin1 |>
 ```
 
 Segunda binagem
+
 ```{r}
 
 cutia_tap_arap_bin2_hn <- cutia_tap_arap_bin2 |> 
   ajuste_modelos_distance_hn(truncamento = 15)
 
 ```
+
 Terceira binagem
+
 ```{r}
 
 cutia_tap_arap_bin3_hn <- cutia_tap_arap_bin3 |> 
   ajuste_modelos_distance_hn(truncamento = 15)
 
 ```
+
 ###### Hazard-rate sem termos de ajuste e com termos de ajuste
 
 Primeira binagem
+
 ```{r}
 
 cutia_tap_arap_bin1_hr <- cutia_tap_arap_bin1 |> 
@@ -656,6 +656,7 @@ cutia_tap_arap_bin1_hr <- cutia_tap_arap_bin1 |>
 ```
 
 Segunda binagem
+
 ```{r}
 
 cutia_tap_arap_bin2_hr <- cutia_tap_arap_bin2 |> 
@@ -664,6 +665,7 @@ cutia_tap_arap_bin2_hr <- cutia_tap_arap_bin2 |>
 ```
 
 Terceira binagem
+
 ```{r}
 
 cutia_tap_arap_bin3_hr <- cutia_tap_arap_bin3 |> 
@@ -686,6 +688,7 @@ fluxo3.1_selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_term
 
 fluxo3.1_selecao_funcao_deteccao_termo_ajuste
 ```
+
 ```{r}
 fluxo3.2_lista_modelos_ajustados <- list(
   `half-normal` = cutia_tap_arap_bin2_hn, 
@@ -697,6 +700,7 @@ fluxo3.2_selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_term
 
 fluxo3.2_selecao_funcao_deteccao_termo_ajuste
 ```
+
 ```{r}
 fluxo3.3_lista_modelos_ajustados <- list(
   `half-normal` = cutia_tap_arap_bin3_hn, 
@@ -712,6 +716,7 @@ fluxo3.3_selecao_funcao_deteccao_termo_ajuste
 ###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
 
 Primeira binagem
+
 ```{r}
 fluxo3.1_modelos_selecionados <- list(
   cutia_tap_arap_bin1_hn$`Cosseno`,
@@ -725,6 +730,7 @@ plotar_funcao_deteccao_modelos_selecionados(fluxo3.1_modelos_selecionados)
 ```
 
 Segunda binagem
+
 ```{r}
 fluxo3.2_modelos_selecionados <- list(
   cutia_tap_arap_bin2_hn$`Cosseno`,
@@ -738,6 +744,7 @@ plotar_funcao_deteccao_modelos_selecionados(fluxo3.2_modelos_selecionados)
 ```
 
 Terceira binagem
+
 ```{r}
 fluxo3.3_modelos_selecionados <- list(
   cutia_tap_arap_bin3_hn$`Cosseno`,
@@ -752,11 +759,9 @@ fluxo3.3_modelos_selecionados <- list(
 plotar_funcao_deteccao_modelos_selecionados(fluxo3.3_modelos_selecionados)
 ```
 
-
 ###### Teste de bondade de ajuste dos modelos e Q-Q plots
 
 #### AQUI ESTÁ DANDO ERRO
-
 
 Primeira binagem
 
@@ -766,6 +771,7 @@ bondade_ajuste_fluxo3.1
 ```
 
 Segunda binagem
+
 ```{r}
 bondade_ajuste_fluxo3.2 <- testar_bondade_ajuste(fluxo3.2_modelos_selecionados)
 bondade_ajuste_fluxo3.2
@@ -785,6 +791,7 @@ bondade_ajuste_fluxo3.3
 ###### Características da área de estudo e da taxa de encontro
 
 Primeira binagem
+
 ```{r}
 # gera lista contendo os modelos selecionados para cada função de detecção e termo de ajuste
 fluxo3.1_lista_modelos_ajustados_termos <- list(
@@ -803,6 +810,7 @@ fluxo3.1_caracteristicas_area_estudo_taxa_encontro
 ```
 
 Segunda binagem
+
 ```{r}
 # gera lista contendo os modelos selecionados para cada função de detecção e termo de ajuste
 fluxo3.2_lista_modelos_ajustados_termos <- list(
@@ -820,8 +828,8 @@ fluxo3.2_caracteristicas_area_estudo_taxa_encontro <- fluxo3.2_lista_modelos_aju
 fluxo3.2_caracteristicas_area_estudo_taxa_encontro
 ```
 
-
 Terceira binagem
+
 ```{r}
 # gera lista contendo os modelos selecionados para cada função de detecção e termo de ajuste
 fluxo3.3_lista_modelos_ajustados_termos <- list(
@@ -840,7 +848,9 @@ fluxo3.3_caracteristicas_area_estudo_taxa_encontro <- fluxo3.3_lista_modelos_aju
 
 fluxo3.3_caracteristicas_area_estudo_taxa_encontro
 ```
+
 ##### AQUI AINDA FALTA AJUSTAR
+
 ##### Características de abundância, esforço e detecção
 
 ```{r}
@@ -851,6 +861,7 @@ fluxo3.3_caracteristicas_area_estudo_taxa_encontro
 ##### Características de densidade
 
 Primeira binagem
+
 ```{r}
 # total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
 fluxo3.1_caracteristicas_densidade <- fluxo3.1_lista_modelos_ajustados_termos |> 
@@ -860,6 +871,7 @@ fluxo3.1_caracteristicas_densidade
 ```
 
 Segunda binagem
+
 ```{r}
 # total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
 fluxo3.2_caracteristicas_densidade <- fluxo3.2_lista_modelos_ajustados_termos |> 
@@ -869,6 +881,7 @@ fluxo3.2_caracteristicas_densidade
 ```
 
 Terceira binagem
+
 ```{r}
 # total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
 fluxo3.3_caracteristicas_densidade <- fluxo3.3_lista_modelos_ajustados_termos |> 
@@ -876,7 +889,6 @@ fluxo3.3_caracteristicas_densidade <- fluxo3.3_lista_modelos_ajustados_termos |>
 
 fluxo3.3_caracteristicas_densidade
 ```
-
 
 ### Amostragem por Distância com Múltiplas Covariáveis
 
@@ -888,14 +900,53 @@ Para o uso de coveriáveis, podemos usar somente as distribuições half-normal 
 
 ###### Half-normal sem termos de ajuste (HN)
 
+```{r}
+# ajustando a função de detecção half-normal para um truncamento de 10% dos dados
+cutia_cov_hn <- cutia_tap_arap_quase_sem_repeticao |> 
+  ajuste_modelos_distance_hn(lista_termos_ajuste = list(`Sem termo`= NULL),truncamento = "10%")
+```
+
+lista_termos_ajuste = list(`Sem termo`) = NULL),
+
 ###### HN + Tamanho do grupo (HN + S)
+
+```{r}
+# ajustando a função de detecção half-normal para um truncamento de 10% dos dados
+cutia_cov_hn_s <- cutia_tap_arap_quase_sem_repeticao |> 
+  ajuste_modelos_distance_hn(lista_termos_ajuste = list(`Sem termo`= NULL),truncamento = "10%", formula = ~size)
+```
 
 ###### Hazard-rate sem termos de ajuste (HZ)
 
+```{r}
+# ajustando a função de detecção half-normal para um truncamento de 10% dos dados
+cutia_cov_hr <- cutia_tap_arap_quase_sem_repeticao |> 
+  ajuste_modelos_distance_hr(lista_termos_ajuste = list(`Sem termo`= NULL),truncamento = "10%")
+```
+
 ###### HZ + Tamanho do grupo (HZ + S)
 
+```{r}
+# ajustando a função de detecção half-normal para um truncamento de 10% dos dados
+cutia_cov_hr_s <- cutia_tap_arap_quase_sem_repeticao |> 
+  ajuste_modelos_distance_hr(lista_termos_ajuste = list(`Sem termo`= NULL),truncamento = "10%", formula = ~size)
+```
 
 ##### Comparando os modelos
+
+co
+
+```{r}
+fluxo2_lista_modelos_ajustados <- list(
+  `half-normal` = cutia_tap_arap_quase_sem_repeticao_hn, 
+  `hazard-rate` = cutia_tap_arap_quase_sem_repeticao_hr, 
+  `uniforme` = cutia_tap_arap_quase_sem_repeticao_unif
+)
+
+fluxo2_selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_termo_ajuste(fluxo2_lista_modelos_ajustados)
+
+fluxo2_selecao_funcao_deteccao_termo_ajuste
+```
 
 ###### Tabela com o resumo comparativo dos modelos
 
@@ -906,4 +957,5 @@ Para o uso de coveriáveis, podemos usar somente as distribuições half-normal 
 ##### Avaliando as estimativas de Abundância e Densidade
 
 Para o uso de covariáveis, as estimativas de abundância/densidade devem ser feitas através do bootstrap.
-
+covcovcov
+  `half-normal` = cutia_cov_hn,-size
