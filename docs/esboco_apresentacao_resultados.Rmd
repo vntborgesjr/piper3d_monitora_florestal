@@ -154,27 +154,31 @@ Olhando para os histogramas com modelos ajustados, é possível observar o efeit
 bondade_ajuste_fluxo1 <- testar_bondade_ajuste(fluxo1_modelos_selecionados)
 bondade_ajuste_fluxo1
 ```
-
-```{r}
-bondade_ajuste <- fluxo1_modelos_selecionados |> 
-  purrr::map(
-    \(x) gof_ds(x, plot = FALSE)
-  )
-
-bondade_ajuste |> 
-  purrr::map(
-    \(x) data.frame(x$dsgof$CvM)
-  ) |> 
-  list_rbind() |> 
-  mutate(Modelo = names(fluxo1_modelos_selecionados)) |> 
-  relocate(Modelo, .before = W)
-  
-```
-
+#### AQUI FALTAM OS Q-Q PLOTS
 
 
 ##### Avaliando as estimativas de Abundância e Densidade
 
+###### Características da área de estudo e da taxa de encontro
+
+```{r}
+# gera lista contendo os modelos selecionados para cada função de detecção e termo de ajuste
+fluxo1_lista_modelos_ajustados_termos <- list(
+  cutia_tap_arap_hr$`Sem termo`,
+  cutia_tap_arap_hn$Cosseno,
+  cutia_tap_arap_unif$Cosseno,
+  cutia_tap_arap_unif$`Polinomial simples`,
+  cutia_tap_arap_hn$`Sem termo`
+)
+
+# área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
+fluxo1_caracteristicas_area_estudo_taxa_encontro <- fluxo1_lista_modelos_ajustados_termos |> 
+  gerar_caracteristicas_area_estudo_taxa_encontro(resultado_selecao_modelos = fluxo1_selecao_funcao_deteccao_termo_ajuste)
+
+fluxo1_caracteristicas_area_estudo_taxa_encontro
+```
+
+##### AQUI FALTA AJUSTAR
 
 ```{r}
 # área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
@@ -262,35 +266,6 @@ cutia_tap_arap_hn$`Sem termo` |>
   gerar_caracteristicas_densidade()
 ```
 
-
-###### Caracteristicas da área e esforço
-
-```{r}
-# área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
-fluxo1_area_esforco_hr_sem_termo <- cutia_tap_arap_hr$`Sem termo` |> 
-  gerar_caracteristicas_area_estudo_taxa_encontro()
-
-fluxo1_area_esforco_hr_cosseno <- cutia_tap_arap_hn$Cosseno |> 
-  gerar_caracteristicas_area_estudo_taxa_encontro()
-
-fluxo1_area_esforco_unif_cosseno <- cutia_tap_arap_unif$Cosseno |> 
-  gerar_caracteristicas_area_estudo_taxa_encontro()
-
-fluxo1_area_esforco_unif_polinomial <- cutia_tap_arap_unif$`Polinomial simples` |> 
-  gerar_caracteristicas_area_estudo_taxa_encontro()
-
-fluxo1_area_esforco_hn_sem_termo <- cutia_tap_arap_hn$`Sem termo` |> 
-  gerar_caracteristicas_area_estudo_taxa_encontro()
-
-# é importante que a ordem de entrada dos objetos respeitem a ordem da tabela de selecao de modelos
-fluxo1_area_esforco_hr_sem_termo |> 
-  rbind(fluxo1_area_esforco_hr_cosseno) |> 
-  rbind(fluxo1_area_esforco_unif_cosseno) |> 
-  rbind(fluxo1_area_esforco_unif_polinomial) |> 
-  rbind(fluxo1_area_esforco_hn_sem_termo) |> 
-  mutate(Model = fluxo1_selecao_funcao_deteccao_termo_ajsute$Model) |> # pode ser um argumento da função
-  relocate(Model, .before = Region)
-```
 
 
 #### Fluxo 2 - Distâncias exatas com repetições reduzidas
@@ -411,8 +386,29 @@ plotar_funcao_deteccao_modelos_selecionados(fluxo2_modelos_selecionados)
 bondade_ajuste_fluxo2 <- testar_bondade_ajuste(fluxo2_modelos_selecionados)
 bondade_ajuste_fluxo2
 ```
+#### AQUI FALTAM OS Q-Q PLOTS
 
 ##### Avaliando as estimativas de Abundância e Densidade
+
+###### Características da área de estudo e da taxa de encontro
+
+```{r}
+# gera lista contendo os modelos selecionados para cada função de detecção e termo de ajuste
+fluxo2_lista_modelos_ajustados_termos <- list(
+  cutia_tap_arap_quase_sem_repeticao_hr$`Sem termo`,
+  cutia_tap_arap_quase_sem_repeticao_hn$`Cosseno`,
+  cutia_tap_arap_quase_sem_repeticao_unif$`Cosseno`,
+  cutia_tap_arap_quase_sem_repeticao_unif$`Polinomial simples`,
+  cutia_tap_arap_quase_sem_repeticao_hn$`Sem termo`
+)
+
+# área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
+fluxo2_caracteristicas_area_estudo_taxa_encontro <- fluxo2_lista_modelos_ajustados_termos |> 
+  gerar_caracteristicas_area_estudo_taxa_encontro(resultado_selecao_modelos = fluxo2_selecao_funcao_deteccao_termo_ajuste)
+
+fluxo2_caracteristicas_area_estudo_taxa_encontro
+```
+#### AQUI FALTA AJUSTAR
 
 ```{r}
 # área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
@@ -498,36 +494,6 @@ cutia_tap_arap_quase_sem_repeticao_hn$`Sem termo` |>
 # total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
 cutia_tap_arap_quase_sem_repeticao_hn$`Sem termo` |> 
   gerar_caracteristicas_densidade()
-```
-
-
-###### Caracteristicas da área e esforço
-
-```{r}
-# área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
-area_esforco_hr_sem_termo <- cutia_tap_arap_quase_sem_repeticao_hr$`Sem termo` |> 
-  gerar_caracteristicas_area_estudo_taxa_encontro()
-
-area_esforco_hr_cosseno <- cutia_tap_arap_quase_sem_repeticao_hn$Cosseno |> 
-  gerar_caracteristicas_area_estudo_taxa_encontro()
-
-area_esforco_unif_cosseno <- cutia_tap_arap_quase_sem_repeticao_unif$Cosseno |> 
-  gerar_caracteristicas_area_estudo_taxa_encontro()
-
-area_esforco_unif_polinomial <- cutia_tap_arap_quase_sem_repeticao_unif$`Polinomial simples` |> 
-  gerar_caracteristicas_area_estudo_taxa_encontro()
-
-area_esforco_hn_sem_termo <- cutia_tap_arap_quase_sem_repeticao_hn$`Sem termo` |> 
-  gerar_caracteristicas_area_estudo_taxa_encontro()
-
-# é importante que a ordem de entrada dos objetos respeitem a ordem da tabela de selecao de modelos
-area_esforco_hr_sem_termo |> 
-  rbind(area_esforco_hr_cosseno) |> 
-  rbind(area_esforco_unif_cosseno) |> 
-  rbind(area_esforco_unif_polinomial) |> 
-  rbind(area_esforco_hn_sem_termo) |> 
-  mutate(Model = selecao_funcao_deteccao_termo_ajsute$Model) |> # pode ser um argumento da função
-  relocate(Model, .before = Region)
 ```
 
 
@@ -746,7 +712,90 @@ plotar_funcao_deteccao_modelos_selecionados(fluxo3.3_modelos_selecionados)
 
 ###### Teste de bondade de ajuste dos modelos e Q-Q plots
 
+#### AQUI ESTÁ DANDO ERRO
+Primeira binagem
+```{r}
+bondade_ajuste_fluxo3.1 <- testar_bondade_ajuste(fluxo3.1_modelos_selecionados)
+bondade_ajuste_fluxo3.1
+```
+
+Segunda binagem
+```{r}
+bondade_ajuste_fluxo3.2 <- testar_bondade_ajuste(fluxo3.2_modelos_selecionados)
+bondade_ajuste_fluxo3.2
+```
+
+Terceira binagem
+
+```{r}
+bondade_ajuste_fluxo3.3 <- testar_bondade_ajuste(fluxo3.3_modelos_selecionados)
+bondade_ajuste_fluxo3.3
+```
+
+#### AQUI FALTAM OS Q-Q PLOTS
+
 ##### Avaliando as estimativas de Abundância e Densidade
+
+###### Características da área de estudo e da taxa de encontro
+
+Primeira binagem
+```{r}
+# gera lista contendo os modelos selecionados para cada função de detecção e termo de ajuste
+fluxo3.1_lista_modelos_ajustados_termos <- list(
+  cutia_tap_arap_bin1_hn$`Cosseno`,
+  cutia_tap_arap_bin1_unif$`Cosseno`,
+  cutia_tap_arap_bin1_hr$`Sem termo`,
+  cutia_tap_arap_bin1_unif$`Polinomial simples`,
+  cutia_tap_arap_bin1_hn$`Sem termo`
+)
+
+# área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
+fluxo3.1_caracteristicas_area_estudo_taxa_encontro <- fluxo3.1_lista_modelos_ajustados_termos |> 
+  gerar_caracteristicas_area_estudo_taxa_encontro(resultado_selecao_modelos = fluxo3.1_selecao_funcao_deteccao_termo_ajuste)
+
+fluxo3.1_caracteristicas_area_estudo_taxa_encontro
+```
+
+Segunda binagem
+```{r}
+# gera lista contendo os modelos selecionados para cada função de detecção e termo de ajuste
+fluxo3.2_lista_modelos_ajustados_termos <- list(
+  cutia_tap_arap_bin2_hn$`Cosseno`,
+  cutia_tap_arap_bin2_hr$`Sem termo`,
+  cutia_tap_arap_bin2_unif$`Cosseno`,
+  cutia_tap_arap_bin2_unif$`Polinomial simples`,
+  cutia_tap_arap_bin2_hn$`Sem termo`
+)
+
+# área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
+fluxo3.2_caracteristicas_area_estudo_taxa_encontro <- fluxo3.2_lista_modelos_ajustados_termos |> 
+  gerar_caracteristicas_area_estudo_taxa_encontro(resultado_selecao_modelos = fluxo3.2_selecao_funcao_deteccao_termo_ajuste)
+
+fluxo3.2_caracteristicas_area_estudo_taxa_encontro
+```
+
+
+Terceira binagem
+```{r}
+# gera lista contendo os modelos selecionados para cada função de detecção e termo de ajuste
+fluxo3.3_lista_modelos_ajustados_termos <- list(
+  cutia_tap_arap_bin3_hn$`Cosseno`,
+  cutia_tap_arap_bin3_hr$`Cosseno`,
+  cutia_tap_arap_bin3_hr$`Polinomial simples`,
+  cutia_tap_arap_bin3_hr$`Sem termo`,
+  cutia_tap_arap_bin3_unif$`Cosseno`,
+  cutia_tap_arap_bin3_unif$`Polinomial simples`,
+  cutia_tap_arap_bin3_hn$`Sem termo`
+)
+
+# área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
+fluxo3.3_caracteristicas_area_estudo_taxa_encontro <- fluxo3.3_lista_modelos_ajustados_termos |> 
+  gerar_caracteristicas_area_estudo_taxa_encontro(resultado_selecao_modelos = fluxo3.3_selecao_funcao_deteccao_termo_ajuste)
+
+fluxo3.3_caracteristicas_area_estudo_taxa_encontro
+```
+
+#### AQUI AINDA FALTA O RESTANTE DOS RESULTADOS APÓS AJUSTE
 
 #### Fluxo 4 - Distâncias agrupadas com repetições reduzidas
 
