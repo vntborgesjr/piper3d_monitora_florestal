@@ -1123,8 +1123,8 @@ gerar_caracteristicas_area_estudo_taxa_encontro <- function(
 # Documentacao da funcao gerar_caracteristicas_densidade() --------
 #' Title
 #'
-#' @param dados 
-#' @param resultado_selecao_modelos 
+#' @param dados
+#' @param resultado_selecao_modelos
 #'
 #' @return
 #' @export
@@ -1135,12 +1135,39 @@ gerar_caracteristicas_densidade <- function(
     resultado_selecao_modelos
 ) {
   
+  # total, densidade estimada, erro padrão da densidade destimada,
+  # coeficiente de variação da densidade destimada, intervalo de
+  # confiança inferior e superior do coeficiente de variação, gruas de
+  # liberdade
+  caracteristicas_densidade <- dados |>
+    purrr::map(
+      \(.x) .x$dht$individuals$D
+    ) |>
+    list_rbind() |>
+    mutate(Modelo = resultado_selecao_modelos$Model) |> # pode ser um argumento da função
+    relocate(Modelo, .before = Label) |>
+    rename(
+      Rotulo = Label,
+      `Estimativa de densidade` = Estimate,
+      `Erro padrao` = se,
+      `Coeficiente de variacao` = cv,
+      `Intervalo de confianca inferior` = lcl,
+      `Intervalo de confianca superior` = ucl,
+      `Graus de liberdade` = df
+    )
+  
+  # total, densidade estimada, erro padrão da densidade destimada,
+  # coeficiente de variação da densidade destimada, intervalo de
+  # confiança inferior e superior do coeficiente de variação, gruas de
+  # liberdade
+  return(caracteristicas_densidade)
+  
 }
 
 # Documantacao da funcao gerar_caracteristicas_esforco_abundancia_deteccao()  -------------------------------------------------
 #' Title
 #'
-#' @param dados 
+#' @param dados
 #'
 #' @return
 #' @export
@@ -1149,18 +1176,18 @@ gerar_caracteristicas_densidade <- function(
 gerar_caracteristicas_esforco_abundancia_deteccao <- function(
     dados,
     resultado_selecao_modelos
-  ) {
+) {
   
   # área de estudo, tamanho da área de estudo, trilhas ou estações
   # amostrais, esforço total em cada trilha, abundância estimada em cada
-  # estação amostral, número de detecções em cada estação amostral, 
+  # estação amostral, número de detecções em cada estação amostral,
   # área total amostrada
-  caracteristicas_esforco_abundancia_deteccao <- dados |> 
+  caracteristicas_esforco_abundancia_deteccao <- dados |>
     purrr::map(
       \(.x) .x$dht$individuals$Nhat.by.sample[1:8]
-    ) |> 
-    list_rbind() |> 
-    select(!c(Label, CoveredArea)) |> 
+    ) |>
+    list_rbind() |>
+    select(!c(Label, CoveredArea)) |>
     rename(
       Regiao = Region.Label,
       `Estacao amostral` = Sample.Label,
@@ -1175,7 +1202,7 @@ gerar_caracteristicas_esforco_abundancia_deteccao <- function(
   
   # área de estudo, tamanho da área de estudo, trilhas ou estações
   # amostrais, esforço total em cada trilha, abundância estimada em cada
-  # estação amostral, número de detecções em cada estação amostral, 
+  # estação amostral, número de detecções em cada estação amostral,
   # área total amostrada
   return(caracteristicas_esforco_abundancia_deteccao)
   
