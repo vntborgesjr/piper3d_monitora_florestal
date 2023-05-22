@@ -43,7 +43,7 @@ ajuste_modelos_distance_hn <- function(
   # Key function - Half-normal 
   modelos_ajustados <- purrr::map(
     lista_termos_ajuste, 
-    \(.x) ds(
+    \(.x) Distance::ds(
       data = dados,
       truncation = truncamento,
       key = "hn",
@@ -117,8 +117,8 @@ ajuste_modelos_distance_unif <- function(
   # Key function - Uniforme
   modelos_ajustados <- purrr::map(
     lista_termos_ajuste, 
-    \(.x) ds(
-      data = Distance::dados,
+    \(.x) Distance::ds(
+      data = dados,
       truncation = truncamento,
       key = "unif",
       adjustment = .x
