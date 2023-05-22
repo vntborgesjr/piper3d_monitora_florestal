@@ -1867,6 +1867,47 @@ plotar_distribuicao_distancia_estatico <- function(
   return(fig)
 }
 
+# Documentacao da funcao plotar_funcao_deteccao_modelos_selecionad --------
+#' Title
+#'
+#' @param dados 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+plotar_funcao_deteccao_modelos_selecionados <- function(dados) {
+  dados |> 
+    purrr::map(
+      \(.x) plot(
+        .x,
+        xlab = "Distancia (m)",
+        ylab = "Probabilidade de detecacao"
+      )
+    )
+}
+
+# Documentacao da funcao plotar_funcao_deteccao_selecao_distancia_truncamento() --------
+#' Title
+#'
+#' @param dados 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+plotar_funcao_deteccao_selecao_distancia_truncamento <- function(dados) {
+  dados$modelos |> 
+    purrr::map(
+      \(.x) plot(
+        .x,
+        xlab = "Distancia (m)",
+        ylab = "Probabilidade de detecacao"
+      )
+    )
+}
+
+
 # Documentacao da funcao plotar_n_obs_sp_estatico() --------------------
 #' Gera graficos de barras estaticos com o numero de observacoes por especie
 #'
@@ -2440,7 +2481,7 @@ plotar_n_obs_validadas_interativo <- function(
   return(grafico_n_sp_validada)
 }
 
-# Documentacao da funcao selecao_distancia_truncamento() ------------------
+# Documentacao da funcao selecionar_distancia_truncamento() ------------------
 #' Title
 #'
 #' @param dados 
