@@ -151,11 +151,9 @@ Olhando para os histogramas com modelos ajustados, é possível observar o efeit
 
 
 ```{r}
-bondade_ajuste_fluxo1 <- testar_bondade_ajuste(fluxo1_modelos_selecionados)
+bondade_ajuste_fluxo1 <- testar_bondade_ajuste(fluxo1_modelos_selecionados, plot = TRUE)
 bondade_ajuste_fluxo1
 ```
-#### AQUI FALTAM OS Q-Q PLOTS
-
 
 ##### Avaliando as estimativas de Abundância e Densidade
 
@@ -177,6 +175,25 @@ fluxo1_caracteristicas_area_estudo_taxa_encontro <- fluxo1_lista_modelos_ajustad
 
 fluxo1_caracteristicas_area_estudo_taxa_encontro
 ```
+
+##### Características de abundância, esforço e detecção
+
+```{r}
+# área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
+
+```
+
+##### Características de densidade
+
+```{r}
+# total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
+fluxo1_caracteristicas_densidade <- fluxo1_lista_modelos_ajustados_termos |> 
+  gerar_caracteristicas_densidade(resultado_selecao_modelos = fluxo1_selecao_funcao_deteccao_termo_ajuste)
+
+fluxo1_caracteristicas_densidade
+```
+
+
 
 ##### AQUI FALTA AJUSTAR
 
@@ -382,11 +399,11 @@ plotar_funcao_deteccao_modelos_selecionados(fluxo2_modelos_selecionados)
 
 ###### Teste de bondade de ajuste dos modelos e Q-Q plots
 
+
 ```{r}
-bondade_ajuste_fluxo2 <- testar_bondade_ajuste(fluxo2_modelos_selecionados)
+bondade_ajuste_fluxo2 <- testar_bondade_ajuste(fluxo2_modelos_selecionados, plot = TRUE)
 bondade_ajuste_fluxo2
 ```
-#### AQUI FALTAM OS Q-Q PLOTS
 
 ##### Avaliando as estimativas de Abundância e Densidade
 
@@ -408,6 +425,26 @@ fluxo2_caracteristicas_area_estudo_taxa_encontro <- fluxo2_lista_modelos_ajustad
 
 fluxo2_caracteristicas_area_estudo_taxa_encontro
 ```
+
+##### Características de abundância, esforço e detecção
+
+```{r}
+# área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
+
+```
+
+##### Características de densidade
+
+```{r}
+# total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
+fluxo2_caracteristicas_densidade <- fluxo2_lista_modelos_ajustados_termos |> 
+  gerar_caracteristicas_densidade(resultado_selecao_modelos = fluxo2_selecao_funcao_deteccao_termo_ajuste)
+
+fluxo2_caracteristicas_densidade
+```
+
+
+
 #### AQUI FALTA AJUSTAR
 
 ```{r}
@@ -713,9 +750,12 @@ plotar_funcao_deteccao_modelos_selecionados(fluxo3.3_modelos_selecionados)
 ###### Teste de bondade de ajuste dos modelos e Q-Q plots
 
 #### AQUI ESTÁ DANDO ERRO
+
+
 Primeira binagem
+
 ```{r}
-bondade_ajuste_fluxo3.1 <- testar_bondade_ajuste(fluxo3.1_modelos_selecionados)
+bondade_ajuste_fluxo3.1 <- testar_bondade_ajuste(fluxo3.1_modelos_selecionados, plot = TRUE, chisq = TRUE, breaks =  c(0, 1.5, 3, 4.5, 6, 7.5, 9, 10.5, 12, 13.5, 15))
 bondade_ajuste_fluxo3.1
 ```
 
@@ -794,6 +834,26 @@ fluxo3.3_caracteristicas_area_estudo_taxa_encontro <- fluxo3.3_lista_modelos_aju
 
 fluxo3.3_caracteristicas_area_estudo_taxa_encontro
 ```
+##### AQUI AINDA FALTA AJUSTAR
+##### Características de abundância, esforço e detecção
+
+```{r}
+# área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
+
+```
+
+##### Características de densidade
+
+Primeira binagem
+```{r}
+# total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
+fluxo3.1_caracteristicas_densidade <- fluxo3.1_lista_modelos_ajustados_termos |> 
+  gerar_caracteristicas_densidade(resultado_selecao_modelos = fluxo3.1_selecao_funcao_deteccao_termo_ajuste)
+
+fluxo3.1_caracteristicas_densidade
+```
+
+
 
 #### AQUI AINDA FALTA O RESTANTE DOS RESULTADOS APÓS AJUSTE
 
