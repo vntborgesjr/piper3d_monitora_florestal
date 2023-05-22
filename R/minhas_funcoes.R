@@ -2566,7 +2566,8 @@ selecionar_funcao_deteccao_termo_ajuste <- function(
     dados$`hazard-rate`$Cosseno,
     dados$`hazard-rate`$`Polinomial simples`,
     dados$uniforme$Cosseno,
-    dados$uniforme$`Polinomial simples`
+    dados$uniforme$`Polinomial simples`, 
+    delta_only = FALSE
   )
   
   # 
