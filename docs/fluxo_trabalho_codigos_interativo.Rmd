@@ -16,6 +16,14 @@ editor_options:
     wrap: 72
 ---
 
+# **PARTE I -- Cuidados antes de começar a rodar os códigos no R**
+
+Orientações de acesso ao diretório piper3D_monitora_florestal
+
+Abrir o projeto Monitora.Rproj antes e começar a rodar as análises
+
+## Carregando pacotes e funções
+
 ```{r configuração, include=FALSE, warning=FALSE, message=FALSE}
 # carregar pacotes
 library(Distance)
@@ -53,16 +61,7 @@ source(paste0(here::here(), "/R/minhas_funcoes.R"))
 
 ```
 
-# **PARTE I -- Cuidados antes de começar a rodar os códigos no R**
-
-Pensar quais orientações são mais gerais e quais são importantes de
-acompanhar cada código.
-
 ## **Rstudio/Pacotes/versões/sistemas operacionais**
-
-Sobre os pacotes, seria bom ter uma listinha de 'library' no início de
-cada código? Talvez com uma breve explicação do que cada pacote faz,
-versão mínima... não sei.
 
 **OBS**: essa tabela é uma referência para obtermos as versões dos
 pacotes ao final do desenvolvimento do script. Ela está automatizada,
