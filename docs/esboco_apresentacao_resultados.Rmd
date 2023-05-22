@@ -68,7 +68,7 @@ Histogramas resultantes dos modelos, com todas as distâncias de truncagem, para
 plotar_funcao_deteccao_selecao_distancia_truncamento(cutia_tap_arap_dist_trunc)
 ```
 
-Após avaliar tanto o ajuste dos modelos quanto os gráficos, optamos por truncar 15% das observações feitas nas maiores distâncias. Apesar dos melhores valores de AIC e de ajuste do Cramér-von Mises para 25%, os histogramas com modelos ajustados para 25%, 20% e 15% apresentaram modelos quase lineares e com uma grande probabilidade de deteção nos últimos intervalos de distância. O modelo com corte de 10% apresentou uma curva decrescente e não tendeu a zero nas últimas distâncias. Já no modelos para 5% as funções de deteção tendem a zero nos últimos intervalos de distância. O corte de 10% das observações mais distantes resultou em uma distância de truncamento de 15m.**CORRIGIR PARA O VALOR EXATO QUANDO CONSEGUIR PLOTAR O GRÁFICO**
+Após avaliar tanto o ajuste dos modelos quanto os gráficos, optamos por truncar 15% das observações feitas nas maiores distâncias. Apesar dos melhores valores de AIC e de ajuste do Cramér-von Mises para 25%, os histogramas com modelos ajustados para 25%, 20% e 15% apresentaram modelos quase lineares e com uma grande probabilidade de deteção nos últimos intervalos de distância. O modelo com corte de 10% apresentou uma curva decrescente e não tendeu a zero nas últimas distâncias. Já no modelos para 5% as funções de deteção tendem a zero nos últimos intervalos de distância. O corte de 10% das observações mais distantes resultou em uma distância de truncamento de 15m.
 
 ##### Ajustando diferentes modelos de funções de deteção
 
@@ -122,6 +122,7 @@ selecao_funcao_deteccao_termo_ajsute <- selecionar_funcao_deteccao_termo_ajuste(
 
 selecao_funcao_deteccao_termo_ajsute
 ```
+
 Dentre os modelos testados, o que apresentou melhor valor de ajuste e AIC foi o hazard-rate. O ajuste do Cramér-von Mises foi consideravelmente maior que os demais (para esse tipo de teste, quanto maior o valor de p, melhor o ajuste), assim como as diferenças no delta AIC foram bastante elevadas.
 
 ###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
@@ -137,6 +138,8 @@ modelos_selecionados <- list(
 
 plotar_funcao_deteccao_modelos_selecionados(modelos_selecionados)
 ```
+
+Olhando para os histogramas com modelos ajustados, é possível observar o efeito do acúmulo de observações próximo a zero. O modelo com a função chave hazard-hate sem termos de ajuste, apesar de ter apresentado o melhor valor de ajuste pelo Cramér-von Mises e o melhor valor de AIC, apresentou dois problemas. As probalidades de deteção estimadas por intevalo de distância (barras cinzas), ficaram muito baixas. Além disso, a curva da função de deteção apresenta pico na distância próxima a zero, decaindo rapidamente e se aproximando de zero ao longo do eixo das distãncias. Todos os outros quatro modelos tiveram ajuste e AIC bastante inferiores ao hazard-hate. Entretanto as curvas estão relativamente melhores. As curvas do segundo e terceiro modelo, uniforme com ajuste cosseno e half-normal com ajuste cosseno, respectivamente,
 
 ###### Teste de bondade de ajuste dos modelos e Q-Q plots
 
