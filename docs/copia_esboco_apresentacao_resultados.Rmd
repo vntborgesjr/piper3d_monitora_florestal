@@ -116,8 +116,8 @@ selecao_funcao_deteccao_termo_ajsute
 ```{r}
 modelos_selecionados <- list(
   cutia_tap_arap_hr$`Sem termo`,
-  cutia_tap_arap_unif$Cosseno,
   cutia_tap_arap_hn$Cosseno,
+  cutia_tap_arap_unif$Cosseno,
   cutia_tap_arap_unif$`Polinomial simples`,
   cutia_tap_arap_hn$`Sem termo`
 )
@@ -129,35 +129,72 @@ plotar_funcao_deteccao_modelos_selecionados(modelos_selecionados)
 
 ##### Avaliando as estimativas de Abundância e Densidade
 
+Sugestão de aperfeiçoamento das funções: gerar uma única tabela a partir de um funções `join` e `rbind()` das tabelas geradas por cada função, adicionando uma coluna que identifica cada um dos modelos.
+
 ```{r}
 # área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
-sagui_mont_tumuc_hn$`Sem termo`$dht$individuals$summary[1:9]
+gerar_caracteristicas_area_estudo_taxa_encontro(cutia_tap_arap_hr$`Sem termo`)
 ```
 
 ```{r}
 # área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
-sagui_mont_tumuc_hn$`Sem termo`$dht$individuals$Nhat.by.sample[1:8]
+cutia_tap_arap_hr$`Sem termo` |> 
+  gerar_caracteristicas_esforco_abundancia_deteccao()
 ```
 
 ```{r}
 # total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
-sagui_mont_tumuc_hn$`Sem termo`$dht$individuals$D
+cutia_tap_arap_hr$`Sem termo`$dht$individuals$D
 
 ```
 
 ```{r}
 # área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
-sagui_mont_tumuc_hr$`Sem termo`$dht$individuals$summary[1:9]
+gerar_caracteristicas_area_estudo_taxa_encontro(cutia_tap_arap_hn$Cosseno)
 ```
 
 ```{r}
 # área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
-sagui_mont_tumuc_hr$`Sem termo`$dht$individuals$Nhat.by.sample[1:8]
+cutia_tap_arap_hn$Cosseno |> 
+  gerar_caracteristicas_esforco_abundancia_deteccao()
 ```
 
 ```{r}
 # total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
 sagui_mont_tumuc_hr$`Sem termo`$dht$individuals$D
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
+gerar_caracteristicas_area_estudo_taxa_encontro(cutia_tap_arap_unif$Cosseno)
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
+cutia_tap_arap_unif$Cosseno |> 
+  gerar_caracteristicas_esforco_abundancia_deteccao()
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
+gerar_caracteristicas_area_estudo_taxa_encontro(cutia_tap_arap_unif$`Polinomial simples`)
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
+cutia_tap_arap_unif$`Polinomial simples` |> 
+  gerar_caracteristicas_esforco_abundancia_deteccao()
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
+gerar_caracteristicas_area_estudo_taxa_encontro(cutia_tap_arap_hn$`Sem termo`)
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
+cutia_tap_arap_hn$`Sem termo` |> 
+  gerar_caracteristicas_esforco_abundancia_deteccao()
 ```
 
 #### Fluxo 2 - Distâncias exatas com repetições reduzidas
