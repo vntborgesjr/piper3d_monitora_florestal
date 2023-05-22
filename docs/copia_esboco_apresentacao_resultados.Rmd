@@ -21,6 +21,9 @@ Especies com maior numero de ocorrencias/UC possibilitam testar, posteriormente,
 
 ## PRIMEIRO MODELO - Dasyprocta croconota - Resex Tapajós Arapiuns
 
+
+![Fonte: biolib.cz](https://www.biolib.cz/IMG/GAL/BIG/205849.jpg)
+
 Essa é a espécie com o mair número de ocorrências para uma mesma UC. Apresentou, como a maioria das espécies em diferentes UCs, um pico de ocorrências próximo a zero.
 
 ### Carregar Dados
