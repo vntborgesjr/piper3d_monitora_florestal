@@ -1094,6 +1094,29 @@ gerar_caracteristicas_area_estudo_taxa_encontro <- function(dados) {
   return(caracteristicas_area_estudo_taxa_encontro)
 }
 
+# Documentacao da funcao  -------------------------------------------------
+#' Title
+#'
+#' @param dados 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+gerar_caracteristicas_densidade <- function(dados) {
+  # total, densidade estimada, erro padrão da densidade estimada, 
+  # coeficiente de variação da densidade destimada, intervalo de
+  # confiança inferior e superior do coeficiente de variação, 
+  # gruas de liberdade
+  caracteristicas_densidade <- dados$dht$individuals$D
+  
+  # área de estudo, tamanho da área de estudo, trilhas ou estações
+  # amostrais, esforço total em cada trilha, abundância estimada em cada
+  # estação amostral, número de detecções em cada estação amostral, 
+  # área total amostrada
+  return(caracteristicas_densidade)
+}
+
 # Documantacao da funcao gerar_caracteristicas_esforco_abundancia_deteccao()  -------------------------------------------------
 #' Title
 #'
