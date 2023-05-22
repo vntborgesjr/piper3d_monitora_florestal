@@ -112,13 +112,13 @@ Para comparar os modelos é preciso avaliar três critérios: AIC, ajuste e form
 ###### Tabela com o resumo comparativo dos modelos
 
 ```{r}
-lista_modelos_ajustados <- list(
+fluxo1_lista_modelos_ajustados <- list(
   `half-normal` = cutia_tap_arap_hn, 
   `hazard-rate` = cutia_tap_arap_hr, 
   `uniforme` = cutia_tap_arap_unif
 )
 
-fluxo1_selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_termo_ajuste(lista_modelos_ajustados)
+fluxo1_selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_termo_ajuste(fluxo1_lista_modelos_ajustados)
 
 fluxo1_selecao_funcao_deteccao_termo_ajuste
 ```
@@ -129,7 +129,7 @@ Dentre os modelos testados, o que apresentou melhor valor de ajuste e AIC foi o 
 
 ```{r}
 # gerar uma lista com os modelos selecionados ordenados do melhor para o pior modelo
-fluxo1_lista_modelos_ajustados <- list(
+fluxo1_modelos_selecionados <- list(
   cutia_tap_arap_hr$`Sem termo`,
   cutia_tap_arap_unif$`Cosseno`,
   cutia_tap_arap_hn$`Cosseno`,
@@ -139,9 +139,7 @@ fluxo1_lista_modelos_ajustados <- list(
 
 # atribuir o nome dos modelos aos itens da lista
 
-selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_termo_ajuste(fluxo1_lista_modelos_ajustados)
-
-names(fluxo1_lista_modelos_ajustados) <- selecao_funcao_deteccao_termo_ajuste$Model
+names(fluxo1_modelos_selecionados) <- fluxo1_selecao_funcao_deteccao_termo_ajuste$Model
 
 # plotar a probabilidade de detecção observada (barras) e a esperada (linhas e pontos)
 plotar_funcao_deteccao_modelos_selecionados(fluxo1_modelos_selecionados)
