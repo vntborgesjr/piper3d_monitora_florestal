@@ -258,18 +258,48 @@ area_esforco_hr_sem_termo |>
 
 #### Fluxo 2 - Distâncias exatas com repetições reduzidas
 
+##### Filtrando os dados para reduzir as repetições
+
+```{r}
+dados_selecionados <- carregar_dados_selecionados()
+cutia_tap_arap_quase_sem_repeticao <- transforma_para_dsitanceR_quase_sem_repeticao_filtra_uc_sp(
+  dados = dados_selecionados,
+  nome_uc = "Resex Tapajos-Arapiuns",
+  nome_sp = "Dasyprocta croconota"
+)
+
+cutia_tap_arap_quase_sem_repeticao
+```
+
 ##### Plotando o histograma das frequências de ocorrência pela distância
 
 O histograma interativo está disponível no app em Shiny `app_distancia_interativo.R`. A distribuição dos dados no histograma permite observar um pico de observações próximo a zero, além de uma considerável perda em detectabilidade a partir dos 20m. Vamos testar diferentes proporções de truncamento.
+
+```{r, fig.height=15, fig.width=10}
+cutia_tap_arap_quase_sem_repeticao |> 
+  drop_na(distance) |> 
+plotar_distribuicao_distancia_interativo(largura_caixa = 1)
+```
 
 ##### Testando distância de truncamento (*w*)
 
 Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de distribuição half-normal. Optamos por truncar os dados pela percentagem para padronizar a rotina para diferentes espécies. Buckland et al. (2001) sugere um corte entre 5-10% das observações detectadas nas maiores distãncias. Vamos selecionar o valor de corte pelo modelo com melhor ajuste.
 
-
 ###### Tabela com resumo comparativo dos modelos
 
+```{r}
+# conduz a selecao da melhor distancia de truncamento a partir do ajsute de modelos com funcao de deteccao half-normal sem termos de ajuste
+cutia_tap_arap_quase_sem_repeticao_dist_trunc <- cutia_tap_arap_quase_sem_repeticao |> 
+  selecionar_distancia_truncamento()
+
+cutia_tap_arap_quase_sem_repeticao_dist_trunc$selecao
+```
+
 ###### Plotando o histograma com os dados truncados.
+
+```{r}
+plotar_funcao_deteccao_selecao_distancia_truncamento(cutia_tap_arap_quase_sem_repeticao_dist_trunc)
+```
 
 ##### Ajustando diferentes modelos de funções de deteção
 
