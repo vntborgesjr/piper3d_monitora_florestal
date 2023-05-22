@@ -1097,9 +1097,9 @@ gerar_caracteristicas_area_estudo_taxa_encontro <- function(
   # coeficiente de variação da densidade destimada, intervalo de
   # confiança inferior e superior do coeficiente de variação, 
   # gruas de liberdade
-  caracteristicas_area_estudo_taxa_encontro <- lista_modelos_ajustados_termos |> 
+  caracteristicas_area_estudo_taxa_encontro <- dados |> 
     purrr::map(
-      \(dados) dados$dht$individuals$summary[1:9]
+      \(.x) .x$dht$individuals$summary[1:9]
     ) |> 
     list_rbind() |> 
     mutate(Modelo = resultado_selecao_modelos$Model) |> # pode ser um argumento da função
@@ -1165,7 +1165,6 @@ gerar_caracteristicas_esforco_abundancia_deteccao <- function(dados) {
   # área total amostrada
   return(caracteristicas_esforco_abundancia_deteccao)
 }
-
 
 # Documentacao da funcao gerar_tabdin_dados_brutos() --------------------
 #' Gera uma tabela dinamica dos dados brutos
