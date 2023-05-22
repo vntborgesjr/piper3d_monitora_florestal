@@ -178,10 +178,10 @@ caracteristicas_area_estudo_taxa_encontro
 
 ```{r}
 # total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
-caracteristicas_esforco_abundancia_deteccao <- lista_modelos_ajustados_termos |> 
+caracteristicas_densidade <- lista_modelos_ajustados_termos |> 
   gerar_caracteristicas_densidade(resultado_selecao_modelos = selecao_funcao_deteccao_termo_ajsute)
 
-caracteristicas_esforco_abundancia_deteccao
+caracteristicas_densidade
 ```
 
 ```{r}

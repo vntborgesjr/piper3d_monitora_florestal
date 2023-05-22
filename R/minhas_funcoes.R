@@ -1121,6 +1121,15 @@ gerar_caracteristicas_area_estudo_taxa_encontro <- function(
 }
 
 # Documentacao da funcao gerar_caracteristicas_densidade() --------
+#' Title
+#'
+#' @param dados 
+#' @param resultado_selecao_modelos 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 gerar_caracteristicas_densidade <- function(
     dados,
     resultado_selecao_modelos
@@ -1131,20 +1140,21 @@ gerar_caracteristicas_densidade <- function(
   # área total amostrada
   caracteristicas_densidade <- dados |> 
     purrr::map(
-      \(.x) .x$dht$individuals$D
+      \(.x) .x$dht$individuals$Nhat.by.sample[1:8]
     ) |> 
     list_rbind() |> 
-    mutate(Modelo = resultado_selecao_modelos$Model) |> # pode ser um argumento da função
-    relocate(Modelo, .before = Label) |>
+    select(!c(Label, CoveredArea)) |> 
     rename(
-      Rotulo = Label,
-      `Densidade estimada` = Estimate,
-      `Erro padrao` = se,
-      `Coeficiente de variacao` = cv,
-      `Intervalo de confianca inferior` = lcl,
-      `Intervalo de confianca superior` = ucl,
-      `Graus de liberdade` = df
+      Regiao = Region.Label,
+      `Estacao amostral` = Sample.Label,
+      Esforco = Effort.x,
+      `Abundancia estimada` = Nhat,
+      `N de deteccoes` = n
     )
+  
+  caracteristicas_densidade <- caracteristicas_esforco_abundancia_deteccao |>
+    mutate(Modelo = rep(resultado_selecao_modelos$Model, each = length(unique(caracteristicas_esforco_abundancia_deteccao$`Estacao amostral`)))) |> # pode ser um argumento da função
+    relocate(Modelo, .before = Regiao)
   
   # área de estudo, tamanho da área de estudo, trilhas ou estações
   # amostrais, esforço total em cada trilha, abundância estimada em cada
