@@ -1140,7 +1140,7 @@ gerar_caracteristicas_densidade <- function(
   # área total amostrada
   caracteristicas_densidade <- dados |> 
     purrr::map(
-      \(.x) .x$dht$individuals$Nhat.by.sample[1:8]
+      \(.x) .x$dht$individuals$D
     ) |> 
     list_rbind() |> 
     select(!c(Label, CoveredArea)) |> 
@@ -2976,7 +2976,7 @@ transforma_para_dsitanceR_quase_sem_repeticao_filtra_uc_sp <- function(
       sp_name,
       sampling_day,
       year,
-      season,
+      season
     ) |>
     dplyr::mutate(
       Area = 0
@@ -3037,5 +3037,97 @@ transforma_para_dsitanceR_quase_sem_repeticao_filtra_uc_sp <- function(
   return(dados_transformados_dist_r_quase_sem_repeticao_filtra_uc_sp)
 }
 
+# Ducumentacao para transforma_para_dsitanceR_quase_sem_repeticao_ --------
+#' Title
+#'
+#' @param dados 
+#' @param nome_uc 
+#' @param nome_sp 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+transforma_para_dsitanceR_quase_sem_repeticao_filtra_uc_sp_covariavel <- function(
+    dados = readr::read_rds(
+      file = paste0(
+        here::here(),
+        "/data/dados_selecionados.rds"
+      )
+    ),
+    nome_uc = "Resex Tapajos-Arapiuns",
+    nome_sp = "Dasyprocta croconota"
+) {
+  # transforma dados para formato distance R
+  dados_transformados_dist_r_quase_sem_repeticao_filtra_uc_sp <- dados |>
+    dplyr::select(
+      Region.Label = uc_name,
+      Sample.Label = `ea_name`,
+      Effort = day_effort,
+      distance,
+      sp_name,
+      sampling_day,
+      year,
+      season,
+      size = group_size
+    ) |>
+    dplyr::mutate(
+      Area = 0
+    ) |>
+    dplyr::relocate(
+      Area,
+      .before = Sample.Label
+    ) |>   filter(
+      Region.Label == nome_uc, 
+      sp_name == nome_sp
+    )
+  
+  # gerar filtro para eliminar amostras repetidas mantendo o dia com o maior n de obs
+  # gerar o n de obs por data de amostragem
+  n_obs_data <- dados_transformados_dist_r_quase_sem_repeticao_filtra_uc_sp |> 
+    group_by(Sample.Label, sampling_day, year, season) |> 
+    count(sampling_day) |> 
+    ungroup()
+  
+  # gerar as datas com maior n de obs em cada estacao e ano
+  data_com_maior_n_obs <- dados_transformados_dist_r_quase_sem_repeticao_filtra_uc_sp |> 
+    group_by(Sample.Label, year, season) |> 
+    count(sampling_day) |> 
+    reframe(n_max = max(n)) |> 
+    ungroup()
+  
+  # juntar as duas data.frames para obter as datas com maior n de obs
+  # em cada ano e excluir datas de amostragem repitidas na mesma estacao
+  # e ano
+  dados_para_filtrar_por_data_quase_sem_repeticao <- n_obs_data |> 
+    semi_join(
+      data_com_maior_n_obs, 
+      join_by(Sample.Label, year, season, n == n_max),
+    ) |> 
+    distinct(sampling_day, year, season)
+  
+  # gerar o filtro de datas
+  filtro_datas_quase_sem_repeticao <- dados_para_filtrar_por_data_quase_sem_repeticao$sampling_day
+  
+  # eliminar amostras repetidas
+  dados_transformados_dist_r_quase_sem_repeticao_filtra_uc_sp <- dados_transformados_dist_r_quase_sem_repeticao_filtra_uc_sp |> 
+    filter(sampling_day %in% filtro_datas_quase_sem_repeticao)
+  
+  # gerar coluna object
+  dados_transformados_dist_r_quase_sem_repeticao_filtra_uc_sp <- dados_transformados_dist_r_quase_sem_repeticao_filtra_uc_sp |> 
+    mutate(object = seq_along(dados_transformados_dist_r_quase_sem_repeticao_filtra_uc_sp$Region.Label))
+  
+  # # grava uma versao dados_transformados_dist_r.rds no diretorio data
+  # readr::write_rds(
+  #   dados_transformados_dist_r,
+  #   file = paste0(
+  #     here::here(),
+  #     "/data/dados_selecionados_transformados_dist_r.rds"
+  #   )
+  # )
+  
+  # retorna o data.frame
+  return(dados_transformados_dist_r_quase_sem_repeticao_filtra_uc_sp)
+}
 
 
