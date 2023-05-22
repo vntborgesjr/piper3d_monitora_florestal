@@ -117,7 +117,11 @@ selecao_funcao_deteccao_termo_ajsute
 
 ###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
 
+Sugestão: adicionar título ao gráficos
+gerar graficos usando ggplot2
+
 ```{r}
+# gerar uma lista com os modelos selecionados ordenados do melhor para o pior modelo
 modelos_selecionados <- list(
   cutia_tap_arap_hr$`Sem termo`,
   cutia_tap_arap_hn$Cosseno,
@@ -126,13 +130,34 @@ modelos_selecionados <- list(
   cutia_tap_arap_hn$`Sem termo`
 )
 
+# atribuir o nome dos modelos aos itens da lista
+names(modelos_selecionados) <- selecao_funcao_deteccao_termo_ajsute$Model
+
+# plotar a probabilidade de detecção observada (barras) e a esperada (linhas e pontos)
 plotar_funcao_deteccao_modelos_selecionados(modelos_selecionados)
 ```
 
 ###### Teste de bondade de ajuste dos modelos e Q-Q plots
 
 ```{r}
+bondade_ajuste_fluxo1 <- testar_bondade_ajuste(modelos_selecionados)
+bondade_ajuste_fluxo1
+```
 
+```{r}
+bondade_ajuste <- modelos_selecionados |> 
+  purrr::map(
+    \(x) gof_ds(x, plot = FALSE)
+  )
+
+bondade_ajuste |> 
+  purrr::map(
+    \(x) data.frame(x$dsgof$CvM)
+  ) |> 
+  list_rbind() |> 
+  mutate(Modelo = names(modelos_selecionados)) |> 
+  relocate(Modelo, .before = W)
+  
 ```
 
 ##### Avaliando as estimativas de Abundância e Densidade
