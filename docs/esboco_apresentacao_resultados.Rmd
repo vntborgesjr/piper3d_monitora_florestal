@@ -178,7 +178,7 @@ bondade_ajuste |>
 
 ```{r}
 # área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
-area_esforco_hr <- cutia_tap_arap_hr$`Sem termo` |> 
+fluxo1_area_esforco_hr <- cutia_tap_arap_hr$`Sem termo` |> 
   gerar_caracteristicas_area_estudo_taxa_encontro()
 ```
 
@@ -267,28 +267,28 @@ cutia_tap_arap_hn$`Sem termo` |>
 
 ```{r}
 # área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
-area_esforco_hr_sem_termo <- cutia_tap_arap_hr$`Sem termo` |> 
+fluxo1_area_esforco_hr_sem_termo <- cutia_tap_arap_hr$`Sem termo` |> 
   gerar_caracteristicas_area_estudo_taxa_encontro()
 
-area_esforco_hr_cosseno <- cutia_tap_arap_hn$Cosseno |> 
+fluxo1_area_esforco_hr_cosseno <- cutia_tap_arap_hn$Cosseno |> 
   gerar_caracteristicas_area_estudo_taxa_encontro()
 
-area_esforco_unif_cosseno <- cutia_tap_arap_unif$Cosseno |> 
+fluxo1_area_esforco_unif_cosseno <- cutia_tap_arap_unif$Cosseno |> 
   gerar_caracteristicas_area_estudo_taxa_encontro()
 
-area_esforco_unif_polinomial <- cutia_tap_arap_unif$`Polinomial simples` |> 
+fluxo1_area_esforco_unif_polinomial <- cutia_tap_arap_unif$`Polinomial simples` |> 
   gerar_caracteristicas_area_estudo_taxa_encontro()
 
-area_esforco_hn_sem_termo <- cutia_tap_arap_hn$`Sem termo` |> 
+fluxo1_area_esforco_hn_sem_termo <- cutia_tap_arap_hn$`Sem termo` |> 
   gerar_caracteristicas_area_estudo_taxa_encontro()
 
 # é importante que a ordem de entrada dos objetos respeitem a ordem da tabela de selecao de modelos
-area_esforco_hr_sem_termo |> 
-  rbind(area_esforco_hr_cosseno) |> 
-  rbind(area_esforco_unif_cosseno) |> 
-  rbind(area_esforco_unif_polinomial) |> 
-  rbind(area_esforco_hn_sem_termo) |> 
-  mutate(Model = selecao_funcao_deteccao_termo_ajsute$Model) |> # pode ser um argumento da função
+fluxo1_area_esforco_hr_sem_termo |> 
+  rbind(fluxo1_area_esforco_hr_cosseno) |> 
+  rbind(fluxo1_area_esforco_unif_cosseno) |> 
+  rbind(fluxo1_area_esforco_unif_polinomial) |> 
+  rbind(fluxo1_area_esforco_hn_sem_termo) |> 
+  mutate(Model = fluxo1_selecao_funcao_deteccao_termo_ajsute$Model) |> # pode ser um argumento da função
   relocate(Model, .before = Region)
 ```
 
@@ -341,19 +341,196 @@ plotar_funcao_deteccao_selecao_distancia_truncamento(cutia_tap_arap_quase_sem_re
 
 ###### Uniforme + Cosseno
 
+```{r}
+# ajustando a função de detecção uniforme para um truncamento de 10% dos dados
+cutia_tap_arap_quase_sem_repeticao_unif <- cutia_tap_arap_quase_sem_repeticao |> 
+  ajuste_modelos_distance_unif(truncamento = "10%")
+
+```
+
 ###### Half-Normal sem termos de ajuste e com termos de ajuste
 
+```{r}
+# ajustando a função de detecção half-normal para um truncamento de 10% dos dados
+cutia_tap_arap_quase_sem_repeticao_hn <- cutia_tap_arap_quase_sem_repeticao |> 
+  ajuste_modelos_distance_hn(truncamento = "10%")
+```
+
 ###### Hazard-rate sem termos de ajuste e com termos de ajuste
+
+```{r}
+# ajustando a função de detecção half-normal para um truncamento de 10% dos dados
+cutia_tap_arap_quase_sem_repeticao_hr <- cutia_tap_arap_quase_sem_repeticao |> 
+  ajuste_modelos_distance_hr(truncamento = "10%")
+```
+
+
 
 ##### Comparando os modelos
 
 ###### Tabela com o resumo comparativo dos modelos
 
+```{r}
+fluxo2_lista_modelos_ajustados <- list(
+  `half-normal` = cutia_tap_arap_quase_sem_repeticao_hn, 
+  `hazard-rate` = cutia_tap_arap_quase_sem_repeticao_hr, 
+  `uniforme` = cutia_tap_arap_quase_sem_repeticao_unif
+)
+
+fluxo2_selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_termo_ajuste(fluxo2_lista_modelos_ajustados)
+
+fluxo2_selecao_funcao_deteccao_termo_ajuste
+```
+
+
 ###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
+
+
+```{r}
+# gerar uma lista com os modelos selecionados ordenados do melhor para o pior modelo
+fluxo2_modelos_selecionados <- list(
+  cutia_tap_arap_quase_sem_repeticao_hr$`Sem termo`,
+  cutia_tap_arap_quase_sem_repeticao_hn$`Cosseno`,
+  cutia_tap_arap_quase_sem_repeticao_unif$`Cosseno`,
+  cutia_tap_arap_quase_sem_repeticao_unif$`Polinomial simples`,
+  cutia_tap_arap_quase_sem_repeticao_hn$`Sem termo`
+)
+
+# atribuir o nome dos modelos aos itens da lista
+
+names(fluxo2_modelos_selecionados) <- fluxo2_selecao_funcao_deteccao_termo_ajuste$Model
+
+# plotar a probabilidade de detecção observada (barras) e a esperada (linhas e pontos)
+plotar_funcao_deteccao_modelos_selecionados(fluxo2_modelos_selecionados)
+```
+
 
 ###### Teste de bondade de ajuste dos modelos e Q-Q plots
 
+```{r}
+bondade_ajuste_fluxo2 <- testar_bondade_ajuste(fluxo2_modelos_selecionados)
+bondade_ajuste_fluxo2
+```
+
 ##### Avaliando as estimativas de Abundância e Densidade
+
+```{r}
+# área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
+area_esforco_hr <- cutia_tap_arap_quase_sem_repeticao_hr$`Sem termo` |> 
+  gerar_caracteristicas_area_estudo_taxa_encontro()
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
+cutia_tap_arap_quase_sem_repeticao_hr$`Sem termo` |> 
+  gerar_caracteristicas_esforco_abundancia_deteccao()
+```
+
+```{r}
+# total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
+cutia_tap_arap_quase_sem_repeticao_hr$`Sem termo` |> 
+  gerar_caracteristicas_densidade()
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
+gerar_caracteristicas_area_estudo_taxa_encontro(cutia_tap_arap_quase_sem_repeticao_hn$Cosseno)
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
+cutia_tap_arap_quase_sem_repeticao_hn$Cosseno |> 
+  gerar_caracteristicas_esforco_abundancia_deteccao()
+```
+
+```{r}
+# total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
+cutia_tap_arap_quase_sem_repeticao_hn$Cosseno |> 
+  gerar_caracteristicas_densidade()
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
+gerar_caracteristicas_area_estudo_taxa_encontro(cutia_tap_arap_quase_sem_repeticao_unif$Cosseno)
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
+cutia_tap_arap_quase_sem_repeticao_unif$Cosseno |> 
+  gerar_caracteristicas_esforco_abundancia_deteccao()
+```
+
+```{r}
+# total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
+cutia_tap_arap_quase_sem_repeticao_unif$Cosseno |> 
+  gerar_caracteristicas_densidade()
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
+gerar_caracteristicas_area_estudo_taxa_encontro(cutia_tap_arap_quase_sem_repeticao_unif$`Polinomial simples`)
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
+cutia_tap_arap_quase_sem_repeticao_unif$`Polinomial simples` |> 
+  gerar_caracteristicas_esforco_abundancia_deteccao()
+```
+
+```{r}
+# total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
+cutia_tap_arap_quase_sem_repeticao_unif$`Polinomial simples` |> 
+  gerar_caracteristicas_densidade()
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
+gerar_caracteristicas_area_estudo_taxa_encontro(cutia_tap_arap_quase_sem_repeticao_hn$`Sem termo`)
+```
+
+```{r}
+# área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
+cutia_tap_arap_quase_sem_repeticao_hn$`Sem termo` |> 
+  gerar_caracteristicas_esforco_abundancia_deteccao()
+```
+
+```{r}
+# total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
+cutia_tap_arap_quase_sem_repeticao_hn$`Sem termo` |> 
+  gerar_caracteristicas_densidade()
+```
+
+
+###### Caracteristicas da área e esforço
+
+```{r}
+# área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
+area_esforco_hr_sem_termo <- cutia_tap_arap_quase_sem_repeticao_hr$`Sem termo` |> 
+  gerar_caracteristicas_area_estudo_taxa_encontro()
+
+area_esforco_hr_cosseno <- cutia_tap_arap_quase_sem_repeticao_hn$Cosseno |> 
+  gerar_caracteristicas_area_estudo_taxa_encontro()
+
+area_esforco_unif_cosseno <- cutia_tap_arap_quase_sem_repeticao_unif$Cosseno |> 
+  gerar_caracteristicas_area_estudo_taxa_encontro()
+
+area_esforco_unif_polinomial <- cutia_tap_arap_quase_sem_repeticao_unif$`Polinomial simples` |> 
+  gerar_caracteristicas_area_estudo_taxa_encontro()
+
+area_esforco_hn_sem_termo <- cutia_tap_arap_quase_sem_repeticao_hn$`Sem termo` |> 
+  gerar_caracteristicas_area_estudo_taxa_encontro()
+
+# é importante que a ordem de entrada dos objetos respeitem a ordem da tabela de selecao de modelos
+area_esforco_hr_sem_termo |> 
+  rbind(area_esforco_hr_cosseno) |> 
+  rbind(area_esforco_unif_cosseno) |> 
+  rbind(area_esforco_unif_polinomial) |> 
+  rbind(area_esforco_hn_sem_termo) |> 
+  mutate(Model = selecao_funcao_deteccao_termo_ajsute$Model) |> # pode ser um argumento da função
+  relocate(Model, .before = Region)
+```
+
+
 
 #### Fluxo 3 - Distâncias agrupadas com todas as repetições
 
