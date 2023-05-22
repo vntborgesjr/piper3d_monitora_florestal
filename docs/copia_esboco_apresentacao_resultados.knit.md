@@ -768,14 +768,26 @@ caracteristicas_area_estudo_taxa_encontro
 <!-- rnb-chunk-begin -->
 
 
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyDDoXJlYSBkZSBlc3R1ZG8sIHRhbWFuaG8gZGEgw6FyZWEgZGUgZXN0dWRvLCB0cmlsaGFzIG91IGVzdGHDp8O1ZXMgYW1vc3RyYWlzLCBlc2ZvcsOnbyB0b3RhbCBlbSBjYWRhIHRyaWxoYSwgYWJ1bmTDom5jaWEgZXN0aW1hZGEgZW0gY2FkYSBlc3Rhw6fDo28gYW1vc3RyYWwsIG7Dum1lcm8gZGUgZGV0ZWPDp8O1ZXMgZW0gY2FkYSBlc3Rhw6fDo28gYW1vc3RyYWwsIMOhcmVhIHRvdGFsIGFtb3N0cmFkYVxuXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyDDoXJlYSBkZSBlc3R1ZG8sIHRhbWFuaG8gZGEgw6FyZWEgZGUgZXN0dWRvLCB0cmlsaGFzIG91IGVzdGHDp8O1ZXMgYW1vc3RyYWlzLCBlc2ZvcsOnbyB0b3RhbCBlbSBjYWRhIHRyaWxoYSwgYWJ1bmTDom5jaWEgZXN0aW1hZGEgZW0gY2FkYSBlc3Rhw6fDo28gYW1vc3RyYWwsIG7Dum1lcm8gZGUgZGV0ZWPDp8O1ZXMgZW0gY2FkYSBlc3Rhw6fDo28gYW1vc3RyYWwsIMOhcmVhIHRvdGFsIGFtb3N0cmFkYVxuY2FyYWN0ZXJpc3RpY2FzX2VzZm9yY29fYWJ1bmRhbmNpYV9kZXRlY2NhbyA8LSBsaXN0YV9tb2RlbG9zX2FqdXN0YWRvc190ZXJtb3MgfD4gXG4gIGdlcmFyX2NhcmFjdGVyaXN0aWNhc19lc2ZvcmNvX2FidW5kYW5jaWFfZGV0ZWNjYW8ocmVzdWx0YWRvX3NlbGVjYW9fbW9kZWxvcyA9IHNlbGVjYW9fZnVuY2FvX2RldGVjY2FvX3Rlcm1vX2Fqc3V0ZSlcbmBgYCJ9 -->
 
 ```r
 # área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
-
+caracteristicas_esforco_abundancia_deteccao <- lista_modelos_ajustados_termos |> 
+  gerar_caracteristicas_esforco_abundancia_deteccao(resultado_selecao_modelos = selecao_funcao_deteccao_termo_ajsute)
 ```
 
 <!-- rnb-source-end -->
+
+<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3IgaW4gZ2VyYXJfY2FyYWN0ZXJpc3RpY2FzX2VzZm9yY29fYWJ1bmRhbmNpYV9kZXRlY2NhbyhsaXN0YV9tb2RlbG9zX2FqdXN0YWRvc190ZXJtb3MsICA6IFxuICB1bnVzZWQgYXJndW1lbnQgKHJlc3VsdGFkb19zZWxlY2FvX21vZGVsb3MgPSBzZWxlY2FvX2Z1bmNhb19kZXRlY2Nhb190ZXJtb19hanN1dGUpXG4ifQ== -->
+
+```
+Error in gerar_caracteristicas_esforco_abundancia_deteccao(lista_modelos_ajustados_termos,  : 
+  unused argument (resultado_selecao_modelos = selecao_funcao_deteccao_termo_ajsute)
+```
+
+
+
+<!-- rnb-output-end -->
 
 <!-- rnb-chunk-end -->
 
