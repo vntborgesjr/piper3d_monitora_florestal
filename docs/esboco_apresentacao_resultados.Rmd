@@ -185,7 +185,8 @@ cutia_tap_arap_quase_sem_repeticao_dist_trunc$selecao
 ###### Plotando o histograma com os dados truncados.
 
 ```{r}
-plotar_funcao_deteccao_selecao_distancia_truncamento(cutia_tap_arap_quase_sem_repeticao)
+plotar_funcao_deteccao_selecao_distancia_truncamento(cutia_tap_arap_quase_sem_repeticao_dist_trunc)
+
 ```
 
 ##### Ajustando diferentes modelos de funções de deteção
@@ -208,21 +209,48 @@ plotar_funcao_deteccao_selecao_distancia_truncamento(cutia_tap_arap_quase_sem_re
 
 #### Fluxo 3 - Distâncias agrupadas com todas as repetições
 
-Aqui vamos partir do mesmo conjunto de dados do Fluxo 1, com todas as repetições, mas vamos agrupar as distâncias em intervalos. Vamos usar o mesmo valor de truncamento, removendo 10% das observações nas maiores distâncias, o que significa que aproveitaremos as observações feitas até 15m de distância do observador.
+Aqui vamos partir do mesmo conjunto de dados do Fluxo 1 (`cutia_tap_arap`), com todas as repetições, mas vamos agrupar as distâncias em intervalos. Vamos usar o mesmo valor de truncamento, removendo 10% das observações nas maiores distâncias, o que significa que aproveitaremos as observações feitas até 15m de distância do observador.
 
 ##### Plotando o histograma das frequências de ocorrência pela distância
 
 O histograma interativo está disponível no app em Shiny `app_distancia_interativo.R`.
 
+Aqui, plotamos quatro histogramas com binagens diferentes, para observar o efeito de agrupar os dados sobre as distribuições das frequências de ocorrência nos histogramas.
+
 ```{r, fig.height=15, fig.width=10}
 cutia_tap_arap |> 
   drop_na(distance) |> 
 plotar_distribuicao_distancia_interativo(largura_caixa = 1)
+
+cutia_tap_arap |> 
+  drop_na(distance) |> 
+plotar_distribuicao_distancia_interativo(largura_caixa = 2)
+
+cutia_tap_arap |> 
+  drop_na(distance) |> 
+plotar_distribuicao_distancia_interativo(largura_caixa = 3)
+
+cutia_tap_arap |> 
+  drop_na(distance) |> 
+plotar_distribuicao_distancia_interativo(largura_caixa = 5)
+
 ```
 
-##### Testando distância de truncamento (*w*)
+##### Definindo os intevalos de distância de agrupamento
+```{r}
+cutia_tap_arap_bin1 <- create_bins(
+  cutia_tap_arap[!is.na(cutia_tap_arap$distance),], 
+  c(1, 3.8, 6.6, 9.4, 12.2, 15,50)
+)
+```
+###### Ajustando diferentes modelos de funções de detecção
 
-Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de distribuição half-normal. Optamos por truncar os dados pela percentagem para padronizar a rotina para diferentes espécies. Buckland et al. (2001) sugere um corte entre 5-10% das observações detectadas nas maiores distãncias. Vamos selecionar o valor de corte pelo modelo com melhor ajuste.
+```{r}
+
+cutia_tap_arap_bin1_unif <- cutia_tap_arap_bin1 |> 
+  ajuste_modelos_distance_unif(truncamento = 15)
+
+```
 
 ###### Tabela com resumo comparativo dos modelos
 
