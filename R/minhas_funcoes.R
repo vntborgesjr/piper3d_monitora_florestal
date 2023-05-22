@@ -1,5 +1,6 @@
 
 # Carregar pacotes necessarios --------------------------------------------
+library(Distance)
 library(dplyr)
 library(DT)
 library(forcats)
@@ -7,6 +8,7 @@ library(ggpubr)
 library(ggplot2)
 library(here)
 library(lubridate)
+library(mrds)
 library(plotly)
 library(purrr)
 library(readr)
@@ -78,7 +80,7 @@ ajuste_modelos_distance_hr <- function(
   # Key function - Hazard-rate
   modelos_ajustados <- purrr::map(
     lista_termos_ajuste, 
-    \(.x) ds(
+    \(.x) Distance::ds(
       data = dados,
       truncation = truncamento,
       key = "hr",
@@ -116,7 +118,7 @@ ajuste_modelos_distance_unif <- function(
   modelos_ajustados <- purrr::map(
     lista_termos_ajuste, 
     \(.x) ds(
-      data = dados,
+      data = Distance::dados,
       truncation = truncamento,
       key = "unif",
       adjustment = .x
@@ -1071,7 +1073,7 @@ contar_n_uc <- function(
 }
 
 
-# Documentacaoda funcao gerar_caracteristicas_area_estudo_taxa_enc --------
+# Documentacaoda funcao gerar_caracteristicas_area_estudo_taxa_encontro() --------
 #' Title
 #'
 #' @param dados 
@@ -1094,7 +1096,7 @@ gerar_caracteristicas_area_estudo_taxa_encontro <- function(dados) {
   return(caracteristicas_area_estudo_taxa_encontro)
 }
 
-# Documentacao da funcao  -------------------------------------------------
+# Documentacao da funcao gerar_caracteristicas_densidade() -------------------------------------------------
 #' Title
 #'
 #' @param dados 
@@ -1950,7 +1952,7 @@ plotar_distribuicao_distancia_estatico <- function(
 plotar_funcao_deteccao_modelos_selecionados <- function(dados) {
   dados |> 
     purrr::map(
-      \(.x) plot(
+      \(.x) mrds::plot.ds(
         .x,
         xlab = "Distancia (m)",
         ylab = "Probabilidade de detecacao"
@@ -1970,7 +1972,7 @@ plotar_funcao_deteccao_modelos_selecionados <- function(dados) {
 plotar_funcao_deteccao_selecao_distancia_truncamento <- function(dados) {
   dados$modelos |> 
     purrr::map(
-      \(.x) plot(
+      \(.x) mrds::plot.ds(
         .x,
         xlab = "Distancia (m)",
         ylab = "Probabilidade de detecacao"
@@ -2577,7 +2579,7 @@ selecionar_distancia_truncamento <- function(
   # de ajuste a diferentes distancias de truncamento 
   modelos_hn_diferentes_dist_truncamento <- purrr::map(
     dist_truncamento,
-    \(.x) ds(
+    \(.x) Distance::ds(
       dados,
       key = NULL, 
       adjustment = NULL,
@@ -2588,7 +2590,7 @@ selecionar_distancia_truncamento <- function(
   # performa a selecao de modelos e gera um data.frame com os resultados
   tabela_selecao_dist_truncamento <- modelos_hn_diferentes_dist_truncamento |> 
     purrr::map(
-      \(x) summarize_ds_models(x, delta_only = FALSE)
+      \(x) Distance::summarize_ds_models(x, delta_only = FALSE)
     ) |> 
     list_rbind() |> 
     mutate(AIC = round(AIC, 3))
@@ -2629,7 +2631,7 @@ selecionar_funcao_deteccao_termo_ajuste <- function(
 ) {
   
   # gerar rank das funcoes de deteccao e termos de ajuste
-  selecao_funcao_deteccao_termo_ajuste <- summarize_ds_models(
+  selecao_funcao_deteccao_termo_ajuste <- Distance::summarize_ds_models(
     dados$`half-normal`$`Sem termo`,
     dados$`half-normal`$Cosseno,
     dados$`half-normal`$`Hermite polinomial`,
