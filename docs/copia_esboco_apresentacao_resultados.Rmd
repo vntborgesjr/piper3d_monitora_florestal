@@ -184,53 +184,6 @@ caracteristicas_densidade <- lista_modelos_ajustados_termos |>
 caracteristicas_densidade
 ```
 
-```{r}
-cutia_tap_arap_hn$Cosseno |> 
-  gerar_caracteristicas_densidade()
-```
-
-
-
-```{r}
-# área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
-cutia_tap_arap_unif$Cosseno |> 
-  gerar_caracteristicas_esforco_abundancia_deteccao()
-```
-
-```{r}
-# total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
-cutia_tap_arap_unif$Cosseno |> 
-  gerar_caracteristicas_densidade()
-```
-
-
-
-```{r}
-# área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
-cutia_tap_arap_unif$`Polinomial simples` |> 
-  gerar_caracteristicas_esforco_abundancia_deteccao()
-```
-
-```{r}
-# total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
-cutia_tap_arap_unif$`Polinomial simples` |> 
-  gerar_caracteristicas_densidade()
-```
-
-
-
-```{r}
-# área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
-cutia_tap_arap_hn$`Sem termo` |> 
-  gerar_caracteristicas_esforco_abundancia_deteccao()
-```
-
-```{r}
-# total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
-cutia_tap_arap_hn$`Sem termo` |> 
-  gerar_caracteristicas_densidade()
-```
-
 #### Fluxo 2 - Distâncias exatas com repetições reduzidas
 
 ##### Filtrando os dados para reduzir as repetições
