@@ -362,15 +362,7 @@ cutia_tap_arap_quase_sem_repeticao_hr <- cutia_tap_arap_quase_sem_repeticao |>
 ###### Tabela com o resumo comparativo dos modelos
 
 ```{r}
-fluxo2_lista_modelos_ajustados <- list(
-  `half-normal` = cutia_tap_arap_quase_sem_repeticao_hn, 
-  `hazard-rate` = cutia_tap_arap_quase_sem_repeticao_hr, 
-  `uniforme` = cutia_tap_arap_quase_sem_repeticao_unif
-)
-
-fluxo2_selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_termo_ajuste(fluxo2_lista_modelos_ajustados)
-
-fluxo2_selecao_funcao_deteccao_termo_ajuste
+summarize_ds_models()
 ```
 
 ###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
@@ -934,7 +926,6 @@ cutia_cov_hr_s <- cutia_tap_arap_quase_sem_repeticao |>
 
 ##### Comparando os modelos
 
-co
 
 ```{r}
 fluxo2_lista_modelos_ajustados <- list(
@@ -956,6 +947,4 @@ fluxo2_selecao_funcao_deteccao_termo_ajuste
 
 ##### Avaliando as estimativas de Abundância e Densidade
 
-Para o uso de covariáveis, as estimativas de abundância/densidade devem ser feitas através do bootstrap.
-covcovcov
-  `half-normal` = cutia_cov_hn,-size
+Para o uso de covariáveis, as estimativas de abundância/densidade devem ser feitas através do bootstrap. covcovcov `half-normal` = cutia_cov_hn,-size
