@@ -128,7 +128,8 @@ Dentre os modelos testados, o que apresentou melhor valor de ajuste e AIC foi o 
 ###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
 
 ```{r}
-fluxo1_modelos_selecionados <- list(
+# gerar uma lista com os modelos selecionados ordenados do melhor para o pior modelo
+fluxo1_lista_modelos_ajustados <- list(
   cutia_tap_arap_hr$`Sem termo`,
   cutia_tap_arap_unif$`Cosseno`,
   cutia_tap_arap_hn$`Cosseno`,
@@ -136,6 +137,13 @@ fluxo1_modelos_selecionados <- list(
   cutia_tap_arap_hn$`Sem termo`
 )
 
+# atribuir o nome dos modelos aos itens da lista
+
+selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_termo_ajuste(fluxo1_lista_modelos_ajustados)
+
+names(fluxo1_lista_modelos_ajustados) <- selecao_funcao_deteccao_termo_ajsute$Model
+
+# plotar a probabilidade de detecção observada (barras) e a esperada (linhas e pontos)
 plotar_funcao_deteccao_modelos_selecionados(fluxo1_modelos_selecionados)
 ```
 
