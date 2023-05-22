@@ -1134,33 +1134,7 @@ gerar_caracteristicas_densidade <- function(
     dados,
     resultado_selecao_modelos
 ) {
-  # área de estudo, tamanho da área de estudo, trilhas ou estações
-  # amostrais, esforço total em cada trilha, abundância estimada em cada
-  # estação amostral, número de detecções em cada estação amostral, 
-  # área total amostrada
-  caracteristicas_densidade <- dados |> 
-    purrr::map(
-      \(.x) .x$dht$individuals$D
-    ) |> 
-    list_rbind() |> 
-    select(!c(Label, CoveredArea)) |> 
-    rename(
-      Regiao = Region.Label,
-      `Estacao amostral` = Sample.Label,
-      Esforco = Effort.x,
-      `Abundancia estimada` = Nhat,
-      `N de deteccoes` = n
-    )
   
-  caracteristicas_densidade <- caracteristicas_densidade |>
-    mutate(Modelo = rep(resultado_selecao_modelos$Model, each = length(unique(caracteristicas_densidade$`Estacao amostral`)))) |> # pode ser um argumento da função
-    relocate(Modelo, .before = Regiao)
-  
-  # área de estudo, tamanho da área de estudo, trilhas ou estações
-  # amostrais, esforço total em cada trilha, abundância estimada em cada
-  # estação amostral, número de detecções em cada estação amostral, 
-  # área total amostrada
-  return(caracteristicas_densidade)
 }
 
 # Documantacao da funcao gerar_caracteristicas_esforco_abundancia_deteccao()  -------------------------------------------------
@@ -1172,18 +1146,39 @@ gerar_caracteristicas_densidade <- function(
 #' @export
 #'
 #' @examples
-gerar_caracteristicas_esforco_abundancia_deteccao <- function(dados) {
+gerar_caracteristicas_esforco_abundancia_deteccao <- function(
+    dados,
+    resultado_selecao_modelos
+  ) {
+  
   # área de estudo, tamanho da área de estudo, trilhas ou estações
   # amostrais, esforço total em cada trilha, abundância estimada em cada
   # estação amostral, número de detecções em cada estação amostral, 
   # área total amostrada
-  caracteristicas_esforco_abundancia_deteccao <- dados$dht$individuals$Nhat.by.sample[1:8]
+  caracteristicas_esforco_abundancia_deteccao <- dados |> 
+    purrr::map(
+      \(.x) .x$dht$individuals$Nhat.by.sample[1:8]
+    ) |> 
+    list_rbind() |> 
+    select(!c(Label, CoveredArea)) |> 
+    rename(
+      Regiao = Region.Label,
+      `Estacao amostral` = Sample.Label,
+      Esforco = Effort.x,
+      `Abundancia estimada` = Nhat,
+      `N de deteccoes` = n
+    )
+  
+  caracteristicas_esforco_abundancia_deteccao <- caracteristicas_esforco_abundancia_deteccao |>
+    mutate(Modelo = rep(resultado_selecao_modelos$Model, each = length(unique(caracteristicas_densidade$`Estacao amostral`)))) |> # pode ser um argumento da função
+    relocate(Modelo, .before = Regiao)
   
   # área de estudo, tamanho da área de estudo, trilhas ou estações
   # amostrais, esforço total em cada trilha, abundância estimada em cada
   # estação amostral, número de detecções em cada estação amostral, 
   # área total amostrada
   return(caracteristicas_esforco_abundancia_deteccao)
+  
 }
 
 # Documentacao da funcao gerar_tabdin_dados_brutos() --------------------
