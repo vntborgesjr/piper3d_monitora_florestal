@@ -174,7 +174,10 @@ caracteristicas_area_estudo_taxa_encontro
 
 ```{r}
 # área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
+caracteristicas_esforco_abundancia_deteccao <- lista_modelos_ajustados_termos |> 
+  gerar_caracteristicas_esforco_abundancia_deteccao(resultado_selecao_modelos = selecao_funcao_deteccao_termo_ajsute)
 
+caracteristicas_esforco_abundancia_deteccao
 ```
 
 ##### Características de densidade
