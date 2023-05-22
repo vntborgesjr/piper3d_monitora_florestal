@@ -133,7 +133,8 @@ Sugestão de aperfeiçoamento das funções: gerar uma única tabela a partir de
 
 ```{r}
 # área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
-gerar_caracteristicas_area_estudo_taxa_encontro(cutia_tap_arap_hr$`Sem termo`)
+area_esforco_hr <- cutia_tap_arap_hr$`Sem termo` |> 
+  gerar_caracteristicas_area_estudo_taxa_encontro()
 ```
 
 ```{r}
@@ -144,8 +145,8 @@ cutia_tap_arap_hr$`Sem termo` |>
 
 ```{r}
 # total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
-cutia_tap_arap_hr$`Sem termo`$dht$individuals$D
-
+cutia_tap_arap_hr$`Sem termo` |> 
+  gerar_caracteristicas_densidade()
 ```
 
 ```{r}
@@ -161,7 +162,8 @@ cutia_tap_arap_hn$Cosseno |>
 
 ```{r}
 # total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
-sagui_mont_tumuc_hr$`Sem termo`$dht$individuals$D
+cutia_tap_arap_hn$Cosseno |> 
+  gerar_caracteristicas_densidade()
 ```
 
 ```{r}
@@ -176,6 +178,12 @@ cutia_tap_arap_unif$Cosseno |>
 ```
 
 ```{r}
+# total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
+cutia_tap_arap_unif$Cosseno |> 
+  gerar_caracteristicas_densidade()
+```
+
+```{r}
 # área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
 gerar_caracteristicas_area_estudo_taxa_encontro(cutia_tap_arap_unif$`Polinomial simples`)
 ```
@@ -187,6 +195,12 @@ cutia_tap_arap_unif$`Polinomial simples` |>
 ```
 
 ```{r}
+# total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
+cutia_tap_arap_unif$`Polinomial simples` |> 
+  gerar_caracteristicas_densidade()
+```
+
+```{r}
 # área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
 gerar_caracteristicas_area_estudo_taxa_encontro(cutia_tap_arap_hn$`Sem termo`)
 ```
@@ -195,6 +209,43 @@ gerar_caracteristicas_area_estudo_taxa_encontro(cutia_tap_arap_hn$`Sem termo`)
 # área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
 cutia_tap_arap_hn$`Sem termo` |> 
   gerar_caracteristicas_esforco_abundancia_deteccao()
+```
+
+```{r}
+# total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
+cutia_tap_arap_hn$`Sem termo` |> 
+  gerar_caracteristicas_densidade()
+```
+
+Sugestão de organização dessa parte: independente do método, tem qiue bolar uma forma de automatizar a forma de obter o nome dos modelos e gera a coluna com seus nomes. Se achar que ficou melhor assim, transformo em função e reproduzo pro demais resultados.
+
+###### Caracteristicas da área e esforço
+
+```{r}
+# área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
+area_esforco_hr_sem_termo <- cutia_tap_arap_hr$`Sem termo` |> 
+  gerar_caracteristicas_area_estudo_taxa_encontro()
+
+area_esforco_hr_cosseno <- cutia_tap_arap_hn$Cosseno |> 
+  gerar_caracteristicas_area_estudo_taxa_encontro()
+
+area_esforco_unif_cosseno <- cutia_tap_arap_unif$Cosseno |> 
+  gerar_caracteristicas_area_estudo_taxa_encontro()
+
+area_esforco_unif_polinomial <- cutia_tap_arap_unif$`Polinomial simples` |> 
+  gerar_caracteristicas_area_estudo_taxa_encontro()
+
+area_esforco_hn_sem_termo <- cutia_tap_arap_hn$`Sem termo` |> 
+  gerar_caracteristicas_area_estudo_taxa_encontro()
+
+# é importante que a ordem de entrada dos objetos respeitem a ordema da tabela de selecao de modelos
+area_esforco_hr_sem_termo |> 
+  rbind(area_esforco_hr_cosseno) |> 
+  rbind(area_esforco_unif_cosseno) |> 
+  rbind(area_esforco_unif_polinomial) |> 
+  rbind(area_esforco_hn_sem_termo) |> 
+  mutate(Model = selecao_funcao_deteccao_termo_ajsute$Model) |> # pode ser um argumento da função
+  relocate(Model, .before = Region)
 ```
 
 #### Fluxo 2 - Distâncias exatas com repetições reduzidas
