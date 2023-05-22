@@ -2668,13 +2668,20 @@ selecionar_funcao_deteccao_termo_ajuste <- function(
 #' @examples
 testar_bondade_ajuste <- function(
     dados, 
-    plot = FALSE
+    plot = FALSE,
+    chisq = FALSE,
+    nc = NULL
     ) {
   
   # gera uma lista com os resultados dos testes de bondade de ajuste
   bondade_ajuste <- dados |> 
     purrr::map(
-      \(x) gof_ds(x, plot = plot)
+      \(x) gof_ds(
+        x, 
+        plot = plot, 
+        chisq = chisq,
+        nc = nc
+      )
     ) |> 
     # gerar o data.frame com os resultados dos testes de bondade de ajuste
     purrr::map(
