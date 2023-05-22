@@ -1094,6 +1094,30 @@ gerar_caracteristicas_area_estudo_taxa_encontro <- function(dados) {
   return(caracteristicas_area_estudo_taxa_encontro)
 }
 
+# Documantacao da funcao gerar_caracteristicas_esforco_abundancia_deteccao()  -------------------------------------------------
+#' Title
+#'
+#' @param dados 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+gerar_caracteristicas_esforco_abundancia_deteccao <- function(dados) {
+  # área de estudo, tamanho da área de estudo, trilhas ou estações
+  # amostrais, esforço total em cada trilha, abundância estimada em cada
+  # estação amostral, número de detecções em cada estação amostral, 
+  # área total amostrada
+  caracteristicas_esforco_abundancia_deteccao <- dados$dht$individuals$Nhat.by.sample[1:8]
+  
+  # área de estudo, tamanho da área de estudo, trilhas ou estações
+  # amostrais, esforço total em cada trilha, abundância estimada em cada
+  # estação amostral, número de detecções em cada estação amostral, 
+  # área total amostrada
+  return(caracteristicas_esforco_abundancia_deteccao)
+}
+
+
 # Documentacao da funcao gerar_tabdin_dados_brutos() --------------------
 #' Gera uma tabela dinamica dos dados brutos
 #'
