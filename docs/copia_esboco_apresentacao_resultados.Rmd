@@ -7,6 +7,10 @@ output: html_document
 date: "2023-05-20"
 ---
 
+```{r, message=FALSE}
+source(here::here("R/minhas_funcoes.R"))
+```
+
 # Fluxo de análise dos dados:
 
 A seguir, apresentamos o fluxo de análise dos dados que envolve a fase exploratória, truncamento, ajuste e avaliação de modelos e estimativas de abundância e densidade para as espécies que selecionamos como modelo. Usamos como critérios de seleção tanto o número de ocorrências por Unidade de Conservação quanto a distribuição das frequências de observação, nos casos em que isso foi possível. De forma geral, as espécies com número satisfatório de ocorrências (\>60), apresentaram pico de observações próximos a zero.
@@ -126,6 +130,10 @@ plotar_funcao_deteccao_modelos_selecionados(modelos_selecionados)
 ```
 
 ###### Teste de bondade de ajuste dos modelos e Q-Q plots
+
+```{r}
+
+```
 
 ##### Avaliando as estimativas de Abundância e Densidade
 
@@ -257,6 +265,7 @@ O histograma interativo está disponível no app em Shiny `app_distancia_interat
 ##### Testando distância de truncamento (*w*)
 
 Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de distribuição half-normal. Optamos por truncar os dados pela percentagem para padronizar a rotina para diferentes espécies. Buckland et al. (2001) sugere um corte entre 5-10% das observações detectadas nas maiores distãncias. Vamos selecionar o valor de corte pelo modelo com melhor ajuste.
+
 
 ###### Tabela com resumo comparativo dos modelos
 
