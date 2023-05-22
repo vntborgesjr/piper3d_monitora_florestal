@@ -1952,10 +1952,11 @@ plotar_distribuicao_distancia_estatico <- function(
 plotar_funcao_deteccao_modelos_selecionados <- function(dados) {
   dados |> 
     purrr::map(
-      \(.x) mrds::plot.ds(
+      \(.x) plot(
         .x,
         xlab = "Distancia (m)",
-        ylab = "Probabilidade de detecacao"
+        ylab = "Probabilidade de detecacao",
+        pl.col = "chartreuse4"
       )
     )
 }
@@ -1972,10 +1973,11 @@ plotar_funcao_deteccao_modelos_selecionados <- function(dados) {
 plotar_funcao_deteccao_selecao_distancia_truncamento <- function(dados) {
   dados$modelos |> 
     purrr::map(
-      \(.x) mrds::plot.ds(
+      \(.x) plot(
         .x,
         xlab = "Distancia (m)",
-        ylab = "Probabilidade de detecacao"
+        ylab = "Probabilidade de detecacao",
+        pl.col = "chartreuse4"
       )
     )
 }
