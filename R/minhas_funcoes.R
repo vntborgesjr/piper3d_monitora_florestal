@@ -2657,6 +2657,34 @@ selecionar_funcao_deteccao_termo_ajuste <- function(
   
 }
 
+# Documentacao da funcao testar_bondade_ajuste() --------------------------
+#' Title
+#'
+#' @param dados 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+testar_bondade_ajuste <- function(dados) {
+  
+  # gera uma lista com os resultados dos testes de bondade de ajuste
+  bondade_ajuste <- modelos_selecionados |> 
+    purrr::map(
+      \(x) gof_ds(x, plot = FALSE)
+    ) |> 
+    # gerar o data.frame com os resultados dos testes de bondade de ajuste
+    purrr::map(
+      \(x) data.frame(x$dsgof$CvM)
+    ) |> 
+    list_rbind() |> 
+    mutate(Modelo = names(modelos_selecionados)) |> 
+    relocate(Modelo, .before = W)
+  
+  # retornar o data.frame com o resultado dos testes de bondade de ajuste
+  return(bondade_ajuste)
+}
+
 # Documentacao da funcao transformar_para_distanceR_covariaveis() --------------------
 #' Gera uma tabela no formato para analise no pacote Distance do R, com duas covariaveis, a partir dos dados selecionados
 #'
