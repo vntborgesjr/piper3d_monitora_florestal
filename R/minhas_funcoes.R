@@ -2666,19 +2666,22 @@ selecionar_funcao_deteccao_termo_ajuste <- function(
 #' @export
 #'
 #' @examples
-testar_bondade_ajuste <- function(dados) {
+testar_bondade_ajuste <- function(
+    dados, 
+    plot = FALSE
+    ) {
   
   # gera uma lista com os resultados dos testes de bondade de ajuste
-  bondade_ajuste <- modelos_selecionados |> 
+  bondade_ajuste <- dados |> 
     purrr::map(
-      \(x) gof_ds(x, plot = FALSE)
+      \(x) gof_ds(x, plot = plot)
     ) |> 
     # gerar o data.frame com os resultados dos testes de bondade de ajuste
     purrr::map(
       \(x) data.frame(x$dsgof$CvM)
     ) |> 
     list_rbind() |> 
-    mutate(Modelo = names(modelos_selecionados)) |> 
+    mutate(Modelo = names(dados)) |> 
     relocate(Modelo, .before = W)
   
   # retornar o data.frame com o resultado dos testes de bondade de ajuste
