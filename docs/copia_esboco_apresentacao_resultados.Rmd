@@ -47,10 +47,6 @@ cutia_tap_arap |>
 plotar_distribuicao_distancia_interativo(largura_caixa = 1)
 ```
 
-```{r}
-
-```
-
 ##### Testando distância de truncamento (*w*)
 
 Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de distribuição half-normal. Optamos por truncar os dados pela percentagem para padronizar a rotina para diferentes espécies. Buckland et al. (2001) sugere um corte entre 5-10% das observações detectadas nas maiores distãncias. Vamos selecionar o valor de corte pelo modelo com melhor ajuste.
@@ -116,6 +112,18 @@ selecao_funcao_deteccao_termo_ajsute
 ```
 
 ###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
+
+```{r}
+modelos_selecionados <- list(
+  cutia_tap_arap_hr$`Sem termo`,
+  cutia_tap_arap_unif$Cosseno,
+  cutia_tap_arap_hn$Cosseno,
+  cutia_tap_arap_unif$`Polinomial simples`,
+  cutia_tap_arap_hn$`Sem termo`
+)
+
+plotar_funcao_deteccao_modelos_selecionados(modelos_selecionados)
+```
 
 ###### Teste de bondade de ajuste dos modelos e Q-Q plots
 
