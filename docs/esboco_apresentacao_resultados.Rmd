@@ -240,7 +240,7 @@ plotar_distribuicao_distancia_interativo(largura_caixa = 5)
 ```{r}
 cutia_tap_arap_bin1 <- create_bins(
   cutia_tap_arap[!is.na(cutia_tap_arap$distance),], 
-  c(1, 3.8, 6.6, 9.4, 12.2, 15,50)
+  c(0, 3, 6, 9, 12, 15,50)
 )
 ```
 ###### Ajustando diferentes modelos de funções de detecção
