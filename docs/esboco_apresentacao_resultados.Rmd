@@ -141,7 +141,7 @@ fluxo1_lista_modelos_ajustados <- list(
 
 selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_termo_ajuste(fluxo1_lista_modelos_ajustados)
 
-names(fluxo1_lista_modelos_ajustados) <- selecao_funcao_deteccao_termo_ajsute$Model
+names(fluxo1_lista_modelos_ajustados) <- selecao_funcao_deteccao_termo_ajuste$Model
 
 # plotar a probabilidade de detecção observada (barras) e a esperada (linhas e pontos)
 plotar_funcao_deteccao_modelos_selecionados(fluxo1_modelos_selecionados)
