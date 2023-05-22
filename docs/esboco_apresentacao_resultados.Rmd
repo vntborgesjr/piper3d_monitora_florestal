@@ -118,9 +118,9 @@ lista_modelos_ajustados <- list(
   `uniforme` = cutia_tap_arap_unif
 )
 
-selecao_funcao_deteccao_termo_ajsute <- selecionar_funcao_deteccao_termo_ajuste(lista_modelos_ajustados)
+fluxo1_selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_termo_ajuste(lista_modelos_ajustados)
 
-selecao_funcao_deteccao_termo_ajsute
+fluxo1_selecao_funcao_deteccao_termo_ajuste
 ```
 
 Dentre os modelos testados, o que apresentou melhor valor de ajuste e AIC foi o hazard-rate. O ajuste do Cramér-von Mises foi consideravelmente maior que os demais (para esse tipo de teste, quanto maior o valor de p, melhor o ajuste), assim como as diferenças no delta AIC foram bastante elevadas.
@@ -128,7 +128,7 @@ Dentre os modelos testados, o que apresentou melhor valor de ajuste e AIC foi o 
 ###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
 
 ```{r}
-modelos_selecionados <- list(
+fluxo1_modelos_selecionados <- list(
   cutia_tap_arap_hr$`Sem termo`,
   cutia_tap_arap_unif$`Cosseno`,
   cutia_tap_arap_hn$`Cosseno`,
@@ -136,7 +136,7 @@ modelos_selecionados <- list(
   cutia_tap_arap_hn$`Sem termo`
 )
 
-plotar_funcao_deteccao_modelos_selecionados(modelos_selecionados)
+plotar_funcao_deteccao_modelos_selecionados(fluxo1_modelos_selecionados)
 ```
 
 Olhando para os histogramas com modelos ajustados, é possível observar o efeito do acúmulo de observações próximo a zero. O modelo com a função chave hazard-hate sem termos de ajuste, apesar de ter apresentado o melhor valor de ajuste pelo Cramér-von Mises e o melhor valor de AIC, apresentou dois problemas. As probalidades de deteção estimadas por intevalo de distância (barras cinzas), ficaram muito baixas. Além disso, a curva da função de deteção apresenta pico na distância próxima a zero, decaindo rapidamente e se aproximando de zero ao longo do eixo das distãncias. Todos os outros quatro modelos tiveram ajuste e AIC bastante inferiores ao hazard-hate. Entretanto as curvas estão relativamente melhores. As curvas do segundo e terceiro modelo, uniforme com ajuste cosseno e half-normal com ajuste cosseno, respectivamente, tendem à perda de monotonicidade. As duas últimas curvas, para os modelos uniforme com ajuste polinomial simples e half-normal sem ajuste, não perdem a monotonicidade. De forma geral, as probabilidades de detecção não têm um bom ajuste abaixo da curva, e não apresentam um decaimento gradual com a distância. Esses são problemas inerentes à distribuição dos dados.
@@ -237,14 +237,34 @@ plotar_distribuicao_distancia_interativo(largura_caixa = 5)
 ```
 
 ##### Definindo os intevalos de distância de agrupamento
+
+###### Primeira binagem - Intervalos iguais de 1.5m
 ```{r}
 cutia_tap_arap_bin1 <- create_bins(
   cutia_tap_arap[!is.na(cutia_tap_arap$distance),], 
-  c(0, 3, 6, 9, 12, 15,50)
+  c(0, 1.5, 3, 4.5, 6, 7.5, 9, 10.5, 12, 13.5, 15)
 )
 ```
-###### Ajustando diferentes modelos de funções de detecção
+###### Segunda binagem - Primeiro intervalo de 1m e demais intervalos de 1.4m
+```{r}
+cutia_tap_arap_bin2 <- create_bins(
+  cutia_tap_arap[!is.na(cutia_tap_arap$distance),], 
+  c(0, 1, 2.4, 3.8, 5.2, 6.6, 8, 9.4, 10.8, 12.2, 13.6, 15)
+)
+```
+###### Terceira binagem - Intervalos iguais de 2.5m
+```{r}
+cutia_tap_arap_bin3 <- create_bins(
+  cutia_tap_arap[!is.na(cutia_tap_arap$distance),], 
+  c(0, 2.5, 5, 7.5, 10, 12.5, 15)
+)
+```
 
+##### Ajustando diferentes modelos de funções de deteção
+
+###### Uniforme + Cosseno
+
+Primeira Binagem
 ```{r}
 
 cutia_tap_arap_bin1_unif <- cutia_tap_arap_bin1 |> 
@@ -252,23 +272,152 @@ cutia_tap_arap_bin1_unif <- cutia_tap_arap_bin1 |>
 
 ```
 
-###### Tabela com resumo comparativo dos modelos
+Segunda binagem
+```{r}
 
-###### Plotando o histograma com os dados truncados.
+cutia_tap_arap_bin2_unif <- cutia_tap_arap_bin2 |> 
+  ajuste_modelos_distance_unif(truncamento = 15)
 
-##### Ajustando diferentes modelos de funções de deteção
+```
+Terceira binagem
+```{r}
 
-###### Uniforme + Cosseno
+cutia_tap_arap_bin3_unif <- cutia_tap_arap_bin3 |> 
+  ajuste_modelos_distance_unif(truncamento = 15)
+
+```
 
 ###### Half-Normal sem termos de ajuste e com termos de ajuste
 
+Primeira binagem
+```{r}
+
+cutia_tap_arap_bin1_hn <- cutia_tap_arap_bin1 |> 
+  ajuste_modelos_distance_hn(truncamento = 15)
+
+```
+
+Segunda binagem
+```{r}
+
+cutia_tap_arap_bin2_hn <- cutia_tap_arap_bin2 |> 
+  ajuste_modelos_distance_hn(truncamento = 15)
+
+```
+Terceira binagem
+```{r}
+
+cutia_tap_arap_bin3_hn <- cutia_tap_arap_bin3 |> 
+  ajuste_modelos_distance_hn(truncamento = 15)
+
+```
 ###### Hazard-rate sem termos de ajuste e com termos de ajuste
+
+Primeira binagem
+```{r}
+
+cutia_tap_arap_bin1_hr <- cutia_tap_arap_bin1 |> 
+  ajuste_modelos_distance_hr(truncamento = 15)
+
+```
+
+Segunda binagem
+```{r}
+
+cutia_tap_arap_bin2_hr <- cutia_tap_arap_bin2 |> 
+  ajuste_modelos_distance_hr(truncamento = 15)
+
+```
+
+Terceira binagem
+```{r}
+
+cutia_tap_arap_bin3_hr <- cutia_tap_arap_bin3 |> 
+  ajuste_modelos_distance_hr(truncamento = 15)
+
+```
 
 ##### Comparando os modelos
 
 ###### Tabela com o resumo comparativo dos modelos
 
+```{r}
+fluxo3.1_lista_modelos_ajustados <- list(
+  `half-normal` = cutia_tap_arap_bin1_hn, 
+  `hazard-rate` = cutia_tap_arap_bin1_hr, 
+  `uniforme` = cutia_tap_arap_bin1_unif
+)
+
+fluxo3.1_selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_termo_ajuste(fluxo3.1_lista_modelos_ajustados)
+
+fluxo3.1_selecao_funcao_deteccao_termo_ajuste
+```
+```{r}
+fluxo3.2_lista_modelos_ajustados <- list(
+  `half-normal` = cutia_tap_arap_bin2_hn, 
+  `hazard-rate` = cutia_tap_arap_bin2_hr, 
+  `uniforme` = cutia_tap_arap_bin2_unif
+)
+
+fluxo3.2_selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_termo_ajuste(fluxo3.2_lista_modelos_ajustados)
+
+fluxo3.2_selecao_funcao_deteccao_termo_ajuste
+```
+```{r}
+fluxo3.3_lista_modelos_ajustados <- list(
+  `half-normal` = cutia_tap_arap_bin3_hn, 
+  `hazard-rate` = cutia_tap_arap_bin3_hr, 
+  `uniforme` = cutia_tap_arap_bin3_unif
+)
+
+fluxo3.3_selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_termo_ajuste(fluxo3.3_lista_modelos_ajustados)
+
+fluxo3.3_selecao_funcao_deteccao_termo_ajuste
+```
+
 ###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
+
+Primeira binagem
+```{r}
+fluxo3.1_modelos_selecionados <- list(
+  cutia_tap_arap_bin1_hn$`Cosseno`,
+  cutia_tap_arap_bin1_unif$`Cosseno`,
+  cutia_tap_arap_bin1_hr$`Sem termo`,
+  cutia_tap_arap_bin1_unif$`Polinomial simples`,
+  cutia_tap_arap_bin1_hn$`Sem termo`
+)
+
+plotar_funcao_deteccao_modelos_selecionados(fluxo3.1_modelos_selecionados)
+```
+
+Segunda binagem
+```{r}
+fluxo3.2_modelos_selecionados <- list(
+  cutia_tap_arap_bin2_hn$`Cosseno`,
+  cutia_tap_arap_bin2_hr$`Sem termo`,
+  cutia_tap_arap_bin2_unif$`Cosseno`,
+  cutia_tap_arap_bin2_unif$`Polinomial simples`,
+  cutia_tap_arap_bin2_hn$`Sem termo`
+)
+
+plotar_funcao_deteccao_modelos_selecionados(fluxo3.2_modelos_selecionados)
+```
+
+Terceira binagem
+```{r}
+fluxo3.3_modelos_selecionados <- list(
+  cutia_tap_arap_bin3_hn$`Cosseno`,
+  cutia_tap_arap_bin3_hr$`Cosseno`,
+  cutia_tap_arap_bin3_hr$`Polinomial simples`,
+  cutia_tap_arap_bin3_hr$`Sem termo`,
+  cutia_tap_arap_bin3_unif$`Cosseno`,
+  cutia_tap_arap_bin3_unif$`Polinomial simples`,
+  cutia_tap_arap_bin3_hn$`Sem termo`
+)
+
+plotar_funcao_deteccao_modelos_selecionados(fluxo3.3_modelos_selecionados)
+```
+
 
 ###### Teste de bondade de ajuste dos modelos e Q-Q plots
 
