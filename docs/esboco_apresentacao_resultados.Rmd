@@ -928,15 +928,10 @@ cutia_cov_hr_s <- cutia_tap_arap_quase_sem_repeticao |>
 
 
 ```{r}
-fluxo2_lista_modelos_ajustados <- list(
-  `half-normal` = cutia_tap_arap_quase_sem_repeticao_hn, 
-  `hazard-rate` = cutia_tap_arap_quase_sem_repeticao_hr, 
-  `uniforme` = cutia_tap_arap_quase_sem_repeticao_unif
-)
 
-fluxo2_selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_termo_ajuste(fluxo2_lista_modelos_ajustados)
 
-fluxo2_selecao_funcao_deteccao_termo_ajuste
+
+
 ```
 
 ###### Tabela com o resumo comparativo dos modelos
