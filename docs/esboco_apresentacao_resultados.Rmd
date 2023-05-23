@@ -818,4 +818,4 @@ bondade_ajuste_cov
 
 ##### Avaliando as estimativas de Abundância e Densidade
 
-Para o uso de covariáveis, as estimativas de abundância/densidade devem ser feitas através do bootstrap. covcovcov `half-normal` = cutia_cov_hn,-size
+Para o uso de covariáveis, as estimativas de abundância/densidade devem ser feitas através do bootstrap (função `bootdht` do Distance). Ainda estamos implementando o bootstrap em nosso fluxo de estimativas de taxa de encontro, abundância e densidade.
