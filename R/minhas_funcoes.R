@@ -1197,7 +1197,7 @@ gerar_caracteristicas_esforco_abundancia_deteccao <- function(
     )
   
   caracteristicas_esforco_abundancia_deteccao <- caracteristicas_esforco_abundancia_deteccao |>
-    mutate(Modelo = rep(resultado_selecao_modelos$Model, each = length(unique(caracteristicas_densidade$`Estacao amostral`)))) |> # pode ser um argumento da função
+    mutate(Modelo = rep(resultado_selecao_modelos$Model, each = length(unique(caracteristicas_esforco_abundancia_deteccao$`Estacao amostral`)))) |> # pode ser um argumento da função
     relocate(Modelo, .before = Regiao)
   
   # área de estudo, tamanho da área de estudo, trilhas ou estações
