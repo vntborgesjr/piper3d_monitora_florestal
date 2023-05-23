@@ -398,8 +398,7 @@ n_obs_validadas <- contar_n_obs_validadas()
 n_obs_validadas
 ```
 
-Foram selecionadas apenas as observações validadas ao nível de espécie,
-somando um total `r n_obs_validadas[1]` observações.
+Foram selecionadas apenas as observações validadas ao nível de espécie, somando um total `r n_obs_validadas[1]` observações.
 
 ```{r}
 # gerar gráfico com número observações validadas para cada nível taxonômico
@@ -484,26 +483,12 @@ n_obs_sp_uc <- contar_n_obs_sp_uc()
 n_obs_sp_uc
 ```
 
-**Repensar esse gráfico...** Talvez não seja necessário...
-
-```{r, fig.height=20}
-plotar_n_obs_sp_uc_interativo()
-```
-
-Gerar função tabela dinâmica.
 
 ```{r}
 gerar_tabdin_n_obs_sp_uc()
 ```
 
 #### **Quantas unidades de conservação foram amostradas em cada ano?**
-
-Gerar função para visualizar número de UCs amostradas em cada ano. **Por
-agora não precisa** Se der tempo incluir ao final.
-
-```{r}
-
-```
 
 ```{r, echo=FALSE}
 # gerar tabela com o número de unidades de conservação amostradas em cada ano
@@ -519,21 +504,10 @@ gerar_tabdin_n_uc_ano()
 
 #### **Quais unidades de conservação foram amostradas em um maior número de anos?**
 
-Gerar gráfico com o número de anos em que cada UC foi amostrada. **Por
-agora não precisa** Se sobrar tempo acrescentar ao final.
-
-```{r}
-
-```
-
-Tabela
-
 ```{r}
 n_ano_uc <- contar_n_ano_uc()
 n_ano_uc  
 ```
-
-Gerar tabela dinamica.
 
 ```{r}
 gerar_tabdin_n_ano_uc()
