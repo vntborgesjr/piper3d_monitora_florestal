@@ -23,7 +23,23 @@ Para que o arquivo `fluxo_de_trabalho_codigos_interativo_final.Rmd` funcione de 
 ## Carregando as funções
 
 ```{r configuração, include=FALSE, warning=FALSE, message=FALSE}
-
+library(Distance)
+library(dplyr)
+library(DT)
+library(forcats)
+library(ggpubr)
+library(ggplot2)
+library(here)
+library(lubridate)
+library(mrds)
+library(plotly)
+library(purrr)
+library(readr)
+library(readxl)
+library(stringi)
+library(stringr)
+library(tidyr)
+library(tidyselect)
 source(paste0(here::here(), "/R/minhas_funcoes.R"))
 
 ```
@@ -60,8 +76,8 @@ tribble(
   info$otherPkgs$tidyr$Package,     info$otherPkgs$tidyr$Version,
   info$otherPkgs$tidyselect$Package,info$otherPkgs$tidyselect$Version
 ) |> 
-  qflextable() |> 
-  set_caption(
+  flextable::qflextable() |> 
+  flextable::set_caption(
     "Tabela 1 - configuração de pacotes necessários e respectivas versões mínimas que devem ser utilizadas para reproduzir os códigos"
   )
 ```
@@ -570,21 +586,19 @@ gerar_tabdin_n_obs_sp_uc_estacao_ano()
 
 #### **Selecionando melhores modelos de estudo considerando estratificação espacial/temporal -- se há suficiência amostral (60-80 observações) por estrato**
 
--   Possíveis estratificações espaciais -- EAs/UCs
+-   Possíveis estratificações espaciais
 
-    ```         
-                      - UCs/Espécies
-    ```
+- EAs/UCs
 
-    -   Possíveis estratificações temporais -- Espécie/UC/Ano
+- UCs/Espécies
+
+- Possíveis estratificações temporais
+
+- Espécie/UC/Ano
 
 #### **Avaliando distância de truncamento**
 
--   Gráficos de distribuição das frequências de ocorrência x distância
-    perpendicular. Arquivos gráfico-exploratorio1.Rmd e
-    gráfico-exploratorio2.Rmd (eu não sei como você fez para incluir
-    aquela linha vermelha com o valor de w no gráfico exploratório 2,
-    mas ficou legal)
+-   Gráficos de distribuição das frequências de ocorrência x distância perpendicular.
 
 #### **Distribuição de distâncias**
 
@@ -600,25 +614,13 @@ fig
 
 #### **Avaliando covariáveis**
 
--- As covariáveis devem ser pensadas de acordo com o grupo taxonômico.
-Espécies que formam grupos devem ter a covariável 'size'.
-
-As estratégias de estratificação podem ser substituídas por covariáveis
-também (estratos espaciais/ ano)
-
-Como covariável temporal, pode se pensar em usar, além do ano, a estação
-do ano (season), o horário do dia (para animais que variam a atividade).
-O horário do dia pode ser convertido em tempo após nascer do sol (como
-no exemplo). Mas para isso é necessário criar essa variável no dataset.
-E não é trivial porque precisa saber o horário de nascer do sol em cada
-dia/local para calcular.
-
-**ATENÇÃO: gerar gráficos distância x covariável**
-
-Exemplo de Gráficos de Marques et al. 2007
+As covariáveis devem ser pensadas de acordo com o grupo taxonômico.
+Espécies que formam grupos devem ter a covariável 'size'. As estratégias de estratificação podem ser substituídas por covariáveis
+também (estratos espaciais/ ano). Como covariável temporal, pode se pensar em usar, além do ano, a estação do ano (season), o horário do dia (para animais que variam a atividade). O horário do dia pode ser convertido em tempo após nascer do sol (como no exemplo). Mas para isso é necessário criar essa variável no dataset. E não é trivial porque precisa saber o horário de nascer do sol em cada dia/local para calcular.
 
 # **PARTE V -- Ajustando os modelos**
-# Fluxo de análise dos dados:
+
+## Fluxo de análise dos dados:
 
 A seguir, apresentamos o fluxo de análise dos dados que envolve a fase exploratória, truncamento, ajuste e avaliação de modelos e estimativas de abundância e densidade para as espécies que selecionamos como modelo. Usamos como critérios de seleção tanto o número de ocorrências por Unidade de Conservação quanto a distribuição das frequências de observação, nos casos em que isso foi possível. De forma geral, as espécies com número satisfatório de ocorrências (\>60), apresentaram pico de observações próximos a zero.
 
