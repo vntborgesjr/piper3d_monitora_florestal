@@ -425,6 +425,9 @@ gerar_tabdin_dados_selecionados_distanceR_cov()
 
 # **PARTE IV -- Explorando e selecionando os dados para as análises**
 
+Apresentamos abaixo um conjunto de ferramentas que permite diversas formas de explorar todo o conjunto de dados.
+
+
 ## **Selecionando os melhores modelos de estudo de acordo com os dados**
 
 Alguns cuidados devem ser tomados na preparação dos dados antes de serem
@@ -853,83 +856,3 @@ Exemplo de Gráficos de Marques et al. 2007
 
 # **PARTE V -- Ajustando os modelos**
 
-Esse trabalho do Marque et al. 2007 é uma boa referência de como usar as
-abordagens CDS global, CDS estratificada e MCDS.
-
-Aqui, é possível testar alguns caminhos de modelos. A estratificação só
-faz sentido quando o volume de dados for grande. Ainda assim o uso de
-covariáveis pode substituir a estratificação. Pensar em como orientar o
-uso dessas abordagens
-
-## **Modelos pela abordagem CDS -- dados globais**
-
--   função ds do Distance (argumentos básicos: truncation; key,
-    adjustment, scale... estudar argumentos para ver se mais algum
-    interessa)
-
-## **Modelos pela abordagem CDS -- dados estratificados**
-
--   Aqui precisa ver direitinho os cuidados que precisa ter para ajustar
-    as funções nos dados estratificados. Acho que faz em blocos. Vai
-    aplicando os mesmos parâmetros para todos os estratos a cada modelo.
-
--   para cada estrato (espacial ou temporal) usar - função ds do
-    Distance (argumentos básicos: truncation; key, adjustment, scale...
-    estudar argumentos para ver se mais algum interessa)
-
-## **Modelos pela abordagem MCDS -- dados globais**
-
-Aqui não faz sentido estratificar
-
--   função ds do Distance (argumentos básicos: truncation; key,
-    adjustment, scale... estudar argumentos para ver se mais algum
-    interessa... para as covariáveis entra o argumento formula)
-
-Dicas em Miller et al. 2019 sobre covariáveis (ver arquivo no driver).
-
-# **PARTE VI -- Avaliando os modelos**
-
-## **Ajuste dos modelos**
-
--   função gof_ds
-
--- para gerar Q-Q plots e testes associados
-
-## **Selecionando modelos (AIC)**
-
--- função summarize_ds_models
-
-DICAS EXTRAS DE MILLER et al. 2019
-
-# **PARTE VII -- PRODUTO FINAL**
-
--   Como organizar
-
--   Interatividade
-
-**Criar expressões reativas**
-
-reactive() eventReactive()
-
-observe() observeEvent()
-
-reactiveVal() reactiveValues()
-
-isolate()
-
--   gerar o tal documento automatizado contendo todo esse fluxo mais os
-    resultados das análises;
-
--   tentar transformar isso num dashboard/aplicativo único integrando
-    cada etapa dessa numa das abas do dashboard
-
--   Pacote targets seria últil?
-
-# **Glossário**
-
-Descrever as variáveis (colunas), termos técnicos ao longo do texto...
-
--   `Effort` - extensão total percorrida em metros no conjunto de dados
-    seleciodo.
-
--   

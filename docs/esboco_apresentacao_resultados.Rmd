@@ -189,7 +189,7 @@ fluxo1_caracteristicas_esforco_abundancia_deteccao <- fluxo1_lista_modelos_ajust
 fluxo1_caracteristicas_esforco_abundancia_deteccao
 ```
 
-##### Características de densidade
+###### Características de densidade
 
 ```{r}
 # total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
@@ -331,15 +331,18 @@ fluxo2_caracteristicas_area_estudo_taxa_encontro <- fluxo2_lista_modelos_ajustad
 fluxo2_caracteristicas_area_estudo_taxa_encontro
 ```
 
-##### Características de abundância, esforço e detecção
-#### ARRUMAR
+###### Características de abundância, esforço e detecção
+
 
 ```{r}
 # área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
+fluxo2_caracteristicas_esforco_abundancia_deteccao <- fluxo2_lista_modelos_ajustados_termos |> 
+  gerar_caracteristicas_esforco_abundancia_deteccao(resultado_selecao_modelos = fluxo2_selecao_funcao_deteccao_termo_ajuste)
 
+fluxo2_caracteristicas_esforco_abundancia_deteccao
 ```
 
-##### Características de densidade
+###### Características de densidade
 
 ```{r}
 # total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
@@ -584,30 +587,29 @@ plotar_funcao_deteccao_modelos_selecionados(fluxo3.3_modelos_selecionados)
 
 ###### Teste de bondade de ajuste dos modelos e Q-Q plots
 
-#### AQUI ESTÁ DANDO ERRO
+Ainda estamos ajustando os outputs para os testes de bondade, pois a binagem um conflito com o formato de tabela definido pela função original.
 
 Primeira binagem
 
-```{r}
+```{r, results='hide'}
 bondade_ajuste_fluxo3.1 <- testar_bondade_ajuste(fluxo3.1_modelos_selecionados, plot = TRUE, chisq = TRUE, breaks =  c(0, 1.5, 3, 4.5, 6, 7.5, 9, 10.5, 12, 13.5, 15))
 bondade_ajuste_fluxo3.1
 ```
 
 Segunda binagem
 
-```{r}
+```{r, results='hide'}
 bondade_ajuste_fluxo3.2 <- testar_bondade_ajuste(fluxo3.2_modelos_selecionados)
 bondade_ajuste_fluxo3.2
 ```
 
 Terceira binagem
 
-```{r}
+```{r, results='hide'}
 bondade_ajuste_fluxo3.3 <- testar_bondade_ajuste(fluxo3.3_modelos_selecionados)
 bondade_ajuste_fluxo3.3
 ```
 
-#### AQUI FALTAM OS Q-Q PLOTS
 
 ##### Avaliando as estimativas de Abundância e Densidade
 
@@ -672,16 +674,38 @@ fluxo3.3_caracteristicas_area_estudo_taxa_encontro <- fluxo3.3_lista_modelos_aju
 fluxo3.3_caracteristicas_area_estudo_taxa_encontro
 ```
 
-##### AQUI AINDA FALTA AJUSTAR
 
-##### Características de abundância, esforço e detecção
 
+###### Características de abundância, esforço e detecção
+
+Primeira binagem
 ```{r}
 # área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
+fluxo3.1_caracteristicas_esforco_abundancia_deteccao <- fluxo3.1_lista_modelos_ajustados_termos |> 
+  gerar_caracteristicas_esforco_abundancia_deteccao(resultado_selecao_modelos = fluxo3.1_selecao_funcao_deteccao_termo_ajuste)
 
+fluxo3.1_caracteristicas_esforco_abundancia_deteccao
 ```
 
-##### Características de densidade
+Segunda binagem
+```{r}
+# área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
+fluxo3.2_caracteristicas_esforco_abundancia_deteccao <- fluxo3.2_lista_modelos_ajustados_termos |> 
+  gerar_caracteristicas_esforco_abundancia_deteccao(resultado_selecao_modelos = fluxo3.2_selecao_funcao_deteccao_termo_ajuste)
+
+fluxo3.2_caracteristicas_esforco_abundancia_deteccao
+```
+
+Terceira binagem
+```{r}
+# área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
+fluxo3.3_caracteristicas_esforco_abundancia_deteccao <- fluxo3.3_lista_modelos_ajustados_termos |> 
+  gerar_caracteristicas_esforco_abundancia_deteccao(resultado_selecao_modelos = fluxo3.3_selecao_funcao_deteccao_termo_ajuste)
+
+fluxo3.3_caracteristicas_esforco_abundancia_deteccao
+```
+
+###### Características de densidade
 
 Primeira binagem
 
@@ -757,18 +781,40 @@ cutia_cov_hr_s <- cutia_tap_arap_quase_sem_repeticao |>
 
 ##### Comparando os modelos
 
-```{r}
-
-
-
-
-```
-
 ###### Tabela com o resumo comparativo dos modelos
+
+Ainda estamos ajustando a função para poder gerar a tabela com o resumo dos resultados. A função criada para gerar tabela ainda não comporta os dados de modelos com covariáveis.
+
+```{r, results='hide'}
+cov_lista_modelos_ajustados <- list(
+  `half-normal` = cutia_cov_hn, 
+  `hazard-rate` = cutia_cov_hr
+)
+
+cov_selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_termo_ajuste(cov_lista_modelos_ajustados)
+```
 
 ###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
 
+Ainda estamos ajustando a função para poder gerar os gráficos dos modelos com covariáveis. A função criada para os gráficos ainda não comporta os dados de modelos com covariáveis.
+
+```{r}
+cov_modelos_selecionados <- list(
+  cutia_cov_hn$`Sem termo`,
+  cutia_cov_hr$`Sem termo`
+)
+
+plotar_funcao_deteccao_modelos_selecionados(cov_modelos_selecionados)
+```
+
 ###### Teste de bondade de ajuste dos modelos e Q-Q plots
+
+Ainda estamos ajustando a função para poder gerar a tabela com os resultados do Cramér-von Mises e os gráficos dos modelos com covariáveis. A função criada para gerar tabela e os Q-Q plots ainda não comporta os dados de modelos com covariáveis.
+
+```{r}
+bondade_ajuste_cov <- testar_bondade_ajuste(cov_modelos_selecionados, plot = TRUE)
+bondade_ajuste_cov
+```
 
 ##### Avaliando as estimativas de Abundância e Densidade
 
