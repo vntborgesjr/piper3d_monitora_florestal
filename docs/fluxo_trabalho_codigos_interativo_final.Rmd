@@ -656,7 +656,7 @@ cutia_tap_arap
 
 O histograma interativo está disponível no app em Shiny `app_distancia_interativo.R`. A distribuição dos dados no histograma permite observar um pico de observações próximo a zero, além de uma considerável perda em detectabilidade a partir dos 20m. Vamos testar diferentes proporções de truncamento. É possível alterar a binagem dos histogramas através do argumento `largura_caixa`. Neste exemplo ajustamos para 1, o que facilita a observação de picos de detecação e efeitos de *heaping* nos dados.
 
-```{r, fig.height=15, fig.width=10}
+```{r, fig.height=15, fig.width=10, warning=FALSE}
 cutia_tap_arap |> 
   drop_na(distance) |> 
 plotar_distribuicao_distancia_interativo(largura_caixa = 1)
@@ -1369,7 +1369,6 @@ cutia_cov_hn <- cutia_tap_arap_quase_sem_repeticao |>
   ajuste_modelos_distance_hn(lista_termos_ajuste = list(`Sem termo`= NULL),truncamento = "10%")
 ```
 
-lista_termos_ajuste = list(`Sem termo`) = NULL),
 
 ###### HN + Tamanho do grupo (HN + S)
 
