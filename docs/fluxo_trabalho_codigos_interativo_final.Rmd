@@ -438,12 +438,6 @@ Até aqui temos dados para `r n_sp` espécies.
 
 #### **Quantas observações por unidade de conservação ao todo?**
 
-As UC's foram filtradas de acordo com o número de observações permitir a
-visualização.
-
-A função de contagem de UC's gerou 40 UC's, mas só há observações para
-38. *Lembrar de verificar isso*.
-
 ```{r}
 # contar número de observações por UC
 n_obs_uc <- contar_n_obs_uc()
@@ -452,10 +446,6 @@ n_obs_uc <- contar_n_obs_uc()
 gerar_tabdin_n_obs_uc()
 ```
 
-*Adicionar o nome completo da UC na caixa interativa do gráfico*.
-*Identificar os plotes com subtítulos ex tentar adicionar título aos
-plotes* **Adicionar nomes das UCs nos 3 primeiros gáficos
-(descompartilhar eixo x)**
 
 ```{r, fig.height=20, fig.align='center'}
 # plotar o número de observações por UC
@@ -464,24 +454,16 @@ plotar_n_obs_uc_interativo()
 
 #### **Quantas observações para cada espécie?**
 
-Número de observações por espécie.
-
 ```{r, fig.height=20}
 # contar total sp
-n_sp <- contar_n_sp()
-n_sp
+n_obs_sp <- contar_n_obs_sp()
+n_obs_sp
 ```
 
 ```{r}
-# contar o número de observações por espécie
-n_obs_sp <- contar_n_obs_sp()
-
 # gerar tabela dinâmica com o número total de obsevações por espécie
 gerar_tabdin_n_obs_sp()
 ```
-
-Esse gráfico pode melhorar. Compartilhar o eixo x? Adicionar título ao
-eixo x...
 
 ```{r, fig.height=20}
 # plotar o o número de observações por UC
