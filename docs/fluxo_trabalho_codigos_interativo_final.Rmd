@@ -382,11 +382,77 @@ gerar_tabdin_dados_selecionados_distanceR_cov()
 Apresentamos abaixo um conjunto de ferramentas que permite diversas
 formas de explorar todo o conjunto de dados.
 
-### **Informações Gerais sobre o Banco de Dados**
+## **Informações Gerais sobre o Banco de Dados**
 
-##### **Aspectos relacionados ao número total de observações**
 
-###### Quantas observações foram validadas por nível taxonômico?
+### Total Unidades de Conservação amostradas
+
+```{r n_de_ucs}
+# contar número total de UC's 
+n_ucs <- contar_n_uc()
+n_ucs
+```
+
+Os dados são provenientes de `r n_ucs` unidades de conservação ao todo.
+
+### Número de unidades de conservação amostradas em cada ano
+
+```{r, echo=FALSE}
+# gerar tabela com o número de unidades de conservação amostradas em cada ano
+n_ucs_ano <- contar_n_uc_ano()
+n_ucs_ano
+```
+
+Gerar função para tabela dinâmica.
+
+```{r}
+gerar_tabdin_n_uc_ano()
+```
+
+### Unidades de conservação amostradas em um maior número de anos
+
+```{r}
+n_ano_uc <- contar_n_ano_uc()
+n_ano_uc  
+```
+
+```{r}
+gerar_tabdin_n_ano_uc()
+```
+
+### Total de observações por Unidade de Conservação
+
+```{r}
+# contar número de observações por UC
+n_obs_uc <- contar_n_obs_uc()
+
+# gerar tabdin
+gerar_tabdin_n_obs_uc()
+```
+
+```{r, fig.height=20, fig.align='center'}
+# plotar o número de observações por UC
+plotar_n_obs_uc_interativo()
+```
+
+
+### Número de observações realizadas por UC em cada ano
+
+```{r}
+n_obs_uc_ano <- contar_n_obs_uc_ano()
+n_obs_uc_ano
+```
+
+Tabela interativa para consultar quantas observações foram realizadas
+por ano em cada UC
+
+```{r}
+gerar_tabdin_n_obs_uc_ano()
+```
+
+
+
+### Total de observações validadas por nível taxonômico
 
 Essas operações são realizadas sobre a tabela de dados `dados_completos`
 pois os dados que foram transformados para o formato do distace no R não
@@ -419,17 +485,8 @@ dados_selecionados <- carregar_dados_selecionados()
 gerar_tabdin_dados_selecionados()
 ```
 
-###### Quantas Unidades de Conservação foram amostradas?
 
-```{r n_de_ucs}
-# contar número total de UC's 
-n_ucs <- contar_n_uc()
-n_ucs
-```
-
-Os dados são provenientes de `r n_ucs` unidades de conservação ao todo.
-
-###### Quantas espécies foram registradas?
+### Total de espécies registradas
 
 ```{r}
 n_sp <- contar_n_sp()
@@ -438,171 +495,34 @@ n_sp
 
 Até aqui temos dados para `r n_sp` espécies.
 
-###### Quantas observações por Unidade de Conservação?
 
-```{r}
-# contar número de observações por UC
-n_obs_uc <- contar_n_obs_uc()
+##**Suficência Amostral**
 
-# gerar tabdin
-gerar_tabdin_n_obs_uc()
-```
+**Número de observações
 
-```{r, fig.height=20, fig.align='center'}
-# plotar o número de observações por UC
-plotar_n_obs_uc_interativo()
-```
+Para que o método de análise por distância possa ser utilizado para estimativas baseadas em modelos, são recomendadas quantidades mínimas de observações e de transectos (Unidades Amostrais). Segundo BUCKLAND et. al. (2015), O número mínimo sugerido de animais ou grupos é de **60 – 80 animais (ou grupos)** quando a amostragem é feita pelo método dos transectos lineares. É possível utilizar números menores que estes para realizar as análises, porém deve-se ter o cuidado de verificar se as funções de detecção estão bem modeladas. Estes números recomendados se aplicam a cada função de detecção a ser modelada. Assim, quando se pretende estratificar os dados, dividindo-os em subconjuntos, seja por região geográfica, seja por período amostral, é necessário ter um cuidado para que a suficiência amostral se mantenha dentro dos subconjuntos.
 
-## **Selecionando os melhores espécies modelo de estudo de acordo com os dados**
 
-Alguns cuidados devem ser tomados na preparação dos dados antes de serem
-analisados. O primeiro deles é o cuidado taxonômico. Para os dados do
-Monitora recomenda-se o uso dos dados das espécies validadas para
-análise pelo ICMBio, conforme o modelo utilizado para este fluxo de
-trabalho.
+**Réplicas e repetições**
 
-Alguns problemas com os dados, que podem trazer efeitos indesejados
-sobre as análises, podem ser detectados durante a fase de exploração. Ao
-selecionar os dados que serão analisados, é importante observar os
-seguintes aspectos:
+O número mínimo de **réplicas para os transectos deve ser de 10-20**, o que deve aumentar para espécies cujas populações são distribuídas em manchas BUCKLAND et. al. (2015). O número de réplicas reais para cada espécie é o número de transectos, que recebem os nomes das estações amostrais em cada Unidade de conservaçaõ.
 
-**Suficência Amostral - número de ocorrências por espécie**
+Um outro aspecto que é necessário observar é o número de repetições, que terá impacto tanto sobre o esforço quanto sobre a suficiência amostral. Uma das limitações dos dados do Programa Monitora é o pequeno número de réplicas por Unidade de Conservação e muitas repetições para as mesmas estações amostrais. O excesso de repetições, especialmente em um mesmo período amostral, compromete a premissa de independência entre as observações. Além disso, acaba tendo um efeito de inflar o esforço amostral e a área coberta pela amostragem, o que prejudica as estimativas de densidade.
 
-Para que o método de análise por distância possa ser utilizado para
-estimativas baseadas em modelos, são recomendadas quantidades mínimas de
-registros de ocorrência e de transectos (Unidades Amostrais). Segundo
-BUCKLAND et. al. (2015), o número mínimo sugerido de animais ou grupos
-(ocorrências) é de 60 -- 80 animais (ou grupos) quando a amostragem é
-feita pelo método dos transectos lineares. É possível utilizar números
-menores que estes para realizar as análises, porém deve-se ter o cuidado
-de verificar se as funções de detecção estão bem modeladas.
-
-Para dados que serão estratificados (divididos em subconjuntos), estes
-números recomendados se aplicam a cada subconjunto. Isso ocorre porque
-as funções de detecção serão modeladas para cada estrato
-(p.ex.`Region.Label`), além da função de detecção para os dados globais.
-Um exemplo seria a análise dos dados, para uma mesma espécie, em
-diferentes UCs. Neste caso, o ideal seria ter a suficiência amostral
-mínima em cada UC para usar estratificação e estimar abundâncias e
-densidades em cada uma das UCs.
-
-**Suficiência amostral - réplicas e repetições**
-
-Para que haja uma boa cobertura da área de estudo e também uma boa
-quantidade de amostras independentes para estimar as abundâncias e
-densidades das espécies, é desejável um número satisfatório de réplicas
-independentes. Segundo BUCKLAND et al. (2015), o número mínimo de
-réplicas independentes para os transectos deve ser de 10-20, o que deve
-aumentar para espécies cujas populações são distribuídas em manchas.
-
-De forma geral, para cada UC, o número de réplicas do Programa Monitora
-está abaixo do recomendado. O delinamento amostral atual para a
-compontente Florestal do subprograma Terrestre estabelece um número
-mínimo de três Estações Amostrais por Unidade de Conservação, o que é o
-caso de muitas UCs, chegando ao máximo de 9 estações amostrais por UC. O
-baixo número de réplicas espaciais idependentes não chega a ser um
-problema na estimativa de densidade da Área Coberta pela amostragem, mas
-limita uma boa estimativa de densidade total para a Unidade de
-Conservação.
-
-Um outro aspecto relacionado a amostragem é o número de repetições por
-transecto. Segundo BUKLAND et al (2001, pg 79), as repetições devem ser
-incorporadas no esforço amostral multiplicando-se o número de vezes que
-o transecto foi percorrido pelo comprimento do transecto. A mesma
-recomendação é dada pelo Curso Online em Distance Sampling
-[link](https://workshops.distancesampling.org/online-course/lecturepdfs/Ch4/L4-3%20Sample%20Size.pdf).
-Esse ajuste no esforço amostral não deve ter grandes consequências para
-um baixo número de repetições. Porém, números altos de amostragens
-repetidas e nã independentes levam a uma inflagem no tamanho da área
-coberta. Apenas para ilustar com um exemplo, para os dados da cutia
-*Dasyprocta croconota* da Resex Tapajós-Arapinuns, a Estação Amostral
+Apenas para ilustar, para os dados da cutia *Dasyprocta croconota* da Resex Tapajós-Arapinuns, a Estação Amostral
 Boim foi percorrida durante 70 dias de amostragem. Isso significa que
 ajustando o comprimento do transecto de 5 km pelo número de repetições,
 o esforço amostral passou para 350 km. A área coberta aumentou em 70x, o
 que terá consequências sobre a estimativa densidade, que tenderá a ser
 subestimada. Além disso, o coeficiente de variação das estimativas de
 taxa de encontro, abundância e densidade também tenderão a aumentar pelo
-efeito da variações temporais entre as amostragens.
+efeito da variações temporais entre as amostragens. 
 
-Uma forma de lidar com o excesso de amostragens repetidas é tratar as
-repetições como efeitos aleatórios dos modelos. Isso requer o uso de
-abordagens que vão além da amostragem por distância convecional, como o
-uso de Mixed Effect Models e Modelos Hierárquicos (p. ex. OEDEKOVEN et
-al. 2013, 2014). Essas abordagens ainda não foram implementadas em nosso
-fluxo de trabalho até a presente versão e pretendemos testar os códigos
-para esta abordagem utilizando o pacote unmarked até o final da vigência
-do presente projeto.
+Para lidar com o excesso de repetições, implementamos um fluxo de trabalho onde reduzimos o número de repetições, mantendo somente um dia de amostragem com o maior número de observações para cada período amostral (Parte V, Fluxo 2).
 
-**Distribuição de frequência das ocorrências em relação à distância -
-efeitos indesejados**
+### **Número de observações
 
-A distribuição ideal das frequências de ocorrência em relação à
-distância deve apresentar as seguintes características: a frequência de
-ocorrência deve ser maior próximo a zero, apresentar um longo platô
-(ombro), e decair gradativamente com o aumento da distância. Isso
-significa que os animais são totalmente detectáveis na distância zero,
-seguem sendo bem detectáveis a distâncias curtas e vão perdendo
-detectabilidade gradativamente com o aumento da distância.
-
-Por isso, uma das etapas exploratórias é avaliar o histograma de
-frequências de ocorrência ao longo da distância em relação ao transecto
-(opção abaixo). Algumas distribuições indicam problemas nos dados que
-podem dificultar o ajuste das funções de detecção. Tais como:
-
-*Pico de ocorrências próximos à distância zero - spike near zero
-distance*
-
-Isso ocorre quando o número de observações próximos à distância zero é
-inflado em relação às demais distâncias. O efeito gráfico será um pico
-no histograma em zero ou próximo a zero, conforme o exemplo abaixo para
-os dados extraídos das cutias (*Dasyprocta croconota*) na Resex
-Tapajós-Arapiuns.
-
-![Distribuicao de Frequencia para *Dasyprocta croconota* na Resex
-Tapajos-Arapiuns](%60r%20here::here(%22output/Distribuicao_freq_Dasyprocta_ResexTapajos.png%22)%60){width="75%"}
-
-Este tipo de distribuição foi predominante para as espécies com o maior
-número de ocorrência nos dados de aves e mamíferos do Programa Monitora
-Florestal. Acreditamos que existem dois fatores que podem estar causando
-esse acúmulo de dados em zero ou próximo a ele. Um deles seria um viés
-para avistamento de animais na trilha em ambientes de floresta. As
-trilhas podem atrair animais, e também oferecem melhor visibilidade em
-relação à floresta, especialmente se o sub-bosque for denso. O outro
-fator seria um possível arredondamento nas distâncias próximas a zero, o
-que pode gerar um "amontoamento" nos dados (*heaping*). Recomenda-se que
-valores de distância perpendicular nunca sejam arredondados.
-
-*Resposta evasiva das espécies em relação ao observador*
-
-Para espécies que podem apresentar resposta de deslocamento em relação
-ao observador, um dos efeitos indesejados nos dados é o deslocamento das
-maiores frequências de observações para as distâncias perpendiculares
-intermediárias ao mesmo tempo que as frequências próximas ao observador
-são baixas. Uma alternativa, nesse caso, é constranger a função de
-deteção para monotonicidade, evitando que ela suba para se ajustar ao
-pico de frequência nas distâncias intermediárias.
-
-*Viés de tamanho de grupo*
-
-Um dos efeitos que pode ocorrer para espécies que formam grupos, é que
-grupos menores perdem a detectabilidade mais fácil do que grupos maiores
-com o aumento da distância. Esse viés pode ser testado na exploração dos
-dados das covariávies, plotando-se um gráfico de tamanho de grupo pela
-distância. Caso o viés ocorra, será uma observada uma tendência de
-registros somente de grupos maiores nas distâncias maiores. Nós adotamos
-a estratégia de tratar tamanho de grupo como covariável para espécies
-que formam grupos. Neste caso, ao mesmo tempo que lidamos com o efeito
-do tamanho do grupo na detectabilidade, incorporamos também o tamanho do
-grupo nas estimativas de densidade e abundância.
-
-
-
-
-
-
-
-
-#### **Quantas observações para cada espécie?**
+#### Número total de observações por espécie
 
 ```{r, fig.height=20}
 # contar total sp
@@ -626,7 +546,7 @@ Tabela interativa para consulta do número de observações por espécie.
 gerar_tabdin_n_obs_sp()
 ```
 
-#### **Quais e quantas observações para cada espécie por unidades de conservação?**
+#### Número de observações para cada espécie por unidade de conservação
 
 ```{r}
 # gerar tabela com o número de observações por espécie e por UC
@@ -638,46 +558,8 @@ n_obs_sp_uc
 gerar_tabdin_n_obs_sp_uc()
 ```
 
-#### **Quantas unidades de conservação foram amostradas em cada ano?**
 
-```{r, echo=FALSE}
-# gerar tabela com o número de unidades de conservação amostradas em cada ano
-n_ucs_ano <- contar_n_uc_ano()
-n_ucs_ano
-```
-
-Gerar função para tabela dinâmica.
-
-```{r}
-gerar_tabdin_n_uc_ano()
-```
-
-#### **Quais unidades de conservação foram amostradas em um maior número de anos?**
-
-```{r}
-n_ano_uc <- contar_n_ano_uc()
-n_ano_uc  
-```
-
-```{r}
-gerar_tabdin_n_ano_uc()
-```
-
-#### **Quantas observações foram realizadas por UC em cada ano?**
-
-```{r}
-n_obs_uc_ano <- contar_n_obs_uc_ano()
-n_obs_uc_ano
-```
-
-Tabela interativa para consultar quantas observações foram realizadas
-por ano em cada UC
-
-```{r}
-gerar_tabdin_n_obs_uc_ano()
-```
-
-#### **Quantas observações para cada espécies por ano?**
+#### Número de observações para cada espécies por ano
 
 ```{r}
 n_obs_sp_ano <- contar_n_obs_sp_ano()
@@ -691,7 +573,7 @@ para cada espécie em cada ano
 gerar_tabdin_n_obs_sp_ano()
 ```
 
-#### **Quantas observações para cada espécies por UC e por ano?**
+#### Número de observações para cada espécies por UC e por ano
 
 ```{r}
 n_obs_sp_uc_ano <- contar_n_obs_sp_uc_ano()
@@ -705,7 +587,7 @@ para cada espécie em cada ano
 gerar_tabdin_n_obs_sp_uc_ano()
 ```
 
-#### **Quantas observações para cada espécies por UC, por estação e por ano?**
+#### Número de observações para cada espécies por UC, por estação do ano e por ano
 
 ```{r}
 n_obs_sp_uc_estacao_ano <- contar_n_obs_sp_uc_estacao_ano()
@@ -716,26 +598,36 @@ n_obs_sp_uc_estacao_ano
 gerar_tabdin_n_obs_sp_uc_estacao_ano()
 ```
 
-#### **Avaliando número de réplicas (Estações Amostrais) por UC**
+###INCLUIR **Réplicas e Repetições**
 
-#### **Selecionando melhores modelos de estudo considerando estratificação espacial/temporal -- se há suficiência amostral (60-80 observações) por estrato**
+#### Número de UCs para cada espécie
 
--   Possíveis estratificações espaciais
+#### Número de réplicas (estações amostrais) para cada espécie
 
--   EAs/UCs
+#### Número de réplicas (estações amostrais) para cada espécie por UC
 
--   UCs/Espécies
+####Número de repetições por estação amostral para cada espécie
 
--   Possíveis estratificações temporais
+####Número de repetições por estação amostral por UC para cada espécie
 
--   Espécie/UC/Ano
+####Número de repetições por estação amostral por UC para cada espécie por ano
 
-#### **Avaliando distância de truncamento**
+####Número de repetições por estação amostral por UC para cada espécie por períod amostral (estações do ano/ano)
 
--   Gráficos de distribuição das frequências de ocorrência x distância
-    perpendicular.
 
-#### **Distribuição de distâncias**
+
+## **Distribuição de distâncias**
+
+Algumas situações amostrais podem levar a efeitos indesejados na distribuição dos dados, comentadas a seguir. Para explorar a distribuição dos dados recomendamos também o uso do app distanca_interativo.R na pasta ‘apps’.
+
+Empilhamento das observações (heaping) – ocorre quando valores das distâncias perpendiculares são arredondados. O efeito é um acúmulo de observações sobre a mesma distância, que corresponde a um valor redondo. Um tipo específico de empilhamento é quando ele se dá sobre a distância zero, também chamado de pico próximo a distância zero (spike near zero distance). Esse tipo de efeito foi observado com frequência nos dados do Programa Monitora. Uma das estratégias para redução dos efeitos de empilhamento é agrupar os dados de distância em intervalos. Implementamos essa estratégia na Parte V – Fluxo 3.
+
+Movimento de resposta ao observador – os animais podem ser repelidos ou atraídos pelo observador. Para animais que apresentam resposta de fuga em relação ao observador o efeito no histograma de frequências é um aumento nas observações em distâncias intermediárias. Para animais que são atraídos pelo observador, a tendência é de um aumento nas observações nas distâncias próximas a zero, o que também pode gerar o padrão de pico próximo a zero. O efeito desse viés sobre as observações é enviesar também os modelos ajustados (formato da curva), as probabilidades de deteção e abundâncias estimadas em cada faixa de distância.
+
+Superdispersão – é um efeito causado quando as observações não são independentes, como no caso das repetições em um mesmo transecto. O efeito no histograma são picos em algumas distâncias ou reduções abruptas em outras (Figura X). O excesso de repetições também foi uma limitação encontrada nos dados do Programa Monitora. Implementamos uma estratégia para reduzir o número de repetições mantendo somente a data com o maior número de observações por período amostral na Parte V - Fluxo 2.
+
+Para maiores detalhes, ver figuras no Material de Suporte de Aspectos Teóricos.
+
 
 ```{r distribuicao_dsitancia, warning=FALSE}
 # gerar o gráfico exploratório da distribuição de distâncias perpendiculares para a espécies Dasyrocta croconota na Resex Tapajós-Arapiuns
@@ -747,17 +639,11 @@ fig <- dados_filtrados |>
 fig
 ```
 
-#### **Avaliando covariáveis**
+## INCLUIR **Distriubuição das covariáveis**
 
-As covariáveis devem ser pensadas de acordo com o grupo taxonômico.
-Espécies que formam grupos devem ter a covariável 'size'. As estratégias
-de estratificação podem ser substituídas por covariáveis também
-(estratos espaciais/ ano). Como covariável temporal, pode se pensar em
-usar, além do ano, a estação do ano (season), o horário do dia (para
-animais que variam a atividade). O horário do dia pode ser convertido em
-tempo após nascer do sol (como no exemplo). Mas para isso é necessário
-criar essa variável no dataset. E não é trivial porque precisa saber o
-horário de nascer do sol em cada dia/local para calcular.
+Uma boa escolha de covariáveis passa por um bom processo exploratório dos dados. É importante avaliar como fatores ambientais ou amostrais podem influenciar de forma significativa a detectabilidade dos animais. Para avaliar esse possível efeito, é necessário olhar a distribuição das covariáveis em relação à distância. Se houver viés das covariáveis em relação á distância, é possível que estejam influenciando na detectabilidade também. Por exemplo, se a atividade de um animal é influenciada pelo horário, é possível que ele seja detectado com maior frequência em distãncias maiores no seu horário de maior atividade.
+
+Para os dados do Programa Monitora, uma das principais covariáveis a ser considerada é o tamanho do grupo (s, que deve ser chamada de size para o pacote Distance). Um dos efeitos esperados para espécies que formam grupos é o chamado viés de tamanho. A tendência é que a pequenas distâncias todos os grupos sejam detectáveis, mas somente os grupos maiores serão detectados a distâncias maiores.
 
 # **PARTE V -- Ajustando os modelos**
 
