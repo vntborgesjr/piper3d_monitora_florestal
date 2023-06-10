@@ -18,9 +18,17 @@ editor_options:
 
 # **PARTE I -- Cuidados antes de começar a rodar os códigos no R**
 
-Para que o arquivo `fluxo_de_trabalho_codigos_interativo_final.Rmd` funcione de maneira adequada em sua máquina, você deve descompactar o arquivo `piper3D_monitora_florestal.zip`. Uma nova pasta com o mesmo nome será criada no diretório escolhido para executar a descompactação. Nela, você deverá clicar duas vezes sobre o ícone `Monitora.Rproj` para começar a executar os arquivos contidos no projeto. Ao realizar esse procedimento, você garantirá que seu diretório de trabalho esteja configurado como o diretório da pasta `piper3d_monitora_florestal` assegurando o funcionamento correto dos códigos contidos no projeto.
+Para que o arquivo `fluxo_de_trabalho_codigos_interativo_final.Rmd`
+funcione de maneira adequada em sua máquina, você deve descompactar o
+arquivo `piper3D_monitora_florestal.zip`. Uma nova pasta com o mesmo
+nome será criada no diretório escolhido para executar a descompactação.
+Nela, você deverá clicar duas vezes sobre o ícone `Monitora.Rproj` para
+começar a executar os arquivos contidos no projeto. Ao realizar esse
+procedimento, você garantirá que seu diretório de trabalho esteja
+configurado como o diretório da pasta `piper3d_monitora_florestal`
+assegurando o funcionamento correto dos códigos contidos no projeto.
 
-## Carregando as funções
+## **Carregando as funções**
 
 ```{r configuração, include=FALSE, warning=FALSE, message=FALSE}
 library(Distance)
@@ -46,7 +54,10 @@ source(paste0(here::here(), "/R/minhas_funcoes.R"))
 
 ## **Rstudio/Pacotes/versões/sistemas operacionais**
 
-A tabela aseguir é uma referência para as versões dos pacotes utilizados no nesse projeto. Para garantir a reprodução dos códigos, é importante que o R e os pacotes usados no projeto apresentem as configurações mínimas contidas na tabela 1.
+A tabela aseguir é uma referência para as versões dos pacotes utilizados
+no nesse projeto. Para garantir a reprodução dos códigos, é importante
+que o R e os pacotes usados no projeto apresentem as configurações
+mínimas contidas na tabela 1.
 
 ```{r}
 # gerar informações sobre os pacotes carregados
@@ -84,19 +95,24 @@ tribble(
 
 ## **Cuidados com a planilha .xlsx que será importada (para que mantenha o padrão da planilha de referência do ICMBio)**
 
-A primeira função utlizada, `carregar_dados_brutos_xlsx()`, irá
-carregar a planilha em formato excel,
+A primeira função utlizada, `carregar_dados_brutos_xlsx()`, irá carregar
+a planilha em formato excel,
 `Planilha Oficial consolidada de Masto-aves 2014-21 Validada CEMAVE CPB CENAP.xlsx`,
-e gera automaticamente o arquivo `dados_brutos.rds` na pasta
-`data-raw`. A função seguinte a ser utilizada, `carregar_dados_completos()` que irá carregar o arquivo
-`dados_brutos.rds`. Essa função foi escrita para carrega os dados e
-operar uma série de transformações para devolvê-lo no formato
-padronizado do programa **DISTANCE** para Windows. Portanto, para
-garantir a reprodutibilidade dos códigos produzidos em versões
+e gera automaticamente o arquivo `dados_brutos.rds` na pasta `data-raw`.
+A função seguinte a ser utilizada, `carregar_dados_completos()` que irá
+carregar o arquivo `dados_brutos.rds`. Essa função foi escrita para
+carrega os dados e operar uma série de transformações para devolvê-lo no
+formato padronizado do programa **DISTANCE** para Windows. Portanto,
+para garantir a reprodutibilidade dos códigos produzidos em versões
 atualizadas da base de dados do Monitora, é importante tomar alguns
 cuidados.
 
-O primeiro e mais importante cuidado é **manter a consistência dos nomes das colunas** em versões atualizadas da base de dados do Monitora. Além de carregar os dados, a função `carregar_dados_completos()` aplica uma série de transformações nas colunas. Seus nomes são alterados, e a essas são atribuídos tipos apropriados (data, caracter, fator, inteiro e numérico), linhas são eliminadas e novas colunas são gereadas. Para
+O primeiro e mais importante cuidado é **manter a consistência dos nomes
+das colunas** em versões atualizadas da base de dados do Monitora. Além
+de carregar os dados, a função `carregar_dados_completos()` aplica uma
+série de transformações nas colunas. Seus nomes são alterados, e a essas
+são atribuídos tipos apropriados (data, caracter, fator, inteiro e
+numérico), linhas são eliminadas e novas colunas são gereadas. Para
 exemplificar, veja o código abaixo. Ele foi escrito para executar as
 primeiras transformações nos dados e constitui o corpo da função
 `carregar_dados_filtrados()`.
@@ -264,28 +280,48 @@ dados_filtrados |>
   )
 ```
 
-O trecho do código que vai da linha 96 a 106 serve selecionar apenas as colunas de interesse presente nos dados originais. Note que os nomes das planilhas originais constam nesse trecho. Caso o nome de qualque uma dessas colunas seja alterado a função deixará de funcionar.
+O trecho do código que vai da linha 96 a 106 serve selecionar apenas as
+colunas de interesse presente nos dados originais. Note que os nomes das
+planilhas originais constam nesse trecho. Caso o nome de qualque uma
+dessas colunas seja alterado a função deixará de funcionar.
 
 Outro aspecto importante é a presença de observações não preenchidas
 (ex. células vazias) nos dados originais. A função foi desenha para
 resolver alguns problemas presentes nos dados originais. Por exemplo,
-nas o trecho do código das linhas 194 a 210 as observações vazias (`NA`s) são substituidas pelo valor correto na coluna `day_effort`. Essa correção continnuará sendo realizada em versões atualizadas dos dados do Monitora. Porém, se outras colunas além das que estão sendo corrigidas possuirem observações vazias os dados serão carregados e transformados, porém outras funções podem ter o seu funcionamento comprometido. Por exemplo, funções de visualização e do pacote `Distance` que podem não funcionar devido a ausência de observação.
+nas o trecho do código das linhas 194 a 210 as observações vazias
+(`NA`s) são substituidas pelo valor correto na coluna `day_effort`. Essa
+correção continnuará sendo realizada em versões atualizadas dos dados do
+Monitora. Porém, se outras colunas além das que estão sendo corrigidas
+possuirem observações vazias os dados serão carregados e transformados,
+porém outras funções podem ter o seu funcionamento comprometido. Por
+exemplo, funções de visualização e do pacote `Distance` que podem não
+funcionar devido a ausência de observação.
 
 Dentre todas as funções de carregamento de dados, apenas
 `carregar_dados_brutos_xlsx()` carrega a base de dados originais do
-Monitora, diretamente do diretório `data-raw/monitora_masto_aves_2023_04_04.xlsx`. Ao mesmo tempo que
-carrega e transforma os dados, essa função gera uma versão em um formato mais leve, `.rds`, no diretório `data-raw` (`data-raw/monitora_masto_aves_2023_04_04.rds`). A função seguinte no
-fluxo de trabalho carrega a base a partir dessa versão mais leve. Logo, sempre que houver atualizações no arquivo original de dados brutos é necessário iniciar a rotina de carregamento de dados necessariamente com a função `carregar_dados_brutos_xlsx()`.
+Monitora, diretamente do diretório
+`data-raw/monitora_masto_aves_2023_04_04.xlsx`. Ao mesmo tempo que
+carrega e transforma os dados, essa função gera uma versão em um formato
+mais leve, `.rds`, no diretório `data-raw`
+(`data-raw/monitora_masto_aves_2023_04_04.rds`). A função seguinte no
+fluxo de trabalho carrega a base a partir dessa versão mais leve. Logo,
+sempre que houver atualizações no arquivo original de dados brutos é
+necessário iniciar a rotina de carregamento de dados necessariamente com
+a função `carregar_dados_brutos_xlsx()`.
 
 # **PARTE II -- Carregando os dados para o R**
 
 ## **Dados brutos**
 
 Não precisa se assustar com a infinidade de códigos no exemplo acima.
-Eles foram utilizados apenas para ilustrar que construir essas funções facilita a execução e a reprodutibilidade das análise dos dados do Monitora. Para cada tarefa existe uma função cujo funcionamento necessita o preenchimento de alguns argumentos, ou mesmo de nenhum (embora seja sempre possível fornecê-los). Por
-traz das cortinas, as funções executam as tarafas necessárias para se
-obter o resultado desejado. Por exemplo, o mesmo resultado pode ser
-obtido utilizando apenas duas funções: `carregar_dados_brutos_xlsx()`e
+Eles foram utilizados apenas para ilustrar que construir essas funções
+facilita a execução e a reprodutibilidade das análise dos dados do
+Monitora. Para cada tarefa existe uma função cujo funcionamento
+necessita o preenchimento de alguns argumentos, ou mesmo de nenhum
+(embora seja sempre possível fornecê-los). Por traz das cortinas, as
+funções executam as tarafas necessárias para se obter o resultado
+desejado. Por exemplo, o mesmo resultado pode ser obtido utilizando
+apenas duas funções: `carregar_dados_brutos_xlsx()`e
 `gerar_tabdin_dados_brutos()`.
 
 ```{r}
@@ -297,7 +333,11 @@ gerar_tabdin_dados_brutos()
 ```
 
 A função `gerar_tabdin_dados_brutos()`, por configuração, gera uma
-tabela dinâmica com 1000 linhas. Você pode controlar o número de linhas pelo argumento `n_linhas =`. Mas atenção! Ela não funcionará com um número superior a **4.500 linhas**. Ao mudar a entrada de dados usando o argumento `dados =`, certifique-se de que seu número de linhas não exceda esse limite (ex. **4.500**). 
+tabela dinâmica com 1000 linhas. Você pode controlar o número de linhas
+pelo argumento `n_linhas =`. Mas atenção! Ela não funcionará com um
+número superior a **4.500 linhas**. Ao mudar a entrada de dados usando o
+argumento `dados =`, certifique-se de que seu número de linhas não
+exceda esse limite (ex. **4.500**).
 
 ```{r}
 gerar_tabdin_dados_brutos(
@@ -339,74 +379,20 @@ gerar_tabdin_dados_selecionados_distanceR_cov()
 
 # **PARTE IV -- Explorando e selecionando os dados para as análises**
 
-Apresentamos abaixo um conjunto de ferramentas que permite diversas formas de explorar todo o conjunto de dados.
+Apresentamos abaixo um conjunto de ferramentas que permite diversas
+formas de explorar todo o conjunto de dados.
 
-## **Selecionando os melhores espécies modelo de estudo de acordo com os dados**
+### **Informações Gerais sobre o Banco de Dados**
 
-Alguns cuidados devem ser tomados na preparação dos dados antes de serem analisados. O primeiro deles é o cuidado taxonômico. Para os dados do Monitora recomenda-se o uso dos dados das espécies validadas para análise pelo ICMBio, conforme o modelo utilizado para este fluxo de trabalho.
+##### **Aspectos relacionados ao número total de observações**
 
-Alguns problemas com os dados, que podem trazer efeitos indesejados
-sobre as análises, podem ser detectados durante a fase de exploração. Ao selecionar os dados que serão analisados, é importante observar os
-seguintes aspectos:
+###### Quantas observações foram validadas por nível taxonômico?
 
-**Suficência Amostral - número de ocorrências por espécie**
-
-Para que o método de análise por distância possa ser utilizado para
-estimativas baseadas em modelos, são recomendadas quantidades mínimas de registros de ocorrência e de transectos (Unidades Amostrais). Segundo BUCKLAND et. al. (2015), o número mínimo sugerido de animais ou grupos (ocorrências) é de 60 -- 80 animais (ou grupos) quando a amostragem é feita pelo método dos transectos lineares. É possível utilizar números menores que estes para realizar as análises, porém deve-se ter o cuidado de verificar se as funções de detecção estão bem modeladas.
-
-Para dados que serão estratificados (divididos em subconjuntos), estes números recomendados se aplicam a cada subconjunto. Isso ocorre porque as funções de detecção serão modeladas para cada estrato
-(p.ex.`Region.Label`), além da função de detecção para os dados globais. Um exemplo seria a análise dos dados, para uma mesma espécie, em diferentes UCs. Neste caso, o ideal seria ter a suficiência amostral mínima em cada UC para usar estratificação e estimar abundâncias e densidades em cada uma das UCs.
-
-**Suficiência amostral - réplicas e repetições**
-
-Para que haja uma boa cobertura da área de estudo e também uma boa
-quantidade de amostras independentes para estimar as abundâncias e
-densidades das espécies, é desejável um número satisfatório de réplicas independentes. Segundo BUCKLAND et al. (2015), o número mínimo de réplicas independentes para os transectos deve ser de 10-20, o que deve aumentar para espécies cujas populações são distribuídas em manchas.
-
-De forma geral, para cada UC, o número de réplicas do Programa Monitora está abaixo do recomendado. O delinamento amostral atual para a compontente Florestal do subprograma Terrestre estabelece um número mínimo de três Estações Amostrais por Unidade de Conservação, o que é o caso de muitas UCs, chegando ao máximo de 9 estações amostrais por UC. O baixo número de réplicas espaciais idependentes não chega a ser um problema na estimativa de densidade da Área Coberta pela amostragem, mas limita uma boa estimativa de densidade total para a Unidade de Conservação.
-
-Um outro aspecto relacionado a amostragem é o número de repetições por transecto. Segundo BUKLAND et al (2001, pg 79), as repetições devem ser incorporadas no esforço amostral multiplicando-se o número de vezes que o transecto foi percorrido pelo comprimento do transecto. A mesma recomendação é dada pelo Curso Online em Distance Sampling [link](https://workshops.distancesampling.org/online-course/lecturepdfs/Ch4/L4-3%20Sample%20Size.pdf). Esse ajuste no esforço amostral não deve ter grandes consequências para
-um baixo número de repetições. Porém, números altos de amostragens repetidas e nã independentes levam a uma inflagem no tamanho da área coberta. Apenas para ilustar com um exemplo, para os dados da cutia *Dasyprocta croconota* da Resex Tapajós-Arapinuns, a Estação Amostral Boim foi percorrida durante 70 dias de amostragem. Isso significa que ajustando o comprimento do transecto de 5 km pelo número de repetições, o esforço amostral passou para 350 km. A área coberta aumentou em 70x, o que terá consequências sobre a estimativa densidade, que tenderá a ser subestimada. Além disso, o coeficiente de variação das estimativas de taxa de encontro, abundância e densidade também tenderão a aumentar pelo efeito da variações temporais entre as amostragens.
-
-Uma forma de lidar com o excesso de amostragens repetidas é tratar as
-repetições como efeitos aleatórios dos modelos. Isso requer o uso de
-abordagens que vão além da amostragem por distância convecional, como o uso de Mixed Effect Models e Modelos Hierárquicos (p. ex. OEDEKOVEN et al. 2013, 2014). Essas abordagens ainda não foram implementadas em nosso fluxo de trabalho até a presente versão e pretendemos testar os códigos para esta abordagem utilizando o pacote unmarked até o final da vigência do presente projeto.
-
-**Distribuição de frequência das ocorrências em relação à distância -
-efeitos indesejados**
-
-A distribuição ideal das frequências de ocorrência em relação à
-distância deve apresentar as seguintes características: a frequência de ocorrência deve ser maior próximo a zero, apresentar um longo platô (ombro), e decair gradativamente com o aumento da distância. Isso significa que os animais são totalmente detectáveis na distância zero, seguem sendo bem detectáveis a distâncias curtas e vão perdendo
-detectabilidade gradativamente com o aumento da distância.
-
-Por isso, uma das etapas exploratórias é avaliar o histograma de
-frequências de ocorrência ao longo da distância em relação ao transecto (opção abaixo). Algumas distribuições indicam problemas nos dados que podem dificultar o ajuste das funções de detecção. Tais como:
-
-*Pico de ocorrências próximos à distância zero - spike near zero
-distance*
-
-Isso ocorre quando o número de observações próximos à distância zero é  inflado em relação às demais distâncias. O efeito gráfico será um pico no histograma em zero ou próximo a zero, conforme o exemplo abaixo para os dados extraídos das cutias (*Dasyprocta croconota*) na Resex Tapajós-Arapiuns.
-
-![Distribuicao de Frequencia para *Dasyprocta croconota* na Resex
-Tapajos-Arapiuns](`r here::here("output/Distribuicao_freq_Dasyprocta_ResexTapajos.png")`){width="75%"}
-
-Este tipo de distribuição foi predominante para as espécies com o maior número de ocorrência nos dados de aves e mamíferos do Programa Monitora Florestal. Acreditamos que existem dois fatores que podem estar causando esse acúmulo de dados em zero ou próximo a ele. Um deles seria um viés para avistamento de animais na trilha em ambientes de floresta. As trilhas podem atrair animais, e também oferecem melhor visibilidade em relação à floresta, especialmente se o sub-bosque for denso. O outro fator seria um possível arredondamento nas distâncias próximas a zero, o que pode gerar um "amontoamento" nos dados (*heaping*). Recomenda-se que valores de distância perpendicular nunca sejam arredondados.
-
-*Resposta evasiva das espécies em relação ao observador*
-
-Para espécies que podem apresentar resposta de deslocamento em relação ao observador, um dos efeitos indesejados nos dados é o deslocamento das maiores frequências de observações para as distâncias perpendiculares intermediárias ao mesmo tempo que as frequências próximas ao observador são baixas. Uma alternativa, nesse caso, é constranger a função de deteção para monotonicidade, evitando que ela suba para se ajustar ao pico de frequência nas distâncias intermediárias.
-
-*Viés de tamanho de grupo*
-
-Um dos efeitos que pode ocorrer para espécies que formam grupos, é que grupos menores perdem a detectabilidade mais fácil do que grupos maiores com o aumento da distância. Esse viés pode ser testado na exploração dos dados das covariávies, plotando-se um gráfico de tamanho de grupo pela distância. Caso o viés ocorra, será uma observada uma tendência de registros somente de grupos maiores nas distâncias maiores. Nós adotamos a estratégia de tratar tamanho de grupo como covariável para espécies que formam grupos. Neste caso, ao mesmo tempo que lidamos com o efeito do tamanho do grupo na detectabilidade, incorporamos também o tamanho do grupo nas estimativas de densidade e abundância.
-
-### **Exploração e seleção de dados**
-
-#### **Aspectos relacionados ao número total de observações**
-
-#### **Quantas observações foram validadas para quais níveis taxonômicos?**
-
-Essas operações são realizadas sobre a tabela de dados `dados_completos` pois os dados que foram transformados para o formato do distace no R não possuem a coluna `validation`, necessária para essas opereações. Mais a frente o procedimento de como obter os dados selecionados e transformatos para o formato das análises será demonstrado.
+Essas operações são realizadas sobre a tabela de dados `dados_completos`
+pois os dados que foram transformados para o formato do distace no R não
+possuem a coluna `validation`, necessária para essas opereações. Mais a
+frente o procedimento de como obter os dados selecionados e
+transformatos para o formato das análises será demonstrado.
 
 ```{r}
 # contar observações validadas ao nível de espécie
@@ -414,7 +400,8 @@ n_obs_validadas <- contar_n_obs_validadas()
 n_obs_validadas
 ```
 
-Foram selecionadas apenas as observações validadas ao nível de espécie, somando um total `r n_obs_validadas[1]` observações.
+Foram selecionadas apenas as observações validadas ao nível de espécie,
+somando um total `r n_obs_validadas[1]` observações.
 
 ```{r}
 # gerar gráfico com número observações validadas para cada nível taxonômico
@@ -432,7 +419,7 @@ dados_selecionados <- carregar_dados_selecionados()
 gerar_tabdin_dados_selecionados()
 ```
 
-#### **Quantas unidades de conservação ao todo?**
+###### Quantas Unidades de Conservação foram amostradas?
 
 ```{r n_de_ucs}
 # contar número total de UC's 
@@ -442,7 +429,7 @@ n_ucs
 
 Os dados são provenientes de `r n_ucs` unidades de conservação ao todo.
 
-#### **Quantas espécies ao todo?**
+###### Quantas espécies foram registradas?
 
 ```{r}
 n_sp <- contar_n_sp()
@@ -451,7 +438,7 @@ n_sp
 
 Até aqui temos dados para `r n_sp` espécies.
 
-#### **Quantas observações por unidade de conservação ao todo?**
+###### Quantas observações por Unidade de Conservação?
 
 ```{r}
 # contar número de observações por UC
@@ -461,11 +448,159 @@ n_obs_uc <- contar_n_obs_uc()
 gerar_tabdin_n_obs_uc()
 ```
 
-
 ```{r, fig.height=20, fig.align='center'}
 # plotar o número de observações por UC
 plotar_n_obs_uc_interativo()
 ```
+
+## **Selecionando os melhores espécies modelo de estudo de acordo com os dados**
+
+Alguns cuidados devem ser tomados na preparação dos dados antes de serem
+analisados. O primeiro deles é o cuidado taxonômico. Para os dados do
+Monitora recomenda-se o uso dos dados das espécies validadas para
+análise pelo ICMBio, conforme o modelo utilizado para este fluxo de
+trabalho.
+
+Alguns problemas com os dados, que podem trazer efeitos indesejados
+sobre as análises, podem ser detectados durante a fase de exploração. Ao
+selecionar os dados que serão analisados, é importante observar os
+seguintes aspectos:
+
+**Suficência Amostral - número de ocorrências por espécie**
+
+Para que o método de análise por distância possa ser utilizado para
+estimativas baseadas em modelos, são recomendadas quantidades mínimas de
+registros de ocorrência e de transectos (Unidades Amostrais). Segundo
+BUCKLAND et. al. (2015), o número mínimo sugerido de animais ou grupos
+(ocorrências) é de 60 -- 80 animais (ou grupos) quando a amostragem é
+feita pelo método dos transectos lineares. É possível utilizar números
+menores que estes para realizar as análises, porém deve-se ter o cuidado
+de verificar se as funções de detecção estão bem modeladas.
+
+Para dados que serão estratificados (divididos em subconjuntos), estes
+números recomendados se aplicam a cada subconjunto. Isso ocorre porque
+as funções de detecção serão modeladas para cada estrato
+(p.ex.`Region.Label`), além da função de detecção para os dados globais.
+Um exemplo seria a análise dos dados, para uma mesma espécie, em
+diferentes UCs. Neste caso, o ideal seria ter a suficiência amostral
+mínima em cada UC para usar estratificação e estimar abundâncias e
+densidades em cada uma das UCs.
+
+**Suficiência amostral - réplicas e repetições**
+
+Para que haja uma boa cobertura da área de estudo e também uma boa
+quantidade de amostras independentes para estimar as abundâncias e
+densidades das espécies, é desejável um número satisfatório de réplicas
+independentes. Segundo BUCKLAND et al. (2015), o número mínimo de
+réplicas independentes para os transectos deve ser de 10-20, o que deve
+aumentar para espécies cujas populações são distribuídas em manchas.
+
+De forma geral, para cada UC, o número de réplicas do Programa Monitora
+está abaixo do recomendado. O delinamento amostral atual para a
+compontente Florestal do subprograma Terrestre estabelece um número
+mínimo de três Estações Amostrais por Unidade de Conservação, o que é o
+caso de muitas UCs, chegando ao máximo de 9 estações amostrais por UC. O
+baixo número de réplicas espaciais idependentes não chega a ser um
+problema na estimativa de densidade da Área Coberta pela amostragem, mas
+limita uma boa estimativa de densidade total para a Unidade de
+Conservação.
+
+Um outro aspecto relacionado a amostragem é o número de repetições por
+transecto. Segundo BUKLAND et al (2001, pg 79), as repetições devem ser
+incorporadas no esforço amostral multiplicando-se o número de vezes que
+o transecto foi percorrido pelo comprimento do transecto. A mesma
+recomendação é dada pelo Curso Online em Distance Sampling
+[link](https://workshops.distancesampling.org/online-course/lecturepdfs/Ch4/L4-3%20Sample%20Size.pdf).
+Esse ajuste no esforço amostral não deve ter grandes consequências para
+um baixo número de repetições. Porém, números altos de amostragens
+repetidas e nã independentes levam a uma inflagem no tamanho da área
+coberta. Apenas para ilustar com um exemplo, para os dados da cutia
+*Dasyprocta croconota* da Resex Tapajós-Arapinuns, a Estação Amostral
+Boim foi percorrida durante 70 dias de amostragem. Isso significa que
+ajustando o comprimento do transecto de 5 km pelo número de repetições,
+o esforço amostral passou para 350 km. A área coberta aumentou em 70x, o
+que terá consequências sobre a estimativa densidade, que tenderá a ser
+subestimada. Além disso, o coeficiente de variação das estimativas de
+taxa de encontro, abundância e densidade também tenderão a aumentar pelo
+efeito da variações temporais entre as amostragens.
+
+Uma forma de lidar com o excesso de amostragens repetidas é tratar as
+repetições como efeitos aleatórios dos modelos. Isso requer o uso de
+abordagens que vão além da amostragem por distância convecional, como o
+uso de Mixed Effect Models e Modelos Hierárquicos (p. ex. OEDEKOVEN et
+al. 2013, 2014). Essas abordagens ainda não foram implementadas em nosso
+fluxo de trabalho até a presente versão e pretendemos testar os códigos
+para esta abordagem utilizando o pacote unmarked até o final da vigência
+do presente projeto.
+
+**Distribuição de frequência das ocorrências em relação à distância -
+efeitos indesejados**
+
+A distribuição ideal das frequências de ocorrência em relação à
+distância deve apresentar as seguintes características: a frequência de
+ocorrência deve ser maior próximo a zero, apresentar um longo platô
+(ombro), e decair gradativamente com o aumento da distância. Isso
+significa que os animais são totalmente detectáveis na distância zero,
+seguem sendo bem detectáveis a distâncias curtas e vão perdendo
+detectabilidade gradativamente com o aumento da distância.
+
+Por isso, uma das etapas exploratórias é avaliar o histograma de
+frequências de ocorrência ao longo da distância em relação ao transecto
+(opção abaixo). Algumas distribuições indicam problemas nos dados que
+podem dificultar o ajuste das funções de detecção. Tais como:
+
+*Pico de ocorrências próximos à distância zero - spike near zero
+distance*
+
+Isso ocorre quando o número de observações próximos à distância zero é
+inflado em relação às demais distâncias. O efeito gráfico será um pico
+no histograma em zero ou próximo a zero, conforme o exemplo abaixo para
+os dados extraídos das cutias (*Dasyprocta croconota*) na Resex
+Tapajós-Arapiuns.
+
+![Distribuicao de Frequencia para *Dasyprocta croconota* na Resex
+Tapajos-Arapiuns](%60r%20here::here(%22output/Distribuicao_freq_Dasyprocta_ResexTapajos.png%22)%60){width="75%"}
+
+Este tipo de distribuição foi predominante para as espécies com o maior
+número de ocorrência nos dados de aves e mamíferos do Programa Monitora
+Florestal. Acreditamos que existem dois fatores que podem estar causando
+esse acúmulo de dados em zero ou próximo a ele. Um deles seria um viés
+para avistamento de animais na trilha em ambientes de floresta. As
+trilhas podem atrair animais, e também oferecem melhor visibilidade em
+relação à floresta, especialmente se o sub-bosque for denso. O outro
+fator seria um possível arredondamento nas distâncias próximas a zero, o
+que pode gerar um "amontoamento" nos dados (*heaping*). Recomenda-se que
+valores de distância perpendicular nunca sejam arredondados.
+
+*Resposta evasiva das espécies em relação ao observador*
+
+Para espécies que podem apresentar resposta de deslocamento em relação
+ao observador, um dos efeitos indesejados nos dados é o deslocamento das
+maiores frequências de observações para as distâncias perpendiculares
+intermediárias ao mesmo tempo que as frequências próximas ao observador
+são baixas. Uma alternativa, nesse caso, é constranger a função de
+deteção para monotonicidade, evitando que ela suba para se ajustar ao
+pico de frequência nas distâncias intermediárias.
+
+*Viés de tamanho de grupo*
+
+Um dos efeitos que pode ocorrer para espécies que formam grupos, é que
+grupos menores perdem a detectabilidade mais fácil do que grupos maiores
+com o aumento da distância. Esse viés pode ser testado na exploração dos
+dados das covariávies, plotando-se um gráfico de tamanho de grupo pela
+distância. Caso o viés ocorra, será uma observada uma tendência de
+registros somente de grupos maiores nas distâncias maiores. Nós adotamos
+a estratégia de tratar tamanho de grupo como covariável para espécies
+que formam grupos. Neste caso, ao mesmo tempo que lidamos com o efeito
+do tamanho do grupo na detectabilidade, incorporamos também o tamanho do
+grupo nas estimativas de densidade e abundância.
+
+
+
+
+
+
+
 
 #### **Quantas observações para cada espécie?**
 
@@ -498,7 +633,6 @@ gerar_tabdin_n_obs_sp()
 n_obs_sp_uc <- contar_n_obs_sp_uc()
 n_obs_sp_uc
 ```
-
 
 ```{r}
 gerar_tabdin_n_obs_sp_uc()
@@ -588,17 +722,18 @@ gerar_tabdin_n_obs_sp_uc_estacao_ano()
 
 -   Possíveis estratificações espaciais
 
-- EAs/UCs
+-   EAs/UCs
 
-- UCs/Espécies
+-   UCs/Espécies
 
-- Possíveis estratificações temporais
+-   Possíveis estratificações temporais
 
-- Espécie/UC/Ano
+-   Espécie/UC/Ano
 
 #### **Avaliando distância de truncamento**
 
--   Gráficos de distribuição das frequências de ocorrência x distância perpendicular.
+-   Gráficos de distribuição das frequências de ocorrência x distância
+    perpendicular.
 
 #### **Distribuição de distâncias**
 
@@ -615,28 +750,63 @@ fig
 #### **Avaliando covariáveis**
 
 As covariáveis devem ser pensadas de acordo com o grupo taxonômico.
-Espécies que formam grupos devem ter a covariável 'size'. As estratégias de estratificação podem ser substituídas por covariáveis
-também (estratos espaciais/ ano). Como covariável temporal, pode se pensar em usar, além do ano, a estação do ano (season), o horário do dia (para animais que variam a atividade). O horário do dia pode ser convertido em tempo após nascer do sol (como no exemplo). Mas para isso é necessário criar essa variável no dataset. E não é trivial porque precisa saber o horário de nascer do sol em cada dia/local para calcular.
+Espécies que formam grupos devem ter a covariável 'size'. As estratégias
+de estratificação podem ser substituídas por covariáveis também
+(estratos espaciais/ ano). Como covariável temporal, pode se pensar em
+usar, além do ano, a estação do ano (season), o horário do dia (para
+animais que variam a atividade). O horário do dia pode ser convertido em
+tempo após nascer do sol (como no exemplo). Mas para isso é necessário
+criar essa variável no dataset. E não é trivial porque precisa saber o
+horário de nascer do sol em cada dia/local para calcular.
 
 # **PARTE V -- Ajustando os modelos**
 
 ## Fluxo de análise dos dados:
 
-A seguir, apresentamos o fluxo de análise dos dados que envolve a fase exploratória, truncamento, ajuste e avaliação de modelos e estimativas de abundância e densidade para as espécies que selecionamos como modelo. Usamos como critérios de seleção tanto o número de ocorrências por Unidade de Conservação quanto a distribuição das frequências de observação, nos casos em que isso foi possível. De forma geral, as espécies com número satisfatório de ocorrências (\>60), apresentaram pico de observações próximos a zero.
+A seguir, apresentamos o fluxo de análise dos dados que envolve a fase
+exploratória, truncamento, ajuste e avaliação de modelos e estimativas
+de abundância e densidade para as espécies que selecionamos como modelo.
+Usamos como critérios de seleção tanto o número de ocorrências por
+Unidade de Conservação quanto a distribuição das frequências de
+observação, nos casos em que isso foi possível. De forma geral, as
+espécies com número satisfatório de ocorrências (\>60), apresentaram
+pico de observações próximos a zero.
 
-Nós usamos como modelo para este fluxo Dasyprocta croconota da Resex Tapajós-Arapiuns, pelo grande número de ocorrências para uma mesma UC. Nós implementamos duas estratégias para lidar com os efeitos indesejados nos dados: pico próximo a zero (*heaping near zero*) e número excessivo de repetições amostrais na mesma trilha. Para lidar com os picos, testamos o uso dos dados com distâncias exatas e distâncias agrupadas. Para lidar com as repetições, testamos a análise dos dados com todas as repetições e com o número de repetições reduzidas. Essas estratégias estão descritas em Fluxos 1-3. No primero fluxo, comentamos também as escolhas feitas e os resultados obtidos. Os demais fluxos são repetições deste primeiro fluxo, porém com mudança na estrutura dos dados.
+Nós usamos como modelo para este fluxo Dasyprocta croconota da Resex
+Tapajós-Arapiuns, pelo grande número de ocorrências para uma mesma UC.
+Nós implementamos duas estratégias para lidar com os efeitos indesejados
+nos dados: pico próximo a zero (*heaping near zero*) e número excessivo
+de repetições amostrais na mesma trilha. Para lidar com os picos,
+testamos o uso dos dados com distâncias exatas e distâncias agrupadas.
+Para lidar com as repetições, testamos a análise dos dados com todas as
+repetições e com o número de repetições reduzidas. Essas estratégias
+estão descritas em Fluxos 1-3. No primero fluxo, comentamos também as
+escolhas feitas e os resultados obtidos. Os demais fluxos são repetições
+deste primeiro fluxo, porém com mudança na estrutura dos dados.
 
-Especies com maior numero de ocorrencias/UC possibilitam testar, posteriormente, estratificações nos dados, preservando um número de ocorrências satisfatório dentro dos estratos. Por isso começamos apresentando um fluxo completo de análise, incluindo Amostragem por Distância Convencional, Amostragem por Distância com Múltiplas Covariáveis e Amostragem por Distância com Estratificação nos dados com as espécies com maior número de ocorrência.
+Especies com maior numero de ocorrencias/UC possibilitam testar,
+posteriormente, estratificações nos dados, preservando um número de
+ocorrências satisfatório dentro dos estratos. Por isso começamos
+apresentando um fluxo completo de análise, incluindo Amostragem por
+Distância Convencional, Amostragem por Distância com Múltiplas
+Covariáveis e Amostragem por Distância com Estratificação nos dados com
+as espécies com maior número de ocorrência.
 
 ## Espécie Modelo - Dasyprocta croconota - Resex Tapajós Arapiuns
 
 ![Fonte: biolib.cz](https://www.biolib.cz/IMG/GAL/BIG/205849.jpg)
 
-Essa é a espécie com o mair número de ocorrências para uma mesma UC. Apresentou, como a maioria das espécies em diferentes UCs, um pico de ocorrências próximo a zero.
+Essa é a espécie com o mair número de ocorrências para uma mesma UC.
+Apresentou, como a maioria das espécies em diferentes UCs, um pico de
+ocorrências próximo a zero.
 
 ### Carregar Dados
 
-Para selecionar do conjunto de dados da espécie e a Unidade de conservação de interesse, usar a função `transforma_para_distanceR_com_repeticao_filtra_uc_sp()`, especificando o nome da Unidade de conservação através do argumento `nome_uc` e o nome da espécie através do argumento `nome_sp`.
+Para selecionar do conjunto de dados da espécie e a Unidade de
+conservação de interesse, usar a função
+`transforma_para_distanceR_com_repeticao_filtra_uc_sp()`, especificando
+o nome da Unidade de conservação através do argumento `nome_uc` e o nome
+da espécie através do argumento `nome_sp`.
 
 ```{r}
 # carregar dados
@@ -654,7 +824,14 @@ cutia_tap_arap
 
 ##### Plotando o histograma das frequências de ocorrência pela distância
 
-O histograma interativo está disponível no app em Shiny `app_distancia_interativo.R`. A distribuição dos dados no histograma permite observar um pico de observações próximo a zero, além de uma considerável perda em detectabilidade a partir dos 20m. Vamos testar diferentes proporções de truncamento. É possível alterar a binagem dos histogramas através do argumento `largura_caixa`. Neste exemplo ajustamos para 1, o que facilita a observação de picos de detecação e efeitos de *heaping* nos dados.
+O histograma interativo está disponível no app em Shiny
+`app_distancia_interativo.R`. A distribuição dos dados no histograma
+permite observar um pico de observações próximo a zero, além de uma
+considerável perda em detectabilidade a partir dos 20m. Vamos testar
+diferentes proporções de truncamento. É possível alterar a binagem dos
+histogramas através do argumento `largura_caixa`. Neste exemplo
+ajustamos para 1, o que facilita a observação de picos de detecação e
+efeitos de *heaping* nos dados.
 
 ```{r, fig.height=15, fig.width=10, warning=FALSE}
 cutia_tap_arap |> 
@@ -664,7 +841,15 @@ plotar_distribuicao_distancia_interativo(largura_caixa = 1)
 
 ##### Testando distância de truncamento (*w*)
 
-Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de distribuição half-normal. Optamos por truncar os dados pela percentagem para padronizar a rotina para diferentes espécies. Buckland et al. (2001) sugere um corte entre 5-10% das observações detectadas nas maiores distãncias. Vamos selecionar o valor de corte pelo modelo com melhor ajuste. Para os dados, testamos as seguintes proporções de corte de dados: 5, 10, 15, 20 e 25% das observações mais distantes. Geramos uma tabela comparando os modelos e também plotamos os gráficos dos modelos ajustados para os dados truncados.
+Vamos explorar diferentes distâncias de truncamento para um mesmo modelo
+de distribuição half-normal. Optamos por truncar os dados pela
+percentagem para padronizar a rotina para diferentes espécies. Buckland
+et al. (2001) sugere um corte entre 5-10% das observações detectadas nas
+maiores distãncias. Vamos selecionar o valor de corte pelo modelo com
+melhor ajuste. Para os dados, testamos as seguintes proporções de corte
+de dados: 5, 10, 15, 20 e 25% das observações mais distantes. Geramos
+uma tabela comparando os modelos e também plotamos os gráficos dos
+modelos ajustados para os dados truncados.
 
 ###### Tabela com resumo comparativo dos modelos
 
@@ -678,17 +863,39 @@ cutia_tap_arap_dist_trunc$selecao
 
 ###### Plotando o histograma com os dados truncados.
 
-Histogramas resultantes dos modelos, com todas as distâncias de truncagem, para auxiliar na seleção da melhor distãncia.
+Histogramas resultantes dos modelos, com todas as distâncias de
+truncagem, para auxiliar na seleção da melhor distãncia.
 
 ```{r}
 plotar_funcao_deteccao_selecao_distancia_truncamento(cutia_tap_arap_dist_trunc)
 ```
 
-Após avaliar tanto o ajuste dos modelos quanto os gráficos, optamos por truncar 15% das observações feitas nas maiores distâncias. Apesar dos melhores valores de AIC e de ajuste do Cramér-von Mises para 25%, os histogramas com modelos ajustados para 25%, 20% e 15% apresentaram modelos quase lineares e com uma grande probabilidade de deteção nos últimos intervalos de distância. O modelo com corte de 10% apresentou uma curva decrescente e não tendeu a zero nas últimas distâncias. Já no modelos para 5% as funções de deteção tendem a zero nos últimos intervalos de distância. O corte de 10% das observações mais distantes resultou em uma distância de truncamento de 15m.
+Após avaliar tanto o ajuste dos modelos quanto os gráficos, optamos por
+truncar 15% das observações feitas nas maiores distâncias. Apesar dos
+melhores valores de AIC e de ajuste do Cramér-von Mises para 25%, os
+histogramas com modelos ajustados para 25%, 20% e 15% apresentaram
+modelos quase lineares e com uma grande probabilidade de deteção nos
+últimos intervalos de distância. O modelo com corte de 10% apresentou
+uma curva decrescente e não tendeu a zero nas últimas distâncias. Já no
+modelos para 5% as funções de deteção tendem a zero nos últimos
+intervalos de distância. O corte de 10% das observações mais distantes
+resultou em uma distância de truncamento de 15m.
 
 ##### Ajustando diferentes modelos de funções de deteção
 
-As funções de deteção são ajustadas através da função `ds()` no pacote Distence para o R. Para otimizar o fluxo de ajuste de funções, empacotamos as diferentes combinações de funções chave e termos de ajustes em três funções. São elas: `ajuste_modelos_distance_unif()`, para distribuição uniforme sem termos de ajuste e com termos de ajuste do tipo cosseno e polinomial simples, `ajuste_modelos_distance_hn()` para distribuição half-normal sem termos de ajuste e com termos de ajuste do tipo cosseno e polinomial de hermite; e `ajuste_modelos_distance_hr()` para distribuição hazard-rate sem termos de ajuste e com termos de ajuste do tipo cosseno e polinomial simples. Para definir a distância de truncamento dos dados é necessário fornecer o argumento `truncamento`, que pode ser definido tanto em percentagem de corte dos dados quanto em valor de distãncia.
+As funções de deteção são ajustadas através da função `ds()` no pacote
+Distence para o R. Para otimizar o fluxo de ajuste de funções,
+empacotamos as diferentes combinações de funções chave e termos de
+ajustes em três funções. São elas: `ajuste_modelos_distance_unif()`,
+para distribuição uniforme sem termos de ajuste e com termos de ajuste
+do tipo cosseno e polinomial simples, `ajuste_modelos_distance_hn()`
+para distribuição half-normal sem termos de ajuste e com termos de
+ajuste do tipo cosseno e polinomial de hermite; e
+`ajuste_modelos_distance_hr()` para distribuição hazard-rate sem termos
+de ajuste e com termos de ajuste do tipo cosseno e polinomial simples.
+Para definir a distância de truncamento dos dados é necessário fornecer
+o argumento `truncamento`, que pode ser definido tanto em percentagem de
+corte dos dados quanto em valor de distãncia.
 
 ###### Uniforme com termos de ajuste Cosseno e polinomial simples
 
@@ -699,7 +906,17 @@ cutia_tap_arap_unif <- cutia_tap_arap |>
 
 ```
 
-Dentre as combinações de termos de ajustes para a função chave de distribuição uniforme, o Distance selecionou o modelo uniforme com ajuste polinomial simples, com as ordens 2, 4 e 6. Ele mantém esse modelo, e descarta os demais. Os *Warnings* indicando que a função de detecção não é estritamente monotônica avisam que os dados não foram constrangidos para a monotonicidade. Isso porque o uso de termos de ajustes, especialmente de ordens acima de 2, podem levar à perda da monotonidade (a curva pode se tornar crescente em algum momento, o que não é desejado). É preciso avaliar se a fala desse constragimento levou efetivamente à perda da monotonicidade ao olhar os gráficos de ajuste dos modelos.
+Dentre as combinações de termos de ajustes para a função chave de
+distribuição uniforme, o Distance selecionou o modelo uniforme com
+ajuste polinomial simples, com as ordens 2, 4 e 6. Ele mantém esse
+modelo, e descarta os demais. Os *Warnings* indicando que a função de
+detecção não é estritamente monotônica avisam que os dados não foram
+constrangidos para a monotonicidade. Isso porque o uso de termos de
+ajustes, especialmente de ordens acima de 2, podem levar à perda da
+monotonidade (a curva pode se tornar crescente em algum momento, o que
+não é desejado). É preciso avaliar se a fala desse constragimento levou
+efetivamente à perda da monotonicidade ao olhar os gráficos de ajuste
+dos modelos.
 
 ###### Half-Normal sem termos de ajuste e com termos de ajuste Cosseno e Polinomial de Hermite
 
@@ -709,7 +926,8 @@ cutia_tap_arap_hn <- cutia_tap_arap |>
   ajuste_modelos_distance_hn(truncamento = "10%")
 ```
 
-Neste caso, o modelo selecionado pelo Distance foi o Half-normal sem nenhum termo de ajuste.
+Neste caso, o modelo selecionado pelo Distance foi o Half-normal sem
+nenhum termo de ajuste.
 
 ###### Hazard-rate sem termos de ajuste e com termos de ajuste Cosseno e Polinomial de Hermite
 
@@ -719,11 +937,25 @@ cutia_tap_arap_hr <- cutia_tap_arap |>
   ajuste_modelos_distance_hr(truncamento = "10%")
 ```
 
-Aqui o melhor modelo selecionado pelo Distance foi o Hazard-rate sem os termos de ajuste. Nesse caso, também há um *warning* para o problema na distribuição dos dados, que apresentam um pico próximo a distância zero e não são bem ajustados pelo hazard-hate.
+Aqui o melhor modelo selecionado pelo Distance foi o Hazard-rate sem os
+termos de ajuste. Nesse caso, também há um *warning* para o problema na
+distribuição dos dados, que apresentam um pico próximo a distância zero
+e não são bem ajustados pelo hazard-hate.
 
 ##### Comparando os modelos
 
-Para comparar os modelos é preciso avaliar três critérios: AIC, ajuste e forma das funções nos gráficos e bondade de ajuste. O pacote distance possui a função `summarize_ds_models`que gera uma tabela com os modelos para comparação de alguns parâmetros: a primeira coluna **Model**, indica as funções chaves e respectivos termos de ajuste; a coluna **Formula** apresenta as covariáveis, quando incluídas no modelo, ou \~1, quando não há covariáveis; **C-vM p-value** vai apresentar os valores de p para o teste de bondade de ajuste de Cramér-von Mises; $\hat{P_a}$ apresenta a probalidade de deteção global estimada para cada modelo; **se(**$\hat{P_a}$) apresenta o erro padrão para as estimativas de probabilidade de detecção; e $\Delta$AIC apresenta os valores de delta AIC.
+Para comparar os modelos é preciso avaliar três critérios: AIC, ajuste e
+forma das funções nos gráficos e bondade de ajuste. O pacote distance
+possui a função `summarize_ds_models`que gera uma tabela com os modelos
+para comparação de alguns parâmetros: a primeira coluna **Model**,
+indica as funções chaves e respectivos termos de ajuste; a coluna
+**Formula** apresenta as covariáveis, quando incluídas no modelo, ou
+\~1, quando não há covariáveis; **C-vM p-value** vai apresentar os
+valores de p para o teste de bondade de ajuste de Cramér-von Mises;
+$\hat{P_a}$ apresenta a probalidade de deteção global estimada para cada
+modelo; **se(**$\hat{P_a}$) apresenta o erro padrão para as estimativas
+de probabilidade de detecção; e $\Delta$AIC apresenta os valores de
+delta AIC.
 
 ###### Tabela com o resumo comparativo dos modelos
 
@@ -739,7 +971,11 @@ fluxo1_selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_termo_
 fluxo1_selecao_funcao_deteccao_termo_ajuste
 ```
 
-Dentre os modelos testados, o que apresentou melhor valor de ajuste e AIC foi o hazard-rate. O ajuste do Cramér-von Mises foi consideravelmente maior que os demais (para esse tipo de teste, quanto maior o valor de p, melhor o ajuste), assim como as diferenças no delta AIC foram bastante elevadas.
+Dentre os modelos testados, o que apresentou melhor valor de ajuste e
+AIC foi o hazard-rate. O ajuste do Cramér-von Mises foi
+consideravelmente maior que os demais (para esse tipo de teste, quanto
+maior o valor de p, melhor o ajuste), assim como as diferenças no delta
+AIC foram bastante elevadas.
 
 ###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
 
@@ -761,7 +997,24 @@ names(fluxo1_modelos_selecionados) <- fluxo1_selecao_funcao_deteccao_termo_ajust
 plotar_funcao_deteccao_modelos_selecionados(fluxo1_modelos_selecionados)
 ```
 
-Olhando para os histogramas com modelos ajustados, é possível observar o efeito do acúmulo de observações próximo a zero. O modelo com a função chave hazard-hate sem termos de ajuste, apesar de ter apresentado o melhor valor de ajuste pelo Cramér-von Mises e o melhor valor de AIC, apresentou dois problemas. As probalidades de deteção estimadas por intevalo de distância (barras cinzas), ficaram muito baixas. Além disso, a curva da função de deteção apresenta pico na distância próxima a zero, decaindo rapidamente e se aproximando de zero ao longo do eixo das distãncias. Todos os outros quatro modelos tiveram ajuste e AIC bastante inferiores ao hazard-hate. Entretanto as curvas estão relativamente melhores. As curvas do segundo e terceiro modelo, uniforme com ajuste cosseno e half-normal com ajuste cosseno, respectivamente, tendem à perda de monotonicidade. As duas últimas curvas, para os modelos uniforme com ajuste polinomial simples e half-normal sem ajuste, não perdem a monotonicidade. De forma geral, as probabilidades de detecção não têm um bom ajuste abaixo da curva, e não apresentam um decaimento gradual com a distância. Esses são problemas inerentes à distribuição dos dados.
+Olhando para os histogramas com modelos ajustados, é possível observar o
+efeito do acúmulo de observações próximo a zero. O modelo com a função
+chave hazard-hate sem termos de ajuste, apesar de ter apresentado o
+melhor valor de ajuste pelo Cramér-von Mises e o melhor valor de AIC,
+apresentou dois problemas. As probalidades de deteção estimadas por
+intevalo de distância (barras cinzas), ficaram muito baixas. Além disso,
+a curva da função de deteção apresenta pico na distância próxima a zero,
+decaindo rapidamente e se aproximando de zero ao longo do eixo das
+distãncias. Todos os outros quatro modelos tiveram ajuste e AIC bastante
+inferiores ao hazard-hate. Entretanto as curvas estão relativamente
+melhores. As curvas do segundo e terceiro modelo, uniforme com ajuste
+cosseno e half-normal com ajuste cosseno, respectivamente, tendem à
+perda de monotonicidade. As duas últimas curvas, para os modelos
+uniforme com ajuste polinomial simples e half-normal sem ajuste, não
+perdem a monotonicidade. De forma geral, as probabilidades de detecção
+não têm um bom ajuste abaixo da curva, e não apresentam um decaimento
+gradual com a distância. Esses são problemas inerentes à distribuição
+dos dados.
 
 ###### Teste de bondade de ajuste dos modelos e Q-Q plots
 
@@ -770,11 +1023,15 @@ bondade_ajuste_fluxo1 <- testar_bondade_ajuste(fluxo1_modelos_selecionados, plot
 bondade_ajuste_fluxo1
 ```
 
-Aqui são gerados Q-Q plots que permitem avaliar a qualidade do ajuste dos modelos. E também uma tabela com os resultados do Carmér-von Mises, onde W é o valor do teste e p seu valor de significância. Nesse caso, quanto maior o valor de p, melhor o ajuste do modelo.
+Aqui são gerados Q-Q plots que permitem avaliar a qualidade do ajuste
+dos modelos. E também uma tabela com os resultados do Carmér-von Mises,
+onde W é o valor do teste e p seu valor de significância. Nesse caso,
+quanto maior o valor de p, melhor o ajuste do modelo.
 
 ##### Avaliando as estimativas de Abundância e Densidade
 
-Aqui, são resumidos os dados de taxa de encontro, abundância e densidade em três tabelas.
+Aqui, são resumidos os dados de taxa de encontro, abundância e densidade
+em três tabelas.
 
 ###### Características da área de estudo e da taxa de encontro
 
@@ -899,6 +1156,7 @@ fluxo2_selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_termo_
 
 fluxo2_selecao_funcao_deteccao_termo_ajuste
 ```
+
 ###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
 
 ```{r}
@@ -949,7 +1207,6 @@ fluxo2_caracteristicas_area_estudo_taxa_encontro
 
 ###### Características de abundância, esforço e detecção
 
-
 ```{r}
 # área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
 fluxo2_caracteristicas_esforco_abundancia_deteccao <- fluxo2_lista_modelos_ajustados_termos |> 
@@ -970,13 +1227,21 @@ fluxo2_caracteristicas_densidade
 
 #### Fluxo 3 - Distâncias agrupadas com todas as repetições
 
-Aqui vamos partir do mesmo conjunto de dados do Fluxo 1 (`cutia_tap_arap`), com todas as repetições, mas vamos agrupar as distâncias em intervalos. Vamos usar o mesmo valor de truncamento, removendo 10% das observações nas maiores distâncias, o que significa que aproveitaremos as observações feitas até 15m de distância do observador.
+Aqui vamos partir do mesmo conjunto de dados do Fluxo 1
+(`cutia_tap_arap`), com todas as repetições, mas vamos agrupar as
+distâncias em intervalos. Vamos usar o mesmo valor de truncamento,
+removendo 10% das observações nas maiores distâncias, o que significa
+que aproveitaremos as observações feitas até 15m de distância do
+observador.
 
 ##### Plotando o histograma das frequências de ocorrência pela distância
 
-O histograma interativo está disponível no app em Shiny `app_distancia_interativo.R`.
+O histograma interativo está disponível no app em Shiny
+`app_distancia_interativo.R`.
 
-Aqui, plotamos quatro histogramas com binagens diferentes, para observar o efeito de agrupar os dados sobre as distribuições das frequências de ocorrência nos histogramas.
+Aqui, plotamos quatro histogramas com binagens diferentes, para observar
+o efeito de agrupar os dados sobre as distribuições das frequências de
+ocorrência nos histogramas.
 
 ```{r, fig.height=15, fig.width=10}
 cutia_tap_arap |> 
@@ -1203,7 +1468,9 @@ plotar_funcao_deteccao_modelos_selecionados(fluxo3.3_modelos_selecionados)
 
 ###### Teste de bondade de ajuste dos modelos e Q-Q plots
 
-Ainda estamos ajustando os outputs para os testes de bondade, pois a binagem um conflito com o formato de tabela definido pela função original.
+Ainda estamos ajustando os outputs para os testes de bondade, pois a
+binagem um conflito com o formato de tabela definido pela função
+original.
 
 Primeira binagem
 
@@ -1225,7 +1492,6 @@ Terceira binagem
 bondade_ajuste_fluxo3.3 <- testar_bondade_ajuste(fluxo3.3_modelos_selecionados)
 bondade_ajuste_fluxo3.3
 ```
-
 
 ##### Avaliando as estimativas de Abundância e Densidade
 
@@ -1290,11 +1556,10 @@ fluxo3.3_caracteristicas_area_estudo_taxa_encontro <- fluxo3.3_lista_modelos_aju
 fluxo3.3_caracteristicas_area_estudo_taxa_encontro
 ```
 
-
-
 ###### Características de abundância, esforço e detecção
 
 Primeira binagem
+
 ```{r}
 # área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
 fluxo3.1_caracteristicas_esforco_abundancia_deteccao <- fluxo3.1_lista_modelos_ajustados_termos |> 
@@ -1304,6 +1569,7 @@ fluxo3.1_caracteristicas_esforco_abundancia_deteccao
 ```
 
 Segunda binagem
+
 ```{r}
 # área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
 fluxo3.2_caracteristicas_esforco_abundancia_deteccao <- fluxo3.2_lista_modelos_ajustados_termos |> 
@@ -1313,6 +1579,7 @@ fluxo3.2_caracteristicas_esforco_abundancia_deteccao
 ```
 
 Terceira binagem
+
 ```{r}
 # área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
 fluxo3.3_caracteristicas_esforco_abundancia_deteccao <- fluxo3.3_lista_modelos_ajustados_termos |> 
@@ -1355,11 +1622,17 @@ fluxo3.3_caracteristicas_densidade
 
 ### Amostragem por Distância com Múltiplas Covariáveis
 
-Aqui, vamos usar a abordagem do Fluxo 2, com amostragens reduzidas, para o ajuste de covariáveis. Vamos usar o tamanho do grupo como covariável.
+Aqui, vamos usar a abordagem do Fluxo 2, com amostragens reduzidas, para
+o ajuste de covariáveis. Vamos usar o tamanho do grupo como covariável.
 
 ##### Ajustando diferentes modelos com covariáveis
 
-Para o uso de coveriáveis, podemos usar somente as distribuições half-normal ou hazard-rate, pois ambas possuem o parâmetro escalar pelo qual o vetor das covariáveis será multiplicado. Não é recomendável o uso de termos de ajuste com o uso de covariáveis pela grande chance de perda de monotonicidade nas curvas das funções de detecção. Assim, vamos trabalhar com as seguintes combinações de modelos
+Para o uso de coveriáveis, podemos usar somente as distribuições
+half-normal ou hazard-rate, pois ambas possuem o parâmetro escalar pelo
+qual o vetor das covariáveis será multiplicado. Não é recomendável o uso
+de termos de ajuste com o uso de covariáveis pela grande chance de perda
+de monotonicidade nas curvas das funções de detecção. Assim, vamos
+trabalhar com as seguintes combinações de modelos
 
 ###### Half-normal sem termos de ajuste (HN)
 
@@ -1368,7 +1641,6 @@ Para o uso de coveriáveis, podemos usar somente as distribuições half-normal 
 cutia_cov_hn <- cutia_tap_arap_quase_sem_repeticao |> 
   ajuste_modelos_distance_hn(lista_termos_ajuste = list(`Sem termo`= NULL),truncamento = "10%")
 ```
-
 
 ###### HN + Tamanho do grupo (HN + S)
 
@@ -1398,7 +1670,9 @@ cutia_cov_hr_s <- cutia_tap_arap_quase_sem_repeticao |>
 
 ###### Tabela com o resumo comparativo dos modelos
 
-Ainda estamos ajustando a função para poder gerar a tabela com o resumo dos resultados. A função criada para gerar tabela ainda não comporta os dados de modelos com covariáveis.
+Ainda estamos ajustando a função para poder gerar a tabela com o resumo
+dos resultados. A função criada para gerar tabela ainda não comporta os
+dados de modelos com covariáveis.
 
 ```{r, results='hide'}
 cov_lista_modelos_ajustados <- list(
@@ -1411,7 +1685,9 @@ cov_selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_termo_aju
 
 ###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
 
-Ainda estamos ajustando a função para poder gerar os gráficos dos modelos com covariáveis. A função criada para os gráficos ainda não comporta os dados de modelos com covariáveis.
+Ainda estamos ajustando a função para poder gerar os gráficos dos
+modelos com covariáveis. A função criada para os gráficos ainda não
+comporta os dados de modelos com covariáveis.
 
 ```{r}
 cov_modelos_selecionados <- list(
@@ -1424,7 +1700,10 @@ plotar_funcao_deteccao_modelos_selecionados(cov_modelos_selecionados)
 
 ###### Teste de bondade de ajuste dos modelos e Q-Q plots
 
-Ainda estamos ajustando a função para poder gerar a tabela com os resultados do Cramér-von Mises e os gráficos dos modelos com covariáveis. A função criada para gerar tabela e os Q-Q plots ainda não comporta os dados de modelos com covariáveis.
+Ainda estamos ajustando a função para poder gerar a tabela com os
+resultados do Cramér-von Mises e os gráficos dos modelos com
+covariáveis. A função criada para gerar tabela e os Q-Q plots ainda não
+comporta os dados de modelos com covariáveis.
 
 ```{r}
 bondade_ajuste_cov <- testar_bondade_ajuste(cov_modelos_selecionados, plot = TRUE)
@@ -1433,4 +1712,7 @@ bondade_ajuste_cov
 
 ##### Avaliando as estimativas de Abundância e Densidade
 
-Para o uso de covariáveis, as estimativas de abundância/densidade devem ser feitas através do bootstrap (função `bootdht` do Distance). Ainda estamos implementando o bootstrap em nosso fluxo de estimativas de taxa de encontro, abundância e densidade.
+Para o uso de covariáveis, as estimativas de abundância/densidade devem
+ser feitas através do bootstrap (função `bootdht` do Distance). Ainda
+estamos implementando o bootstrap em nosso fluxo de estimativas de taxa
+de encontro, abundância e densidade.
