@@ -2694,7 +2694,8 @@ selecionar_distancia_truncamento <- function(
 #'
 #' @examples
 selecionar_funcao_deteccao_termo_ajuste <- function(
-    dados
+    dados,
+    distancia_categorizada = FALSE
 ) {
   
   # gerar rank das funcoes de deteccao e termos de ajuste
@@ -2706,15 +2707,33 @@ selecionar_funcao_deteccao_termo_ajuste <- function(
     dados$`hazard-rate`$Cosseno,
     dados$`hazard-rate`$`Polinomial simples`,
     dados$uniforme$Cosseno,
-    dados$uniforme$`Polinomial simples`, 
+    dados$uniforme$`Polinomial simples`,
     delta_only = FALSE
   )
   
-  # 
-  tabela_selecao_funcao_deteccao_termo_ajuste <- selecao_funcao_deteccao_termo_ajuste |> 
-    select(!1) |> 
-    rename(Model = `Key function`) |> 
-    distinct()
+  # controlar para a presença de dados categorizados
+  if (distancia_categorizada == FALSE) {
+    
+    # gera a tabela de seleção de modelos para dados de distância contínuos
+    tabela_selecao_funcao_deteccao_termo_ajuste <- selecao_funcao_deteccao_termo_ajuste |>
+      dplyr::select(!1) |>
+      dplyr::rename(
+        Modelo = `Key function`, 
+        `C-vM p-valor` = `C-vM p-value`
+      ) |>
+      dplyr::distinct()
+    
+  } else {
+    
+    # gera a tabela de seleção de modelos para dados de distância categorizados
+    tabela_selecao_funcao_deteccao_termo_ajuste <- selecao_funcao_deteccao_termo_ajuste |>
+      dplyr::select(!1) |>
+      dplyr::rename(
+        Modelo = `Key function`, 
+      ) |>
+      dplyr::distinct()
+    
+  }
   
   # retorna um data.frame com a selecao das funcoes de deteccao e termos
   # de ajuste
@@ -2732,32 +2751,56 @@ selecionar_funcao_deteccao_termo_ajuste <- function(
 #'
 #' @examples
 testar_bondade_ajuste <- function(
-    dados, 
+    dados,
     plot = FALSE,
     chisq = FALSE,
     nc = NULL,
-    breaks = NULL
-    ) {
+    intervalos_distancia = NULL
+) {
   
-  # gera uma lista com os resultados dos testes de bondade de ajuste
-  bondade_ajuste <- dados |> 
-    purrr::map(
-      \(x) gof_ds(
-        x, 
-        plot = plot, 
-        chisq = chisq,
-        nc = nc,
-        breaks = breaks
+  # controlar para a presença de dados binados
+  if (is.null(intervalos_distancia)) {
+    
+    # teste de bondade de ajuste com dados de distância contínuos
+    # gera uma lista com os resultados dos testes de bondade de ajuste para dados 
+    # não categorizados
+    bondade_ajuste <- dados |>
+      purrr::map(
+        \(x) Distance::gof_ds(
+          x,
+          plot = FALSE,
+          chisq = FALSE,
+          nc = NULL,
+          breaks = NULL
+        )
+      ) |>
+      # gerar o data.frame com os resultados dos testes de bondade de ajuste
+      purrr::map(
+        \(x) data.frame(x$dsgof$CvM)
+      ) |>
+      purrr::list_rbind() |>
+      dplyr::mutate(Modelo = names(dados)) |>
+      dplyr::relocate(Modelo, .before = W)
+    
+  } else{
+    
+    # teste de bondade de ajuste com dados de distância categorizados
+    # gera uma lista com os resultados dos testes de bondade de ajuste para dados 
+    # categorizados
+    bondade_ajuste <- dados |>
+      purrr::map(
+        \(x) Distance::gof_ds(
+          x,
+          plot = FALSE,
+          chisq = FALSE,
+          nc = NULL,
+          breaks = intervalos_distancia
+        )
       )
-    ) |> 
-    # gerar o data.frame com os resultados dos testes de bondade de ajuste
-    purrr::map(
-      \(x) data.frame(x$dsgof$CvM)
-    ) |> 
-    list_rbind() |> 
-    mutate(Modelo = names(dados)) |> 
-    relocate(Modelo, .before = W)
-  
+    # atribuir nomes aos itens da lista com os resultados dos testes de bondade de ajuste
+    names(bondade_ajuste) <- names(dados)
+    
+  }
   # retornar o data.frame com o resultado dos testes de bondade de ajuste
   return(bondade_ajuste)
 }
