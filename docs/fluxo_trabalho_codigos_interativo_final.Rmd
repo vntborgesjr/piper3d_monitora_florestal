@@ -658,24 +658,18 @@ observação, nos casos em que isso foi possível. De forma geral, as
 espécies com número satisfatório de ocorrências (\>60), apresentaram
 pico de observações próximos a zero.
 
-Nós usamos como modelo para este fluxo Dasyprocta croconota da Resex
-Tapajós-Arapiuns, pelo grande número de ocorrências para uma mesma UC.
-Nós implementamos duas estratégias para lidar com os efeitos indesejados
-nos dados: pico próximo a zero (*heaping near zero*) e número excessivo
-de repetições amostrais na mesma trilha. Para lidar com os picos,
-testamos o uso dos dados com distâncias exatas e distâncias agrupadas.
-Para lidar com as repetições, testamos a análise dos dados com todas as
-repetições e com o número de repetições reduzidas. Essas estratégias
-estão descritas em Fluxos 1-3. No primero fluxo, comentamos também as
-escolhas feitas e os resultados obtidos. Os demais fluxos são repetições
+Nós usamos como modelo para este fluxo os dados da cutia *Dasyprocta croconota* coletados na Resex
+Tapajós-Arapiuns entre 2014 e 2021, pelo grande número de ocorrências para uma mesma UC.
+Nós implementamos duas estratégias para lidar com os efeitos indesejados nos dados: pico próximo a zero, empilhamento e número excessivo de repetições amostrais na mesma trilha. 
+
+
+Para lidar com as repetições, testamos a análise dos dados com todas as repetições e com o número de repetições reduzidas. Para lidar com os picos, testamos o uso dos dados com distâncias exatas e distâncias agrupadas. Essas estratégias
+estão descritas nos Fluxos 1-3. No primero fluxo, comentamos também as escolhas feitas e os resultados obtidos. Os demais fluxos são repetições
 deste primeiro fluxo, porém com mudança na estrutura dos dados.
 
-Especies com maior numero de ocorrencias/UC possibilitam testar,
-posteriormente, estratificações nos dados, preservando um número de
-ocorrências satisfatório dentro dos estratos. Por isso começamos
-apresentando um fluxo completo de análise, incluindo Amostragem por
-Distância Convencional, Amostragem por Distância com Múltiplas
-Covariáveis e Amostragem por Distância com Estratificação nos dados com
+#REVISAR ESSE trecho no final
+Especies com maior numero de ocorrencias/UC possibilitam testar, posteriormente, estratificações nos dados, preservando um número de ocorrências satisfatório dentro dos estratos. Por isso começamos
+apresentando um fluxo completo de análise, incluindo Amostragem por Distância Convencional, Amostragem por Distância com Múltiplas Covariáveis e Amostragem por Distância com Estratificação nos dados com
 as espécies com maior número de ocorrência.
 
 ## Espécie Modelo - Dasyprocta croconota - Resex Tapajós Arapiuns
