@@ -1123,7 +1123,7 @@ plotar_funcao_deteccao_selecao_distancia_truncamento(cutia_tap_arap_quase_sem_re
 # ajustando a função de detecção uniforme para um truncamento de 10% dos dados
 cutia_tap_arap_quase_sem_repeticao_unif <- cutia_tap_arap_quase_sem_repeticao |> 
   ajustar_modelos_Distance(
-    funcao_chave = "uinf",
+    funcao_chave = "unif",
     truncamento = "10%")
 
 ```
@@ -1132,8 +1132,10 @@ cutia_tap_arap_quase_sem_repeticao_unif <- cutia_tap_arap_quase_sem_repeticao |>
 
 ```{r}
 # ajustando a função de detecção half-normal para um truncamento de 10% dos dados
-cutia_tap_arap_quase_sem_repeticao_hn <- cutia_tap_arap_quase_sem_repeticao |> 
-  ajuste_modelos_distance_hn(truncamento = "10%")
+cutia_tap_arap_quase_sem_repeticao_hn <- ajustar_modelos_Distance(
+    funcao_chave = "hn",
+    truncamento = "10%")
+
 ```
 
 ###### Hazard-rate sem termos de ajuste e com termos de ajuste
