@@ -384,7 +384,6 @@ formas de explorar todo o conjunto de dados.
 
 ## **Informações Gerais sobre o Banco de Dados**
 
-
 ### Total Unidades de Conservação amostradas
 
 ```{r n_de_ucs}
@@ -435,7 +434,6 @@ gerar_tabdin_n_obs_uc()
 plotar_n_obs_uc_interativo()
 ```
 
-
 ### Número de observações realizadas por UC em cada ano
 
 ```{r}
@@ -449,8 +447,6 @@ por ano em cada UC
 ```{r}
 gerar_tabdin_n_obs_uc_ano()
 ```
-
-
 
 ### Total de observações validadas por nível taxonômico
 
@@ -485,7 +481,6 @@ dados_selecionados <- carregar_dados_selecionados()
 gerar_tabdin_dados_selecionados()
 ```
 
-
 ### Total de espécies registradas
 
 ```{r}
@@ -495,32 +490,58 @@ n_sp
 
 Até aqui temos dados para `r n_sp` espécies.
 
+\##**Suficência Amostral**
 
-##**Suficência Amostral**
+\*\*Número de observações
 
-**Número de observações
-
-Para que o método de análise por distância possa ser utilizado para estimativas baseadas em modelos, são recomendadas quantidades mínimas de observações e de transectos (Unidades Amostrais). Segundo BUCKLAND et. al. (2015), O número mínimo sugerido de animais ou grupos é de **60 – 80 animais (ou grupos)** quando a amostragem é feita pelo método dos transectos lineares. É possível utilizar números menores que estes para realizar as análises, porém deve-se ter o cuidado de verificar se as funções de detecção estão bem modeladas. Estes números recomendados se aplicam a cada função de detecção a ser modelada. Assim, quando se pretende estratificar os dados, dividindo-os em subconjuntos, seja por região geográfica, seja por período amostral, é necessário ter um cuidado para que a suficiência amostral se mantenha dentro dos subconjuntos.
-
+Para que o método de análise por distância possa ser utilizado para
+estimativas baseadas em modelos, são recomendadas quantidades mínimas de
+observações e de transectos (Unidades Amostrais). Segundo BUCKLAND et.
+al. (2015), O número mínimo sugerido de animais ou grupos é de **60 --
+80 animais (ou grupos)** quando a amostragem é feita pelo método dos
+transectos lineares. É possível utilizar números menores que estes para
+realizar as análises, porém deve-se ter o cuidado de verificar se as
+funções de detecção estão bem modeladas. Estes números recomendados se
+aplicam a cada função de detecção a ser modelada. Assim, quando se
+pretende estratificar os dados, dividindo-os em subconjuntos, seja por
+região geográfica, seja por período amostral, é necessário ter um
+cuidado para que a suficiência amostral se mantenha dentro dos
+subconjuntos.
 
 **Réplicas e repetições**
 
-O número mínimo de **réplicas para os transectos deve ser de 10-20**, o que deve aumentar para espécies cujas populações são distribuídas em manchas BUCKLAND et. al. (2015). O número de réplicas reais para cada espécie é o número de transectos, que recebem os nomes das estações amostrais em cada Unidade de conservaçaõ.
+O número mínimo de **réplicas para os transectos deve ser de 10-20**, o
+que deve aumentar para espécies cujas populações são distribuídas em
+manchas BUCKLAND et. al. (2015). O número de réplicas reais para cada
+espécie é o número de transectos, que recebem os nomes das estações
+amostrais em cada Unidade de conservaçaõ.
 
-Um outro aspecto que é necessário observar é o número de repetições, que terá impacto tanto sobre o esforço quanto sobre a suficiência amostral. Uma das limitações dos dados do Programa Monitora é o pequeno número de réplicas por Unidade de Conservação e muitas repetições para as mesmas estações amostrais. O excesso de repetições, especialmente em um mesmo período amostral, compromete a premissa de independência entre as observações. Além disso, acaba tendo um efeito de inflar o esforço amostral e a área coberta pela amostragem, o que prejudica as estimativas de densidade.
+Um outro aspecto que é necessário observar é o número de repetições, que
+terá impacto tanto sobre o esforço quanto sobre a suficiência amostral.
+Uma das limitações dos dados do Programa Monitora é o pequeno número de
+réplicas por Unidade de Conservação e muitas repetições para as mesmas
+estações amostrais. O excesso de repetições, especialmente em um mesmo
+período amostral, compromete a premissa de independência entre as
+observações. Além disso, acaba tendo um efeito de inflar o esforço
+amostral e a área coberta pela amostragem, o que prejudica as
+estimativas de densidade.
 
-Apenas para ilustar, para os dados da cutia *Dasyprocta croconota* da Resex Tapajós-Arapinuns, a Estação Amostral
-Boim foi percorrida durante 70 dias de amostragem. Isso significa que
-ajustando o comprimento do transecto de 5 km pelo número de repetições,
-o esforço amostral passou para 350 km. A área coberta aumentou em 70x, o
-que terá consequências sobre a estimativa densidade, que tenderá a ser
-subestimada. Além disso, o coeficiente de variação das estimativas de
-taxa de encontro, abundância e densidade também tenderão a aumentar pelo
-efeito da variações temporais entre as amostragens. 
+Apenas para ilustar, para os dados da cutia *Dasyprocta croconota* da
+Resex Tapajós-Arapinuns, a Estação Amostral Boim foi percorrida durante
+70 dias de amostragem. Isso significa que ajustando o comprimento do
+transecto de 5 km pelo número de repetições, o esforço amostral passou
+para 350 km. A área coberta aumentou em 70x, o que terá consequências
+sobre a estimativa densidade, que tenderá a ser subestimada. Além disso,
+o coeficiente de variação das estimativas de taxa de encontro,
+abundância e densidade também tenderão a aumentar pelo efeito da
+variações temporais entre as amostragens.
 
-Para lidar com o excesso de repetições, implementamos um fluxo de trabalho onde reduzimos o número de repetições, mantendo somente um dia de amostragem com o maior número de observações para cada período amostral (Parte V, Fluxo 2).
+Para lidar com o excesso de repetições, implementamos um fluxo de
+trabalho onde reduzimos o número de repetições, mantendo somente um dia
+de amostragem com o maior número de observações para cada período
+amostral (Parte V, Fluxo 2).
 
-### **Número de observações
+### \*\*Número de observações
 
 #### Número total de observações por espécie
 
@@ -557,7 +578,6 @@ n_obs_sp_uc
 ```{r}
 gerar_tabdin_n_obs_sp_uc()
 ```
-
 
 #### Número de observações para cada espécies por ano
 
@@ -610,24 +630,51 @@ gerar_tabdin_n_obs_sp_uc_estacao_ano()
 
 ####Número de repetições por estação amostral por UC para cada espécie
 
-####Número de repetições por estação amostral por UC para cada espécie por ano
+####Número de repetições por estação amostral por UC para cada espécie
+por ano
 
-####Número de repetições por estação amostral por UC para cada espécie por períod amostral (estações do ano/ano)
+####Número de repetições por estação amostral por UC para cada espécie
+por períod amostral (estações do ano/ano)
 
+## **Distribuição das frequências de observações pela distância**
 
+Algumas situações amostrais podem levar a efeitos indesejados na
+distribuição dos dados, comentadas a seguir. Para explorar a
+distribuição dos dados recomendamos também o uso do
+`app_distanca_interativo.R` em `piper3d_monitora_florestal\apps`.
 
-## **Distribuição de distâncias**
+Empilhamento das observações (heaping) -- ocorre quando valores das
+distâncias perpendiculares são arredondados. O efeito é um acúmulo de
+observações sobre a mesma distância, que corresponde a um valor redondo.
+Um tipo específico de empilhamento é quando ele se dá sobre a distância
+zero, também chamado de pico próximo a distância zero (spike near zero
+distance). Esse tipo de efeito foi observado com frequência nos dados do
+Programa Monitora. Uma das estratégias para redução dos efeitos de
+empilhamento é agrupar os dados de distância em intervalos.
+Implementamos essa estratégia na Parte V -- Fluxo 3.
 
-Algumas situações amostrais podem levar a efeitos indesejados na distribuição dos dados, comentadas a seguir. Para explorar a distribuição dos dados recomendamos também o uso do app distanca_interativo.R na pasta ‘apps’.
+Movimento de resposta ao observador -- os animais podem ser repelidos ou
+atraídos pelo observador. Para animais que apresentam resposta de fuga
+em relação ao observador o efeito no histograma de frequências é um
+aumento nas observações em distâncias intermediárias. Para animais que
+são atraídos pelo observador, a tendência é de um aumento nas
+observações nas distâncias próximas a zero, o que também pode gerar o
+padrão de pico próximo a zero. O efeito desse viés sobre as observações
+é enviesar também os modelos ajustados (formato da curva), as
+probabilidades de deteção e abundâncias estimadas em cada faixa de
+distância.
 
-Empilhamento das observações (heaping) – ocorre quando valores das distâncias perpendiculares são arredondados. O efeito é um acúmulo de observações sobre a mesma distância, que corresponde a um valor redondo. Um tipo específico de empilhamento é quando ele se dá sobre a distância zero, também chamado de pico próximo a distância zero (spike near zero distance). Esse tipo de efeito foi observado com frequência nos dados do Programa Monitora. Uma das estratégias para redução dos efeitos de empilhamento é agrupar os dados de distância em intervalos. Implementamos essa estratégia na Parte V – Fluxo 3.
+Superdispersão -- é um efeito causado quando as observações não são
+independentes, como no caso das repetições em um mesmo transecto. O
+efeito no histograma são picos em algumas distâncias ou reduções
+abruptas em outras (Figura X). O excesso de repetições também foi uma
+limitação encontrada nos dados do Programa Monitora. Implementamos uma
+estratégia para reduzir o número de repetições mantendo somente a data
+com o maior número de observações por período amostral na Parte V -
+Fluxo 2.
 
-Movimento de resposta ao observador – os animais podem ser repelidos ou atraídos pelo observador. Para animais que apresentam resposta de fuga em relação ao observador o efeito no histograma de frequências é um aumento nas observações em distâncias intermediárias. Para animais que são atraídos pelo observador, a tendência é de um aumento nas observações nas distâncias próximas a zero, o que também pode gerar o padrão de pico próximo a zero. O efeito desse viés sobre as observações é enviesar também os modelos ajustados (formato da curva), as probabilidades de deteção e abundâncias estimadas em cada faixa de distância.
-
-Superdispersão – é um efeito causado quando as observações não são independentes, como no caso das repetições em um mesmo transecto. O efeito no histograma são picos em algumas distâncias ou reduções abruptas em outras (Figura X). O excesso de repetições também foi uma limitação encontrada nos dados do Programa Monitora. Implementamos uma estratégia para reduzir o número de repetições mantendo somente a data com o maior número de observações por período amostral na Parte V - Fluxo 2.
-
-Para maiores detalhes, ver figuras no Material de Suporte de Aspectos Teóricos.
-
+Para maiores detalhes, ver figuras no Material de Suporte de Aspectos
+Teóricos.
 
 ```{r distribuicao_dsitancia, warning=FALSE}
 # gerar o gráfico exploratório da distribuição de distâncias perpendiculares para a espécies Dasyrocta croconota na Resex Tapajós-Arapiuns
@@ -639,11 +686,24 @@ fig <- dados_filtrados |>
 fig
 ```
 
-## INCLUIR **Distriubuição das covariáveis**
+## INCLUIR **Distriubuição das covariáveis pela distância**
 
-Uma boa escolha de covariáveis passa por um bom processo exploratório dos dados. É importante avaliar como fatores ambientais ou amostrais podem influenciar de forma significativa a detectabilidade dos animais. Para avaliar esse possível efeito, é necessário olhar a distribuição das covariáveis em relação à distância. Se houver viés das covariáveis em relação á distância, é possível que estejam influenciando na detectabilidade também. Por exemplo, se a atividade de um animal é influenciada pelo horário, é possível que ele seja detectado com maior frequência em distãncias maiores no seu horário de maior atividade.
+Uma boa escolha de covariáveis passa por um bom processo exploratório
+dos dados. É importante avaliar como fatores ambientais ou amostrais
+podem influenciar de forma significativa a detectabilidade dos animais.
+Para avaliar esse possível efeito, é necessário olhar a distribuição das
+covariáveis em relação à distância. Se houver viés das covariáveis em
+relação á distância, é possível que estejam influenciando na
+detectabilidade também. Por exemplo, se a atividade de um animal é
+influenciada pelo horário, é possível que ele seja detectado com maior
+frequência em distãncias maiores no seu horário de maior atividade.
 
-Para os dados do Programa Monitora, uma das principais covariáveis a ser considerada é o tamanho do grupo (s, que deve ser chamada de size para o pacote Distance). Um dos efeitos esperados para espécies que formam grupos é o chamado viés de tamanho. A tendência é que a pequenas distâncias todos os grupos sejam detectáveis, mas somente os grupos maiores serão detectados a distâncias maiores.
+Para os dados do Programa Monitora, uma das principais covariáveis a ser
+considerada é o tamanho do grupo (s, que deve ser chamada de size para o
+pacote Distance). Um dos efeitos esperados para espécies que formam
+grupos é o chamado viés de tamanho. A tendência é que a pequenas
+distâncias todos os grupos sejam detectáveis, mas somente os grupos
+maiores serão detectados a distâncias maiores.
 
 # **PARTE V -- Ajustando os modelos**
 
@@ -652,33 +712,48 @@ Para os dados do Programa Monitora, uma das principais covariáveis a ser consid
 A seguir, apresentamos o fluxo de análise dos dados que envolve a fase
 exploratória, truncamento, ajuste e avaliação de modelos e estimativas
 de abundância e densidade para as espécies que selecionamos como modelo.
-Usamos como critérios de seleção tanto o número de ocorrências por
+Usamos como critérios de seleção tanto o número de observações por
 Unidade de Conservação quanto a distribuição das frequências de
 observação, nos casos em que isso foi possível. De forma geral, as
-espécies com número satisfatório de ocorrências (\>60), apresentaram
+espécies com número satisfatório de observações (\>60), apresentaram
 pico de observações próximos a zero.
 
-Nós usamos como modelo para este fluxo os dados da cutia *Dasyprocta croconota* coletados na Resex
-Tapajós-Arapiuns entre 2014 e 2021, pelo grande número de ocorrências para uma mesma UC.
-Nós implementamos duas estratégias para lidar com os efeitos indesejados nos dados: pico próximo a zero, empilhamento e número excessivo de repetições amostrais na mesma trilha. 
+Nós usamos como modelo para este fluxo os dados da cutia *Dasyprocta
+croconota* coletados na Resex Tapajós-Arapiuns entre 2014 e 2021, pelo
+grande número de observações para uma mesma UC. Nós implementamos duas
+estratégias para lidar com os efeitos indesejados nos dados: pico
+próximo a zero, empilhamento e número excessivo de repetições amostrais
+na mesma trilha.
 
+Para lidar com as repetições, testamos a análise dos dados com todas as
+repetições e com o número de repetições reduzidas. Para lidar com os
+picos, testamos o uso dos dados com distâncias exatas e distâncias
+agrupadas. Essas estratégias estão descritas nos Fluxos 1-3. No primero
+fluxo, comentamos também as escolhas feitas e os resultados obtidos. Os
+demais fluxos são repetições deste primeiro fluxo, porém com mudança na
+estrutura dos dados.
 
-Para lidar com as repetições, testamos a análise dos dados com todas as repetições e com o número de repetições reduzidas. Para lidar com os picos, testamos o uso dos dados com distâncias exatas e distâncias agrupadas. Essas estratégias
-estão descritas nos Fluxos 1-3. No primero fluxo, comentamos também as escolhas feitas e os resultados obtidos. Os demais fluxos são repetições
-deste primeiro fluxo, porém com mudança na estrutura dos dados.
-
-#REVISAR ESSE trecho no final
-Especies com maior numero de ocorrencias/UC possibilitam testar, posteriormente, estratificações nos dados, preservando um número de ocorrências satisfatório dentro dos estratos. Por isso começamos
-apresentando um fluxo completo de análise, incluindo Amostragem por Distância Convencional, Amostragem por Distância com Múltiplas Covariáveis e Amostragem por Distância com Estratificação nos dados com
-as espécies com maior número de ocorrência.
+#REVISAR ESSE trecho no final 
+Especies com maior numero de
+observações/UC possibilitam testar, posteriormente, estratificações nos
+dados, preservando um número de observações satisfatório dentro dos
+estratos. Por isso começamos apresentando um fluxo completo de análise,
+incluindo Amostragem por Distância Convencional, Amostragem por
+Distância com Múltiplas Covariáveis e Amostragem por Distância com
+Estratificação nos dados com as espécies com maior número de observações.
+Por isso, selecionamos como modelo a espécie com o maior número de
+observações para uma mesma UC e a terceira com o maior número de total de
+observações.
 
 ## Espécie Modelo - Dasyprocta croconota - Resex Tapajós Arapiuns
 
 ![Fonte: biolib.cz](https://www.biolib.cz/IMG/GAL/BIG/205849.jpg)
 
-Essa é a espécie com o mair número de ocorrências para uma mesma UC.
+Essa é a espécie com o mair número de observações para uma mesma UC.
 Apresentou, como a maioria das espécies em diferentes UCs, um pico de
-ocorrências próximo a zero.
+observações próximo a zero. Também apresentou efeito de empilhamento
+sobrea as distâncias 5, 10, 15 e 20m, indicando que os dados foram
+arrendondados para essas distâncias.
 
 ### Carregar Dados
 
@@ -702,16 +777,14 @@ cutia_tap_arap
 
 #### Fluxo 1 - Distâncias exatas com todas as repetições
 
-##### Plotando o histograma das frequências de ocorrência pela distância
+##### Plotando o histograma das frequências de observações pela distância
 
-O histograma interativo está disponível no app em Shiny
-`app_distancia_interativo.R`. A distribuição dos dados no histograma
-permite observar um pico de observações próximo a zero, além de uma
-considerável perda em detectabilidade a partir dos 20m. Vamos testar
-diferentes proporções de truncamento. É possível alterar a binagem dos
-histogramas através do argumento `largura_caixa`. Neste exemplo
-ajustamos para 1, o que facilita a observação de picos de detecação e
-efeitos de *heaping* nos dados.
+O histograma interativo está disponível no aplicativo em Shiny
+`app_distancia_interativo.R` em `piper3d_monitora_florestal\apps`. 
+
+A distribuição dos dados no histograma permite observar um pico de observações próximo a zero, assim como picos de observação em 5, 10, 15 e 20m, além de uma considerável perda em
+detectabilidade a partir dos 20m. É possível alterar a binagem dos histogramas através do argumento `largura_caixa`. Neste exemplo ajustamos para 1, o que facilita a observação de picos de detecação e efeitos de *heaping* nos dados.
+
 
 ```{r, fig.height=15, fig.width=10, warning=FALSE}
 cutia_tap_arap |> 
@@ -719,17 +792,13 @@ cutia_tap_arap |>
 plotar_distribuicao_distancia_interativo(largura_caixa = 1)
 ```
 
+Para eliminar as observações feitas a distâncias com baixa detectabilidade, vamos testar diferentes proporções de
+truncamento.
+
 ##### Testando distância de truncamento (*w*)
 
-Vamos explorar diferentes distâncias de truncamento para um mesmo modelo
-de distribuição half-normal. Optamos por truncar os dados pela
-percentagem para padronizar a rotina para diferentes espécies. Buckland
-et al. (2001) sugere um corte entre 5-10% das observações detectadas nas
-maiores distãncias. Vamos selecionar o valor de corte pelo modelo com
-melhor ajuste. Para os dados, testamos as seguintes proporções de corte
-de dados: 5, 10, 15, 20 e 25% das observações mais distantes. Geramos
-uma tabela comparando os modelos e também plotamos os gráficos dos
-modelos ajustados para os dados truncados.
+Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de função chave com distribuição half-normal. Optamos por truncar os dados pela percentagem para padronizar a rotina para diferentes espécies. Buckland et al. (2001) sugere um corte entre 5-10% das observações detectadas nas maiores distãncias. Vamos selecionar o valor de corte pelo modelo com
+melhor ajuste. Para automatizar a avaliação da truncagem para qualquer conjunto de dados, implementamos no código o teste para as seguintes proporções de corte: 5, 10, 15, 20 e 25% das observações mais distantes. Geramos uma tabela comparando os modelos e também plotamos os gráficos dos modelos ajustados para os dados truncados.
 
 ###### Tabela com resumo comparativo dos modelos
 
@@ -740,6 +809,8 @@ cutia_tap_arap_dist_trunc <- cutia_tap_arap |>
 
 cutia_tap_arap_dist_trunc$selecao
 ```
+
+Os critérios de ajuste dos modelos servem aqui como uma informação complementar, mas não serão decisivos na escolha da distância de truncamento. Naturalmente, eliminando os dados das distãncias de menor detectabilidade, os modelos tendem a ter um melhor ajuste pela menor variabilidade dos dados. Além disso, nesse caso os valores de deltaAIC serão sempre zero, pois não é possível comparar valores de AIC para conjuntos de dados diferentes (nesse caso os dados diferem em número de observações).
 
 ###### Plotando o histograma com os dados truncados.
 
@@ -967,7 +1038,7 @@ cutia_tap_arap_quase_sem_repeticao <- transforma_para_dsitanceR_quase_sem_repeti
 cutia_tap_arap_quase_sem_repeticao
 ```
 
-##### Plotando o histograma das frequências de ocorrência pela distância
+##### Plotando o histograma das frequências de observações pela distância
 
 ```{r, fig.height=15, fig.width=10}
 cutia_tap_arap_quase_sem_repeticao |> 
@@ -1114,14 +1185,14 @@ removendo 10% das observações nas maiores distâncias, o que significa
 que aproveitaremos as observações feitas até 15m de distância do
 observador.
 
-##### Plotando o histograma das frequências de ocorrência pela distância
+##### Plotando o histograma das frequências de observações pela distância
 
-O histograma interativo está disponível no app em Shiny
-`app_distancia_interativo.R`.
+O histograma interativo está disponível no aplicativo em Shiny
+`app_distancia_interativo.R`em `piper3d_monitora_florestal\apps`.
 
 Aqui, plotamos quatro histogramas com binagens diferentes, para observar
 o efeito de agrupar os dados sobre as distribuições das frequências de
-ocorrência nos histogramas.
+observações nos histogramas.
 
 ```{r, fig.height=15, fig.width=10}
 cutia_tap_arap |> 
