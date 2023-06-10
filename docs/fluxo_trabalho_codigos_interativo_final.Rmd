@@ -902,7 +902,9 @@ corte dos dados quanto em valor de distãncia.
 ```{r}
 # ajustando a função de detecção uniforme para um truncamento de 10% dos dados
 cutia_tap_arap_unif <- cutia_tap_arap |> 
-  ajuste_modelos_distance_unif(truncamento = "10%")
+  ajustar_modelos_Distance(
+    funcao_chave = "unif",
+    truncamento = "10%")
 
 ```
 
@@ -923,7 +925,9 @@ dos modelos.
 ```{r}
 # ajustando a função de detecção half-normal para um truncamento de 10% dos dados
 cutia_tap_arap_hn <- cutia_tap_arap |> 
-  ajuste_modelos_distance_hn(truncamento = "10%")
+  ajustar_modelos_Distance(
+    funcao_chave = "hn",
+    truncamento = "10%")
 ```
 
 Neste caso, o modelo selecionado pelo Distance foi o Half-normal sem
@@ -934,7 +938,9 @@ nenhum termo de ajuste.
 ```{r}
 # ajustando a função de detecção hazard-rate para um truncamento de 10% dos dados
 cutia_tap_arap_hr <- cutia_tap_arap |> 
-  ajuste_modelos_distance_hr(truncamento = "10%")
+  ajustar_modelos_Distance(
+    funcao_chave = "hr",
+    truncamento = "10%")
 ```
 
 Aqui o melhor modelo selecionado pelo Distance foi o Hazard-rate sem os
@@ -1020,7 +1026,12 @@ dos dados.
 ###### Teste de bondade de ajuste dos modelos e Q-Q plots
 
 ```{r}
-bondade_ajuste_fluxo1 <- testar_bondade_ajuste(fluxo1_modelos_selecionados, plot = TRUE)
+bondade_ajuste_fluxo1 <- testar_bondade_ajuste(fluxo1_modelos_selecionados, 
+  plot = TRUE,
+  chisq = TRUE, 
+  intervalos_distancia  =  NULL
+)
+
 bondade_ajuste_fluxo1
 ```
 
@@ -1132,7 +1143,8 @@ cutia_tap_arap_quase_sem_repeticao_unif <- cutia_tap_arap_quase_sem_repeticao |>
 
 ```{r}
 # ajustando a função de detecção half-normal para um truncamento de 10% dos dados
-cutia_tap_arap_quase_sem_repeticao_hn <- ajustar_modelos_Distance(
+cutia_tap_arap_quase_sem_repeticao_hn <- cutia_tap_arap_quase_sem_repeticao |> 
+  ajustar_modelos_Distance(
     funcao_chave = "hn",
     truncamento = "10%")
 
@@ -1141,9 +1153,12 @@ cutia_tap_arap_quase_sem_repeticao_hn <- ajustar_modelos_Distance(
 ###### Hazard-rate sem termos de ajuste e com termos de ajuste
 
 ```{r}
-# ajustando a função de detecção half-normal para um truncamento de 10% dos dados
+# ajustando a função de detecção hazard-rate para um truncamento de 10% dos dados
 cutia_tap_arap_quase_sem_repeticao_hr <- cutia_tap_arap_quase_sem_repeticao |> 
-  ajuste_modelos_distance_hr(truncamento = "10%")
+  ajustar_modelos_Distance(
+    funcao_chave = "hr",
+    truncamento = "10%")
+
 ```
 
 ##### Comparando os modelos
@@ -1306,10 +1321,15 @@ cutia_tap_arap_bin3 <- create_bins(
 
 Primeira Binagem
 
+Aqui, por conta da binagem, o truncamento deve ser expresso em distância. Para os dados que estamos trabalhando, o corte de 10% das observações mais distantes truncam os dados em 15m.
+
 ```{r}
 
 cutia_tap_arap_bin1_unif <- cutia_tap_arap_bin1 |> 
-  ajuste_modelos_distance_unif(truncamento = 15)
+  ajustar_modelos_Distance(
+    funcao_chave = "unif",
+    truncamento = 15)
+
 
 ```
 
@@ -1318,7 +1338,9 @@ Segunda binagem
 ```{r}
 
 cutia_tap_arap_bin2_unif <- cutia_tap_arap_bin2 |> 
-  ajuste_modelos_distance_unif(truncamento = 15)
+  ajustar_modelos_Distance(
+    funcao_chave = "unif",
+    truncamento = 15)
 
 ```
 
@@ -1327,7 +1349,9 @@ Terceira binagem
 ```{r}
 
 cutia_tap_arap_bin3_unif <- cutia_tap_arap_bin3 |> 
-  ajuste_modelos_distance_unif(truncamento = 15)
+  ajustar_modelos_Distance(
+    funcao_chave = "unif",
+    truncamento = 15)
 
 ```
 
@@ -1338,7 +1362,9 @@ Primeira binagem
 ```{r}
 
 cutia_tap_arap_bin1_hn <- cutia_tap_arap_bin1 |> 
-  ajuste_modelos_distance_hn(truncamento = 15)
+  ajustar_modelos_Distance(
+    funcao_chave = "hn",
+    truncamento = 15)
 
 ```
 
@@ -1347,7 +1373,9 @@ Segunda binagem
 ```{r}
 
 cutia_tap_arap_bin2_hn <- cutia_tap_arap_bin2 |> 
-  ajuste_modelos_distance_hn(truncamento = 15)
+  ajustar_modelos_Distance(
+    funcao_chave = "hn",
+    truncamento = 15)
 
 ```
 
@@ -1356,7 +1384,9 @@ Terceira binagem
 ```{r}
 
 cutia_tap_arap_bin3_hn <- cutia_tap_arap_bin3 |> 
-  ajuste_modelos_distance_hn(truncamento = 15)
+  ajustar_modelos_Distance(
+    funcao_chave = "hn",
+    truncamento = 15)
 
 ```
 
@@ -1367,7 +1397,9 @@ Primeira binagem
 ```{r}
 
 cutia_tap_arap_bin1_hr <- cutia_tap_arap_bin1 |> 
-  ajuste_modelos_distance_hr(truncamento = 15)
+  ajustar_modelos_Distance(
+    funcao_chave = "hr",
+    truncamento = 15)
 
 ```
 
@@ -1376,7 +1408,9 @@ Segunda binagem
 ```{r}
 
 cutia_tap_arap_bin2_hr <- cutia_tap_arap_bin2 |> 
-  ajuste_modelos_distance_hr(truncamento = 15)
+  ajustar_modelos_Distance(
+    funcao_chave = "hr",
+    truncamento = 15)
 
 ```
 
@@ -1385,7 +1419,9 @@ Terceira binagem
 ```{r}
 
 cutia_tap_arap_bin3_hr <- cutia_tap_arap_bin3 |> 
-  ajuste_modelos_distance_hr(truncamento = 15)
+  ajustar_modelos_Distance(
+    funcao_chave = "hr",
+    truncamento = 15)
 
 ```
 
@@ -1400,9 +1436,13 @@ fluxo3.1_lista_modelos_ajustados <- list(
   `uniforme` = cutia_tap_arap_bin1_unif
 )
 
-fluxo3.1_selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_termo_ajuste(fluxo3.1_lista_modelos_ajustados)
+fluxo3.1_selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_termo_ajuste(
+  dados = fluxo3.1_lista_modelos_ajustados, 
+  distancia_categorizada = TRUE
+)
 
 fluxo3.1_selecao_funcao_deteccao_termo_ajuste
+
 ```
 
 ```{r}
@@ -1412,7 +1452,10 @@ fluxo3.2_lista_modelos_ajustados <- list(
   `uniforme` = cutia_tap_arap_bin2_unif
 )
 
-fluxo3.2_selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_termo_ajuste(fluxo3.2_lista_modelos_ajustados)
+fluxo3.2_selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_termo_ajuste(
+  dados = fluxo3.2_lista_modelos_ajustados, 
+  distancia_categorizada = TRUE
+)
 
 fluxo3.2_selecao_funcao_deteccao_termo_ajuste
 ```
@@ -1424,7 +1467,10 @@ fluxo3.3_lista_modelos_ajustados <- list(
   `uniforme` = cutia_tap_arap_bin3_unif
 )
 
-fluxo3.3_selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_termo_ajuste(fluxo3.3_lista_modelos_ajustados)
+fluxo3.3_selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_termo_ajuste(
+  dados = fluxo3.3_lista_modelos_ajustados, 
+  distancia_categorizada = TRUE
+)
 
 fluxo3.3_selecao_funcao_deteccao_termo_ajuste
 ```
@@ -1434,6 +1480,7 @@ fluxo3.3_selecao_funcao_deteccao_termo_ajuste
 Primeira binagem
 
 ```{r}
+# Gráficos de ajuste das funções de deteção às probabilidades de deteção
 fluxo3.1_modelos_selecionados <- list(
   cutia_tap_arap_bin1_hn$`Cosseno`,
   cutia_tap_arap_bin1_unif$`Cosseno`,
@@ -1442,7 +1489,13 @@ fluxo3.1_modelos_selecionados <- list(
   cutia_tap_arap_bin1_hn$`Sem termo`
 )
 
+# atribuir o nome dos modelos aos itens da lista
+names(fluxo3.1_modelos_selecionados) <- fluxo3.1_selecao_funcao_deteccao_termo_ajuste$Modelo
+
+# plotar a probabilidade de detecção observada (barras) e a esperada (linhas e pontos)
 plotar_funcao_deteccao_modelos_selecionados(fluxo3.1_modelos_selecionados)
+
+
 ```
 
 Segunda binagem
@@ -1455,6 +1508,8 @@ fluxo3.2_modelos_selecionados <- list(
   cutia_tap_arap_bin2_unif$`Polinomial simples`,
   cutia_tap_arap_bin2_hn$`Sem termo`
 )
+
+names(fluxo3.1_modelos_selecionados) <- fluxo3.2_selecao_funcao_deteccao_termo_ajuste$Modelo
 
 plotar_funcao_deteccao_modelos_selecionados(fluxo3.2_modelos_selecionados)
 ```
@@ -1472,33 +1527,58 @@ fluxo3.3_modelos_selecionados <- list(
   cutia_tap_arap_bin3_hn$`Sem termo`
 )
 
+names(fluxo3.3_modelos_selecionados) <- fluxo3.1_selecao_funcao_deteccao_termo_ajuste$Modelo
+
+
 plotar_funcao_deteccao_modelos_selecionados(fluxo3.3_modelos_selecionados)
 ```
 
 ###### Teste de bondade de ajuste dos modelos e Q-Q plots
 
-Ainda estamos ajustando os outputs para os testes de bondade, pois a
-binagem um conflito com o formato de tabela definido pela função
-original.
 
 Primeira binagem
 
 ```{r, results='hide'}
-bondade_ajuste_fluxo3.1 <- testar_bondade_ajuste(fluxo3.1_modelos_selecionados, plot = TRUE, chisq = TRUE, breaks =  c(0, 1.5, 3, 4.5, 6, 7.5, 9, 10.5, 12, 13.5, 15))
+bondade_ajuste_fluxo3.1 <- testar_bondade_ajuste(fluxo3.1_modelos_selecionados,
+  plot = TRUE,
+  chisq = TRUE, 
+  intervalos_distancia =  seq(
+    from = 0,
+    to  = 15,
+    by = 1.5
+  )
+)
+
 bondade_ajuste_fluxo3.1
 ```
 
 Segunda binagem
 
-```{r, results='hide'}
-bondade_ajuste_fluxo3.2 <- testar_bondade_ajuste(fluxo3.2_modelos_selecionados)
+```{r}
+bondade_ajuste_fluxo3.2 <- testar_bondade_ajuste(fluxo3.2_modelos_selecionados,
+  plot = TRUE,
+  chisq = TRUE, 
+  intervalos_distancia =  
+    c(0, 1, 2.4, 3.8, 5.2, 6.6, 8, 9.4, 10.8, 12.2, 13.6, 15)
+  )
+
+
 bondade_ajuste_fluxo3.2
 ```
 
 Terceira binagem
 
-```{r, results='hide'}
-bondade_ajuste_fluxo3.3 <- testar_bondade_ajuste(fluxo3.3_modelos_selecionados)
+```{r}
+bondade_ajuste_fluxo3.3 <- testar_bondade_ajuste(fluxo3.3_modelos_selecionados,
+  plot = TRUE,
+  chisq = TRUE, 
+  intervalos_distancia =  seq(
+    from = 0,
+    to  = 15,
+    by = 2.5
+  )
+)
+
 bondade_ajuste_fluxo3.3
 ```
 
