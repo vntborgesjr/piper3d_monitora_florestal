@@ -2795,15 +2795,6 @@ selecionar_funcao_deteccao_termo_ajuste <- function(
   
 }
 
-# Documentacao da funcao testar_bondade_ajuste() --------------------------
-#' Title
-#'
-#' @param dados 
-#'
-#' @return
-#' @export
-#'
-#' @examples
 testar_bondade_ajuste <- function(
     dados,
     plot = FALSE,
@@ -2822,10 +2813,10 @@ testar_bondade_ajuste <- function(
       purrr::map(
         \(x) Distance::gof_ds(
           x,
-          plot = FALSE,
-          chisq = FALSE,
-          nc = NULL,
-          breaks = NULL
+          plot = plot,
+          chisq = chisq,
+          nc = nc,
+          breaks = intervalos_distancia
         )
       ) |>
       # gerar o data.frame com os resultados dos testes de bondade de ajuste
@@ -2845,9 +2836,9 @@ testar_bondade_ajuste <- function(
       purrr::map(
         \(x) Distance::gof_ds(
           x,
-          plot = FALSE,
-          chisq = FALSE,
-          nc = NULL,
+          plot = plot,
+          chisq = chisq,
+          nc = nc,
           breaks = intervalos_distancia
         )
       )
