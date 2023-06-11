@@ -18,15 +18,49 @@ editor_options:
 
 # **PARTE I -- Cuidados antes de começar a rodar os códigos no R**
 
-Para que o arquivo `fluxo_de_trabalho_codigos_interativo_final.Rmd`
-funcione de maneira adequada em sua máquina, você deve descompactar o
-arquivo `piper3D_monitora_florestal.zip`. Uma nova pasta com o mesmo
-nome será criada no diretório escolhido para executar a descompactação.
-Nela, você deverá clicar duas vezes sobre o ícone `Monitora.Rproj` para
-começar a executar os arquivos contidos no projeto. Ao realizar esse
-procedimento, você garantirá que seu diretório de trabalho esteja
-configurado como o diretório da pasta `piper3d_monitora_florestal`
-assegurando o funcionamento correto dos códigos contidos no projeto.
+##**Abrindo o Projeto `Monitora.Rproj`** 
+
+Para que o arquivo
+`fluxo_de_trabalho_codigos_interativo_final.Rmd` funcione de maneira
+adequada em sua máquina, você deve descompactar o arquivo
+`piper3D_monitora_florestal.zip`. Uma nova pasta com o mesmo nome será
+criada no diretório escolhido para executar a descompactação. Nela, você
+deverá clicar duas vezes sobre o ícone `Monitora.Rproj` para começar a
+executar os arquivos contidos no projeto. Ao realizar esse procedimento,
+você garantirá que seu diretório de trabalho esteja configurado como o
+diretório da pasta `piper3d_monitora_florestal` assegurando o
+funcionamento correto dos códigos contidos no projeto.
+
+## **Dicas sobre RMarkdown**
+
+Os códigos deste arquivo estão disponíveis em chunks, que podem ser
+rodados individualmente.
+
+Caso não queira rodar parte dos códigos, você pode bloquear os chunks
+através do argumento `eval=FALSE` na linha de comando dos chunks,
+conforme exemplo:
+
+```{r, eval=FALSE}
+```
+
+Caso não queira nem incluir os códigos no relatório resultante, nem
+rodar os códigos, você pode usar os argumentos `echo=FALSE` e
+`eval=FALSE` na linha de comando dos chunks, conforme exemplo:
+
+```{r, echo=FALSE, eval=FALSE}
+```
+
+Caso não queira que os resultados de algum código apareçam no relatório
+final, usar:
+
+```{r, results='hide'}
+```
+
+Caso queira omitir do relatório mensagens de avisos ou advertências,
+usar:
+
+```{r, message=FALSE, error=FALSE, warning=FALSE}
+```
 
 ## **Carregando as funções**
 
@@ -733,17 +767,16 @@ fluxo, comentamos também as escolhas feitas e os resultados obtidos. Os
 demais fluxos são repetições deste primeiro fluxo, porém com mudança na
 estrutura dos dados.
 
-#REVISAR ESSE trecho no final 
-Especies com maior numero de
+#REVISAR ESSE trecho no final Especies com maior numero de
 observações/UC possibilitam testar, posteriormente, estratificações nos
 dados, preservando um número de observações satisfatório dentro dos
 estratos. Por isso começamos apresentando um fluxo completo de análise,
 incluindo Amostragem por Distância Convencional, Amostragem por
 Distância com Múltiplas Covariáveis e Amostragem por Distância com
-Estratificação nos dados com as espécies com maior número de observações.
-Por isso, selecionamos como modelo a espécie com o maior número de
-observações para uma mesma UC e a terceira com o maior número de total de
-observações.
+Estratificação nos dados com as espécies com maior número de
+observações. Por isso, selecionamos como modelo a espécie com o maior
+número de observações para uma mesma UC e a terceira com o maior número
+de total de observações.
 
 ## Espécie Modelo - Dasyprocta croconota - Resex Tapajós Arapiuns
 
@@ -780,11 +813,14 @@ cutia_tap_arap
 ##### Plotando o histograma das frequências de observações pela distância
 
 O histograma interativo está disponível no aplicativo em Shiny
-`app_distancia_interativo.R` em `piper3d_monitora_florestal\apps`. 
+`app_distancia_interativo.R` em `piper3d_monitora_florestal\apps`.
 
-A distribuição dos dados no histograma permite observar um pico de observações próximo a zero, assim como picos de observação em 5, 10, 15 e 20m, além de uma considerável perda em
-detectabilidade a partir dos 20m. É possível alterar a binagem dos histogramas através do argumento `largura_caixa`. Neste exemplo ajustamos para 1, o que facilita a observação de picos de detecação e efeitos de *heaping* nos dados.
-
+A distribuição dos dados no histograma permite observar um pico de
+observações próximo a zero, assim como picos de observação em 5, 10, 15
+e 20m, além de uma considerável perda em detectabilidade a partir dos
+20m. É possível alterar a binagem dos histogramas através do argumento
+`largura_caixa`. Neste exemplo ajustamos para 1, o que facilita a
+observação de picos de detecação e efeitos de *heaping* nos dados.
 
 ```{r, fig.height=15, fig.width=10, warning=FALSE}
 cutia_tap_arap |> 
@@ -792,13 +828,22 @@ cutia_tap_arap |>
 plotar_distribuicao_distancia_interativo(largura_caixa = 1)
 ```
 
-Para eliminar as observações feitas a distâncias com baixa detectabilidade, vamos testar diferentes proporções de
-truncamento.
+Para eliminar as observações feitas a distâncias com baixa
+detectabilidade, vamos testar diferentes proporções de truncamento.
 
 ##### Testando distância de truncamento (*w*)
 
-Vamos explorar diferentes distâncias de truncamento para um mesmo modelo de função chave com distribuição half-normal. Optamos por truncar os dados pela percentagem para padronizar a rotina para diferentes espécies. Buckland et al. (2001) sugere um corte entre 5-10% das observações detectadas nas maiores distãncias. Vamos selecionar o valor de corte pelo modelo com
-melhor ajuste. Para automatizar a avaliação da truncagem para qualquer conjunto de dados, implementamos no código o teste para as seguintes proporções de corte: 5, 10, 15, 20 e 25% das observações mais distantes. Geramos uma tabela comparando os modelos e também plotamos os gráficos dos modelos ajustados para os dados truncados.
+Vamos explorar diferentes distâncias de truncamento para um mesmo modelo
+de função chave com distribuição half-normal. Optamos por truncar os
+dados pela percentagem para padronizar a rotina para diferentes
+espécies. Buckland et al. (2001) sugere um corte entre 5-10% das
+observações detectadas nas maiores distãncias. Vamos selecionar o valor
+de corte pelo modelo com melhor ajuste. Para automatizar a avaliação da
+truncagem para qualquer conjunto de dados, implementamos no código o
+teste para as seguintes proporções de corte: 5, 10, 15, 20 e 25% das
+observações mais distantes. Geramos uma tabela comparando os modelos e
+também plotamos os gráficos dos modelos ajustados para os dados
+truncados.
 
 ###### Tabela com resumo comparativo dos modelos
 
@@ -810,7 +855,14 @@ cutia_tap_arap_dist_trunc <- cutia_tap_arap |>
 cutia_tap_arap_dist_trunc$selecao
 ```
 
-Os critérios de ajuste dos modelos servem aqui como uma informação complementar, mas não serão decisivos na escolha da distância de truncamento. Naturalmente, eliminando os dados das distãncias de menor detectabilidade, os modelos tendem a ter um melhor ajuste pela menor variabilidade dos dados. Além disso, nesse caso os valores de deltaAIC serão sempre zero, pois não é possível comparar valores de AIC para conjuntos de dados diferentes (nesse caso os dados diferem em número de observações).
+Os critérios de ajuste dos modelos servem aqui como uma informação
+complementar, mas não serão decisivos na escolha da distância de
+truncamento. Naturalmente, eliminando os dados das distãncias de menor
+detectabilidade, os modelos tendem a ter um melhor ajuste pela menor
+variabilidade dos dados. Além disso, nesse caso os valores de deltaAIC
+serão sempre zero, pois não é possível comparar valores de AIC para
+conjuntos de dados diferentes (nesse caso os dados diferem em número de
+observações).
 
 ###### Plotando o histograma com os dados truncados.
 
@@ -832,18 +884,15 @@ modelos para 5% as funções de deteção tendem a zero nos últimos
 intervalos de distância. O corte de 10% das observações mais distantes
 resultou em uma distância de truncamento de 15m.
 
-##### Ajustando diferentes modelos de funções de deteção
+##### Ajustando diferentes modelos de funções de detecção
 
 As funções de deteção são ajustadas através da função `ds()` no pacote
-Distence para o R. Para otimizar o fluxo de ajuste de funções,
-empacotamos as diferentes combinações de funções chave e termos de
-ajustes em três funções. São elas: `ajuste_modelos_distance_unif()`,
-para distribuição uniforme sem termos de ajuste e com termos de ajuste
-do tipo cosseno e polinomial simples, `ajuste_modelos_distance_hn()`
-para distribuição half-normal sem termos de ajuste e com termos de
-ajuste do tipo cosseno e polinomial de hermite; e
-`ajuste_modelos_distance_hr()` para distribuição hazard-rate sem termos
-de ajuste e com termos de ajuste do tipo cosseno e polinomial simples.
+Distence para o R. Para otimizar o fluxo de ajuste de diferentes modelos
+de função de detecção, empacotamos as diferentes combinações de funções
+chave (uniforme, half-normal e hazard-rate) e termos de ajustes
+(cosseno, polinomial simples e polinomial de Hermite) na função
+´ajustar_modelos_distance()`.
+
 Para definir a distância de truncamento dos dados é necessário fornecer
 o argumento `truncamento`, que pode ser definido tanto em percentagem de
 corte dos dados quanto em valor de distãncia.
@@ -853,7 +902,9 @@ corte dos dados quanto em valor de distãncia.
 ```{r}
 # ajustando a função de detecção uniforme para um truncamento de 10% dos dados
 cutia_tap_arap_unif <- cutia_tap_arap |> 
-  ajuste_modelos_distance_unif(truncamento = "10%")
+  ajustar_modelos_Distance(
+    funcao_chave = "unif",
+    truncamento = "10%")
 
 ```
 
@@ -865,7 +916,7 @@ detecção não é estritamente monotônica avisam que os dados não foram
 constrangidos para a monotonicidade. Isso porque o uso de termos de
 ajustes, especialmente de ordens acima de 2, podem levar à perda da
 monotonidade (a curva pode se tornar crescente em algum momento, o que
-não é desejado). É preciso avaliar se a fala desse constragimento levou
+não é desejado). É preciso avaliar se a falta desse constragimento levou
 efetivamente à perda da monotonicidade ao olhar os gráficos de ajuste
 dos modelos.
 
@@ -874,7 +925,9 @@ dos modelos.
 ```{r}
 # ajustando a função de detecção half-normal para um truncamento de 10% dos dados
 cutia_tap_arap_hn <- cutia_tap_arap |> 
-  ajuste_modelos_distance_hn(truncamento = "10%")
+  ajustar_modelos_Distance(
+    funcao_chave = "hn",
+    truncamento = "10%")
 ```
 
 Neste caso, o modelo selecionado pelo Distance foi o Half-normal sem
@@ -885,13 +938,15 @@ nenhum termo de ajuste.
 ```{r}
 # ajustando a função de detecção hazard-rate para um truncamento de 10% dos dados
 cutia_tap_arap_hr <- cutia_tap_arap |> 
-  ajuste_modelos_distance_hr(truncamento = "10%")
+  ajustar_modelos_Distance(
+    funcao_chave = "hr",
+    truncamento = "10%")
 ```
 
 Aqui o melhor modelo selecionado pelo Distance foi o Hazard-rate sem os
 termos de ajuste. Nesse caso, também há um *warning* para o problema na
 distribuição dos dados, que apresentam um pico próximo a distância zero
-e não são bem ajustados pelo hazard-hate.
+e não são bem ajustados pelo modelo hazard-hate.
 
 ##### Comparando os modelos
 
@@ -927,6 +982,7 @@ AIC foi o hazard-rate. O ajuste do Cramér-von Mises foi
 consideravelmente maior que os demais (para esse tipo de teste, quanto
 maior o valor de p, melhor o ajuste), assim como as diferenças no delta
 AIC foram bastante elevadas.
+
 
 ###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
 
@@ -970,7 +1026,12 @@ dos dados.
 ###### Teste de bondade de ajuste dos modelos e Q-Q plots
 
 ```{r}
-bondade_ajuste_fluxo1 <- testar_bondade_ajuste(fluxo1_modelos_selecionados, plot = TRUE)
+bondade_ajuste_fluxo1 <- testar_bondade_ajuste(fluxo1_modelos_selecionados, 
+  plot = TRUE,
+  chisq = TRUE, 
+  intervalos_distancia  =  NULL
+)
+
 bondade_ajuste_fluxo1
 ```
 
@@ -1065,14 +1126,16 @@ plotar_funcao_deteccao_selecao_distancia_truncamento(cutia_tap_arap_quase_sem_re
 
 ```
 
-##### Ajustando diferentes modelos de funções de deteção
+##### Ajustando diferentes modelos de funções de detecção
 
 ###### Uniforme + Cosseno
 
 ```{r}
 # ajustando a função de detecção uniforme para um truncamento de 10% dos dados
 cutia_tap_arap_quase_sem_repeticao_unif <- cutia_tap_arap_quase_sem_repeticao |> 
-  ajuste_modelos_distance_unif(truncamento = "10%")
+  ajustar_modelos_Distance(
+    funcao_chave = "unif",
+    truncamento = "10%")
 
 ```
 
@@ -1081,15 +1144,21 @@ cutia_tap_arap_quase_sem_repeticao_unif <- cutia_tap_arap_quase_sem_repeticao |>
 ```{r}
 # ajustando a função de detecção half-normal para um truncamento de 10% dos dados
 cutia_tap_arap_quase_sem_repeticao_hn <- cutia_tap_arap_quase_sem_repeticao |> 
-  ajuste_modelos_distance_hn(truncamento = "10%")
+  ajustar_modelos_Distance(
+    funcao_chave = "hn",
+    truncamento = "10%")
+
 ```
 
 ###### Hazard-rate sem termos de ajuste e com termos de ajuste
 
 ```{r}
-# ajustando a função de detecção half-normal para um truncamento de 10% dos dados
+# ajustando a função de detecção hazard-rate para um truncamento de 10% dos dados
 cutia_tap_arap_quase_sem_repeticao_hr <- cutia_tap_arap_quase_sem_repeticao |> 
-  ajuste_modelos_distance_hr(truncamento = "10%")
+  ajustar_modelos_Distance(
+    funcao_chave = "hr",
+    truncamento = "10%")
+
 ```
 
 ##### Comparando os modelos
@@ -1108,7 +1177,7 @@ fluxo2_selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_termo_
 fluxo2_selecao_funcao_deteccao_termo_ajuste
 ```
 
-###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
+###### Gráficos de ajuste das funções de detecção às probabilidades de detecção
 
 ```{r}
 # gerar uma lista com os modelos selecionados ordenados do melhor para o pior modelo
@@ -1131,7 +1200,11 @@ plotar_funcao_deteccao_modelos_selecionados(fluxo2_modelos_selecionados)
 ###### Teste de bondade de ajuste dos modelos e Q-Q plots
 
 ```{r}
-bondade_ajuste_fluxo2 <- testar_bondade_ajuste(fluxo2_modelos_selecionados, plot = TRUE)
+bondade_ajuste_fluxo2 <- testar_bondade_ajuste(fluxo2_modelos_selecionados, 
+  plot = TRUE,
+  chisq = TRUE, 
+  intervalos_distancia  =  NULL
+)
 bondade_ajuste_fluxo2
 ```
 
@@ -1242,16 +1315,21 @@ cutia_tap_arap_bin3 <- create_bins(
 )
 ```
 
-##### Ajustando diferentes modelos de funções de deteção
+##### Ajustando diferentes modelos de funções de detecção
 
 ###### Uniforme + Cosseno
 
 Primeira Binagem
 
+Aqui, por conta da binagem, o truncamento deve ser expresso em distância. Para os dados que estamos trabalhando, o corte de 10% das observações mais distantes truncam os dados em 15m.
+
 ```{r}
 
 cutia_tap_arap_bin1_unif <- cutia_tap_arap_bin1 |> 
-  ajuste_modelos_distance_unif(truncamento = 15)
+  ajustar_modelos_Distance(
+    funcao_chave = "unif",
+    truncamento = 15)
+
 
 ```
 
@@ -1260,7 +1338,9 @@ Segunda binagem
 ```{r}
 
 cutia_tap_arap_bin2_unif <- cutia_tap_arap_bin2 |> 
-  ajuste_modelos_distance_unif(truncamento = 15)
+  ajustar_modelos_Distance(
+    funcao_chave = "unif",
+    truncamento = 15)
 
 ```
 
@@ -1269,7 +1349,9 @@ Terceira binagem
 ```{r}
 
 cutia_tap_arap_bin3_unif <- cutia_tap_arap_bin3 |> 
-  ajuste_modelos_distance_unif(truncamento = 15)
+  ajustar_modelos_Distance(
+    funcao_chave = "unif",
+    truncamento = 15)
 
 ```
 
@@ -1280,7 +1362,9 @@ Primeira binagem
 ```{r}
 
 cutia_tap_arap_bin1_hn <- cutia_tap_arap_bin1 |> 
-  ajuste_modelos_distance_hn(truncamento = 15)
+  ajustar_modelos_Distance(
+    funcao_chave = "hn",
+    truncamento = 15)
 
 ```
 
@@ -1289,7 +1373,9 @@ Segunda binagem
 ```{r}
 
 cutia_tap_arap_bin2_hn <- cutia_tap_arap_bin2 |> 
-  ajuste_modelos_distance_hn(truncamento = 15)
+  ajustar_modelos_Distance(
+    funcao_chave = "hn",
+    truncamento = 15)
 
 ```
 
@@ -1298,7 +1384,9 @@ Terceira binagem
 ```{r}
 
 cutia_tap_arap_bin3_hn <- cutia_tap_arap_bin3 |> 
-  ajuste_modelos_distance_hn(truncamento = 15)
+  ajustar_modelos_Distance(
+    funcao_chave = "hn",
+    truncamento = 15)
 
 ```
 
@@ -1309,7 +1397,9 @@ Primeira binagem
 ```{r}
 
 cutia_tap_arap_bin1_hr <- cutia_tap_arap_bin1 |> 
-  ajuste_modelos_distance_hr(truncamento = 15)
+  ajustar_modelos_Distance(
+    funcao_chave = "hr",
+    truncamento = 15)
 
 ```
 
@@ -1318,7 +1408,9 @@ Segunda binagem
 ```{r}
 
 cutia_tap_arap_bin2_hr <- cutia_tap_arap_bin2 |> 
-  ajuste_modelos_distance_hr(truncamento = 15)
+  ajustar_modelos_Distance(
+    funcao_chave = "hr",
+    truncamento = 15)
 
 ```
 
@@ -1327,7 +1419,9 @@ Terceira binagem
 ```{r}
 
 cutia_tap_arap_bin3_hr <- cutia_tap_arap_bin3 |> 
-  ajuste_modelos_distance_hr(truncamento = 15)
+  ajustar_modelos_Distance(
+    funcao_chave = "hr",
+    truncamento = 15)
 
 ```
 
@@ -1342,9 +1436,13 @@ fluxo3.1_lista_modelos_ajustados <- list(
   `uniforme` = cutia_tap_arap_bin1_unif
 )
 
-fluxo3.1_selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_termo_ajuste(fluxo3.1_lista_modelos_ajustados)
+fluxo3.1_selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_termo_ajuste(
+  dados = fluxo3.1_lista_modelos_ajustados, 
+  distancia_categorizada = TRUE
+)
 
 fluxo3.1_selecao_funcao_deteccao_termo_ajuste
+
 ```
 
 ```{r}
@@ -1354,7 +1452,10 @@ fluxo3.2_lista_modelos_ajustados <- list(
   `uniforme` = cutia_tap_arap_bin2_unif
 )
 
-fluxo3.2_selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_termo_ajuste(fluxo3.2_lista_modelos_ajustados)
+fluxo3.2_selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_termo_ajuste(
+  dados = fluxo3.2_lista_modelos_ajustados, 
+  distancia_categorizada = TRUE
+)
 
 fluxo3.2_selecao_funcao_deteccao_termo_ajuste
 ```
@@ -1366,16 +1467,20 @@ fluxo3.3_lista_modelos_ajustados <- list(
   `uniforme` = cutia_tap_arap_bin3_unif
 )
 
-fluxo3.3_selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_termo_ajuste(fluxo3.3_lista_modelos_ajustados)
+fluxo3.3_selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_termo_ajuste(
+  dados = fluxo3.3_lista_modelos_ajustados, 
+  distancia_categorizada = TRUE
+)
 
 fluxo3.3_selecao_funcao_deteccao_termo_ajuste
 ```
 
-###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
+###### Gráficos de ajuste das funções de detecção às probabilidades de detecção
 
 Primeira binagem
 
 ```{r}
+# Gráficos de ajuste das funções de deteção às probabilidades de deteção
 fluxo3.1_modelos_selecionados <- list(
   cutia_tap_arap_bin1_hn$`Cosseno`,
   cutia_tap_arap_bin1_unif$`Cosseno`,
@@ -1384,7 +1489,13 @@ fluxo3.1_modelos_selecionados <- list(
   cutia_tap_arap_bin1_hn$`Sem termo`
 )
 
+# atribuir o nome dos modelos aos itens da lista
+names(fluxo3.1_modelos_selecionados) <- fluxo3.1_selecao_funcao_deteccao_termo_ajuste$Modelo
+
+# plotar a probabilidade de detecção observada (barras) e a esperada (linhas e pontos)
 plotar_funcao_deteccao_modelos_selecionados(fluxo3.1_modelos_selecionados)
+
+
 ```
 
 Segunda binagem
@@ -1397,6 +1508,8 @@ fluxo3.2_modelos_selecionados <- list(
   cutia_tap_arap_bin2_unif$`Polinomial simples`,
   cutia_tap_arap_bin2_hn$`Sem termo`
 )
+
+names(fluxo3.1_modelos_selecionados) <- fluxo3.2_selecao_funcao_deteccao_termo_ajuste$Modelo
 
 plotar_funcao_deteccao_modelos_selecionados(fluxo3.2_modelos_selecionados)
 ```
@@ -1414,33 +1527,58 @@ fluxo3.3_modelos_selecionados <- list(
   cutia_tap_arap_bin3_hn$`Sem termo`
 )
 
+names(fluxo3.3_modelos_selecionados) <- fluxo3.1_selecao_funcao_deteccao_termo_ajuste$Modelo
+
+
 plotar_funcao_deteccao_modelos_selecionados(fluxo3.3_modelos_selecionados)
 ```
 
 ###### Teste de bondade de ajuste dos modelos e Q-Q plots
 
-Ainda estamos ajustando os outputs para os testes de bondade, pois a
-binagem um conflito com o formato de tabela definido pela função
-original.
 
 Primeira binagem
 
 ```{r, results='hide'}
-bondade_ajuste_fluxo3.1 <- testar_bondade_ajuste(fluxo3.1_modelos_selecionados, plot = TRUE, chisq = TRUE, breaks =  c(0, 1.5, 3, 4.5, 6, 7.5, 9, 10.5, 12, 13.5, 15))
+bondade_ajuste_fluxo3.1 <- testar_bondade_ajuste(fluxo3.1_modelos_selecionados,
+  plot = TRUE,
+  chisq = TRUE, 
+  intervalos_distancia =  seq(
+    from = 0,
+    to  = 15,
+    by = 1.5
+  )
+)
+
 bondade_ajuste_fluxo3.1
 ```
 
 Segunda binagem
 
-```{r, results='hide'}
-bondade_ajuste_fluxo3.2 <- testar_bondade_ajuste(fluxo3.2_modelos_selecionados)
+```{r}
+bondade_ajuste_fluxo3.2 <- testar_bondade_ajuste(fluxo3.2_modelos_selecionados,
+  plot = TRUE,
+  chisq = TRUE, 
+  intervalos_distancia =  
+    c(0, 1, 2.4, 3.8, 5.2, 6.6, 8, 9.4, 10.8, 12.2, 13.6, 15)
+  )
+
+
 bondade_ajuste_fluxo3.2
 ```
 
 Terceira binagem
 
-```{r, results='hide'}
-bondade_ajuste_fluxo3.3 <- testar_bondade_ajuste(fluxo3.3_modelos_selecionados)
+```{r}
+bondade_ajuste_fluxo3.3 <- testar_bondade_ajuste(fluxo3.3_modelos_selecionados,
+  plot = TRUE,
+  chisq = TRUE, 
+  intervalos_distancia =  seq(
+    from = 0,
+    to  = 15,
+    by = 2.5
+  )
+)
+
 bondade_ajuste_fluxo3.3
 ```
 
@@ -1574,12 +1712,12 @@ fluxo3.3_caracteristicas_densidade
 ### Amostragem por Distância com Múltiplas Covariáveis
 
 Aqui, vamos usar a abordagem do Fluxo 2, com amostragens reduzidas, para
-o ajuste de covariáveis. Vamos usar o tamanho do grupo como covariável.
+o ajuste de covariáveis. Vamos usar o tamanho do grupo (size) como exemplo de covariável.
 
 ##### Ajustando diferentes modelos com covariáveis
 
 Para o uso de coveriáveis, podemos usar somente as distribuições
-half-normal ou hazard-rate, pois ambas possuem o parâmetro escalar pelo
+half-normal ou hazard-rate, pois ambas possuem o parâmetro escalar (sigma) pelo
 qual o vetor das covariáveis será multiplicado. Não é recomendável o uso
 de termos de ajuste com o uso de covariáveis pela grande chance de perda
 de monotonicidade nas curvas das funções de detecção. Assim, vamos
