@@ -235,12 +235,26 @@ ajustar_modelos_Distance <- function(
   funcao_chave <- match.arg(funcao_chave)
   
   # contorlar a escolha da função chave e dos  termos de ajuste
-  if (is.null(termos_ajuste) == FALSE) {
+  if (formula != ~ 1) {
     
-    # definir termos de ajuste para função chave Uniform
+    # definir o termo de ajuste como nulo
+    termos_ajuste <- NULL
+    
+    # ajusta o modelo de detecção com a função chave definida pelo usuário
+    modelos_ajustados <- Distance::ds(
+      data = dados,
+      truncation = truncamento,
+      formula = formula,
+      key = funcao_chave,
+      adjustment = termos_ajuste
+    )
+    
+  } else  if (is.null(termos_ajuste) == FALSE) {
+    
+    # definir termos de ajuste 
     termos_ajuste <- termos_ajuste
     
-    # ajusta o modelo de detecção com a função chave Uniform
+    # ajusta o modelo de detecção
     modelos_ajustados <- Distance::ds(
       data = dados,
       truncation = truncamento,
