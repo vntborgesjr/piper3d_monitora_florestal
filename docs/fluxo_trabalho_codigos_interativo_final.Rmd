@@ -524,9 +524,9 @@ n_sp
 
 Até aqui temos dados para `r n_sp` espécies.
 
-\##**Suficência Amostral**
+##**Suficência Amostral**
 
-\*\*Número de observações
+**Número de observações**
 
 Para que o método de análise por distância possa ser utilizado para
 estimativas baseadas em modelos, são recomendadas quantidades mínimas de
@@ -541,6 +541,7 @@ pretende estratificar os dados, dividindo-os em subconjuntos, seja por
 região geográfica, seja por período amostral, é necessário ter um
 cuidado para que a suficiência amostral se mantenha dentro dos
 subconjuntos.
+
 
 **Réplicas e repetições**
 
@@ -575,7 +576,7 @@ trabalho onde reduzimos o número de repetições, mantendo somente um dia
 de amostragem com o maior número de observações para cada período
 amostral (Parte V, Fluxo 2).
 
-### \*\*Número de observações
+
 
 #### Número total de observações por espécie
 
