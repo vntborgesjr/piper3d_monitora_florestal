@@ -1727,50 +1727,33 @@ trabalhar com as seguintes combinações de modelos
 ###### Half-normal sem termos de ajuste (HN)
 
 ```{r}
-# ajustando a função de detecção half-normal, sem covariável, para um truncamento de 10% dos dados
-cutia_tap_arap_quase_sem_repeticao_hn_scov <- cutia_tap_arap_quase_sem_repeticao |> 
-  ajustar_modelos_Distance(
-    funcao_chave = "hn",
-    truncamento = "10%"
-    )
-
+# ajustando a função de detecção half-normal para um truncamento de 10% dos dados
+cutia_cov_hn <- cutia_tap_arap_quase_sem_repeticao |> 
+  ajuste_modelos_distance_hn(lista_termos_ajuste = list(`Sem termo`= NULL),truncamento = "10%")
 ```
 
 ###### HN + Tamanho do grupo (HN + S)
+
 ```{r}
-# ajustando a função de detecção half-normal, com tamanho do grupo como covariável, para um truncamento de 10% dos dados
-
-cutia_tap_arap_quase_sem_repeticao_hn_size <- cutia_tap_arap_quase_sem_repeticao |> 
-  ajustar_modelos_Distance(
-    funcao_chave = "hn",
-    truncamento = "10%",
-    formula = ~size
-    )
-
+# ajustando a função de detecção half-normal para um truncamento de 10% dos dados
+cutia_cov_hn_s <- cutia_tap_arap_quase_sem_repeticao |> 
+  ajuste_modelos_distance_hn(lista_termos_ajuste = list(`Sem termo`= NULL),truncamento = "10%", formula = ~size)
 ```
+
 ###### Hazard-rate sem termos de ajuste (HZ)
 
 ```{r}
-
-cutia_tap_arap_quase_sem_repeticao_hr_scov <- cutia_tap_arap_quase_sem_repeticao |> 
-  ajustar_modelos_Distance(
-    funcao_chave = "hr",
-    truncamento = "10%"
-    )
-
+# ajustando a função de detecção half-normal para um truncamento de 10% dos dados
+cutia_cov_hr <- cutia_tap_arap_quase_sem_repeticao |> 
+  ajuste_modelos_distance_hr(lista_termos_ajuste = list(`Sem termo`= NULL),truncamento = "10%")
 ```
 
 ###### HZ + Tamanho do grupo (HZ + S)
 
 ```{r}
-
-cutia_tap_arap_quase_sem_repeticao_hr_size <- cutia_tap_arap_quase_sem_repeticao |> 
-  ajustar_modelos_Distance(
-    funcao_chave = "hr",
-    truncamento = "10%",
-    formula = ~size
-    )
-
+# ajustando a função de detecção half-normal para um truncamento de 10% dos dados
+cutia_cov_hr_s <- cutia_tap_arap_quase_sem_repeticao |> 
+  ajuste_modelos_distance_hr(lista_termos_ajuste = list(`Sem termo`= NULL),truncamento = "10%", formula = ~size)
 ```
 
 ##### Comparando os modelos
@@ -1781,10 +1764,10 @@ Ainda estamos ajustando a função para poder gerar a tabela com o resumo
 dos resultados. A função criada para gerar tabela ainda não comporta os
 dados de modelos com covariáveis.
 
-```{r}
+```{r, results='hide'}
 cov_lista_modelos_ajustados <- list(
-  `half-normal` = cutia_tap_arap_quase_sem_repeticao_hn_scov, 
-  `hazard-rate` = cutia_tap_arap_quase_sem_repeticao_hr_scov
+  `half-normal` = cutia_cov_hn, 
+  `hazard-rate` = cutia_cov_hr
 )
 
 cov_selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_termo_ajuste(cov_lista_modelos_ajustados)
@@ -1832,29 +1815,17 @@ A estratificação dos dados a partir do pacote Distance para o R só é possív
 
 Na PARTE IV -- Explorando e selecionando os dados para as análises, filtramos os dados de *Dasyprocta croconota*. A espécie foi observada em quatro Unidades de Conservação, com os respectivos números de ocorrência: Resex Tapajós-Arapiuns (1395), Parna da Serra do Pardo (257), Esec da Terra do Meio (235), e Resex Riozinho do Anfrísio (225). Em todas as UCs o número de observações é alto, de modo que incluímos todas as UCs na análise de dados. 
 
-### VOLTAR AQUI Carregar Dados
+### Carregar Dados
 
 
 ```{r}
+# carregar dados
+cutia <- transforma_para_distanceR_com_repeticao_filtra_uc_sp(
+  nome_uc = "Resex Tapajos-Arapiuns",
+  nome_sp = "Dasyprocta croconota"
+) 
 
-#monitora_aves_masto_florestal <- #read.csv("data/monitora_aves_masto_florestal.csv")
-
-# filtrar dados das cutias para as quatro UCS onde ocorre:
-#cutias <- filtrar_dados(
- # dados = dados_completos,
-  #nome_ucs = "Resex Tapajos-Arapiuns",
-  #nome_sps = "Dasyprocta_croconota",
-  #validacao_obs = "especie"
-#)
-
-#transformando para Distance
-
-#cutias_Distance <- transformar_dados_formato_Distance(
-#cutias,
-#amostras_repetidas = FALSE
-)
-
-
+cutia_tap_arap
 ```
 
 
