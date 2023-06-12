@@ -82,7 +82,10 @@ library(stringi)
 library(stringr)
 library(tidyr)
 library(tidyselect)
-source(paste0(here::here(), "/R/minhas_funcoes.R"))
+
+devtools::install_github("vntborgesjr/distanceMonitoraflorestal")
+
+library(distanceMonitoraflorestal)
 
 ```
 
@@ -1723,37 +1726,66 @@ qual o vetor das covariáveis será multiplicado. Não é recomendável o uso
 de termos de ajuste com o uso de covariáveis pela grande chance de perda
 de monotonicidade nas curvas das funções de detecção. Assim, vamos
 trabalhar com as seguintes combinações de modelos
+```{r}
 
-###### Half-normal sem termos de ajuste (HN)
+cutia_tap_arap_quase_sem_repeticao_unif_scov <- cutia_tap_arap_quase_sem_repeticao |> 
+  ajustar_modelos_Distance(
+    funcao_chave = "unif",
+    truncamento = "10%"
+    )
+
+```
+
+
+
+###### Half-normal sem covariáveis (HN)
 
 ```{r}
-# ajustando a função de detecção half-normal para um truncamento de 10% dos dados
-cutia_cov_hn <- cutia_tap_arap_quase_sem_repeticao |> 
-  ajuste_modelos_distance_hn(lista_termos_ajuste = list(`Sem termo`= NULL),truncamento = "10%")
+
+cutia_tap_arap_quase_sem_repeticao_hn_scov <- cutia_tap_arap_quase_sem_repeticao |> 
+  ajustar_modelos_Distance(
+    funcao_chave = "hn",
+    truncamento = "10%"
+    )
+
 ```
 
 ###### HN + Tamanho do grupo (HN + S)
 
 ```{r}
-# ajustando a função de detecção half-normal para um truncamento de 10% dos dados
-cutia_cov_hn_s <- cutia_tap_arap_quase_sem_repeticao |> 
-  ajuste_modelos_distance_hn(lista_termos_ajuste = list(`Sem termo`= NULL),truncamento = "10%", formula = ~size)
+
+cutia_tap_arap_quase_sem_repeticao_hn_size <- cutia_tap_arap_quase_sem_repeticao |> 
+  ajustar_modelos_Distance(
+    funcao_chave = "hn",
+    truncamento = "10%",
+    formula = ~size
+    )
+
 ```
 
 ###### Hazard-rate sem termos de ajuste (HZ)
 
 ```{r}
-# ajustando a função de detecção half-normal para um truncamento de 10% dos dados
-cutia_cov_hr <- cutia_tap_arap_quase_sem_repeticao |> 
-  ajuste_modelos_distance_hr(lista_termos_ajuste = list(`Sem termo`= NULL),truncamento = "10%")
+
+cutia_tap_arap_quase_sem_repeticao_hr_scov <- cutia_tap_arap_quase_sem_repeticao |> 
+  ajustar_modelos_Distance(
+    funcao_chave = "hr",
+    truncamento = "10%"
+    )
+
 ```
 
 ###### HZ + Tamanho do grupo (HZ + S)
 
 ```{r}
-# ajustando a função de detecção half-normal para um truncamento de 10% dos dados
-cutia_cov_hr_s <- cutia_tap_arap_quase_sem_repeticao |> 
-  ajuste_modelos_distance_hr(lista_termos_ajuste = list(`Sem termo`= NULL),truncamento = "10%", formula = ~size)
+
+cutia_tap_arap_quase_sem_repeticao_hr_size <- cutia_tap_arap_quase_sem_repeticao |> 
+  ajustar_modelos_Distance(
+    funcao_chave = "hr",
+    truncamento = "10%",
+    formula = ~size
+    )
+
 ```
 
 ##### Comparando os modelos
@@ -1765,12 +1797,15 @@ dos resultados. A função criada para gerar tabela ainda não comporta os
 dados de modelos com covariáveis.
 
 ```{r, results='hide'}
+
 cov_lista_modelos_ajustados <- list(
-  `half-normal` = cutia_cov_hn, 
-  `hazard-rate` = cutia_cov_hr
+  `Uniform`= cutia_tap_arap_quase_sem_repeticao_unif_scov,
+  `half-normal` = c(cutia_tap_arap_quase_sem_repeticao_hn_scov, cutia_tap_arap_quase_sem_repeticao_hn_size), 
+  `hazard-rate` = c(cutia_tap_arap_quase_sem_repeticao_hr_scov, cutia_tap_arap_quase_sem_repeticao_hr_size)
 )
 
 cov_selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_termo_ajuste(cov_lista_modelos_ajustados)
+
 ```
 
 ###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
