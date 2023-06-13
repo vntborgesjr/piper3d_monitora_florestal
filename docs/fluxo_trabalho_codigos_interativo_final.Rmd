@@ -66,9 +66,9 @@ usar:
 ## ** Instalando e carregando o pacote distenceMonitoraflorestal**
 
 ```{r}
-devtools::install_github("vntborgesjr/distanceMonitoraflorestal")
-
-library(distanceMonitoraflorestal)
+# devtools::install_github("vntborgesjr/distanceMonitoraflorestal")
+# 
+# library(distanceMonitoraflorestal)
 
 ```
 
@@ -76,24 +76,25 @@ library(distanceMonitoraflorestal)
 ## **Carregando os pacotes**
 
 ```{r configuração, include=FALSE, warning=FALSE, message=FALSE}
-# library(Distance)
-# library(dplyr)
-# library(DT)
-# library(forcats)
-# library(ggpubr)
-# library(ggplot2)
-# library(here)
-# library(lubridate)
-# library(mrds)
-# library(plotly)
-# library(purrr)
-# library(readr)
-# library(readxl)
-# library(stringi)
-# library(stringr)
-# library(tidyr)
-# library(tidyselect)
 
+library(Distance)
+library(dplyr)
+library(DT)
+library(forcats)
+library(ggpubr)
+library(ggplot2)
+library(here)
+library(lubridate)
+library(mrds)
+library(plotly)
+library(purrr)
+library(readr)
+library(readxl)
+library(stringi)
+library(stringr)
+library(tidyr)
+library(tidyselect)
+source(paste0(here::here(), "/R/minhas_funcoes.R"))
 
 ```
 
