@@ -1838,11 +1838,22 @@ Na PARTE IV -- Explorando e selecionando os dados para as análises, filtramos o
 ```{r}
 
 # filtrar dados das cutias para as quatro UCS onde ocorre:
-#cutias <- filtrar_dados(
-#  nome_sps = "Dasyprocta_croconota",
-#  validacao_obs = "especie"
-#)|>
-#transformar_dados_formato_Distance()
+cutias <- filtrar_dados(
+  nome_ucs = c(
+    "resex_tapajos_arapiuns", 
+    "parna_da_serra_do_pardo",
+    "esec_da_terra_do_meio", 
+    "resex_riozinho_do_anfrisio"
+  ),
+  nome_sps = "dasyprocta_croconota",
+  validacao_obs = "especie"
+)
+
+
+transformar_dados_formato_Distance(
+  cutias,
+  amostras_repetidas = FALSE)
+
 
 
 ```
