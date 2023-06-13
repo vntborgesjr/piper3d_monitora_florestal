@@ -62,7 +62,18 @@ usar:
 ```{r, message=FALSE, error=FALSE, warning=FALSE}
 ```
 
-## **Carregando as funções**
+
+## ** Instalando e carregando o pacote distenceMonitoraflorestal**
+
+```{r}
+devtools::install_github("vntborgesjr/distanceMonitoraflorestal")
+
+library(distanceMonitoraflorestal)
+
+```
+
+
+## **Carregando os pacotes**
 
 ```{r configuração, include=FALSE, warning=FALSE, message=FALSE}
 library(Distance)
@@ -82,7 +93,7 @@ library(stringi)
 library(stringr)
 library(tidyr)
 library(tidyselect)
-source(paste0(here::here(), "/R/minhas_funcoes.R"))
+
 
 ```
 
