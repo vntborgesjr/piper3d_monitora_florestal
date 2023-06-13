@@ -1837,22 +1837,12 @@ Na PARTE IV -- Explorando e selecionando os dados para as análises, filtramos o
 
 ```{r}
 
-#monitora_aves_masto_florestal <- #read.csv("data/monitora_aves_masto_florestal.csv")
-
 # filtrar dados das cutias para as quatro UCS onde ocorre:
 #cutias <- filtrar_dados(
- # dados = dados_completos,
-  #nome_ucs = "Resex Tapajos-Arapiuns",
-  #nome_sps = "Dasyprocta_croconota",
-  #validacao_obs = "especie"
-#)
-
-#transformando para Distance
-
-#cutias_Distance <- transformar_dados_formato_Distance(
-#cutias,
-#amostras_repetidas = FALSE
-)
+#  nome_sps = "Dasyprocta_croconota",
+#  validacao_obs = "especie"
+#)|>
+#transformar_dados_formato_Distance()
 
 
 ```
