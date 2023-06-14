@@ -68,7 +68,7 @@ usar:
 ```{r}
 devtools::install_github("vntborgesjr/distanceMonitoraflorestal")
  
-1library(distanceMonitoraflorestal)
+library(distanceMonitoraflorestal)
 
 ```
 
