@@ -1739,7 +1739,7 @@ cutias_cov <- filtrar_dados(
 )
 
 cutias_cov_distance <- transformar_dados_formato_Distance(
-  cutias,
+  cutias_cov,
   amostras_repetidas = FALSE)
 
 cutias_cov_distance
@@ -1835,7 +1835,7 @@ cutias_cov_distance_melhor_modelo
 
 ```
 
-Observar que nesse caso o tamanho do grupo conferiu uma leve melhora ao ajuste dos modelos.
+observar que nesse caso as covariávies alteraram pouco o ajuste dos modelos.
 
 
 ###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
@@ -1882,6 +1882,44 @@ Para o uso de covariáveis, as estimativas de abundância/densidade devem
 ser feitas através do bootstrap (função `bootdht` do Distance). Ainda
 estamos implementando o bootstrap em nosso fluxo de estimativas de taxa
 de encontro, abundância e densidade.
+
+**Área coberta pela Amostragem**
+
+```{r}
+
+gerar_resultados_Distance(
+  modelos_cutias_cov_distance,
+  cutias_cov_distance_melhor_modelo,
+  tipo_de_resultado = "area_estudo"
+  )
+
+```
+
+**Ábundância**
+
+```{r}
+
+gerar_resultados_Distance(
+  modelos_cutias_cov_distance,
+  cutias_cov_distance_melhor_modelo,
+  tipo_de_resultado = "abundancia"
+  )
+
+```
+
+**Densidade**
+
+```{r}
+
+gerar_resultados_Distance(
+  modelos_cutias_cov_distance,
+  cutias_cov_distance_melhor_modelo,
+  tipo_de_resultado = "densidade"
+  )
+
+```
+
+
 
 ### Amostragem por Distância com Estratificação
 
@@ -2054,7 +2092,7 @@ cutias_distance_hr <- cutias_distance |>
 ###### Tabela com o resumo comparativo dos modelos
 
 ```{r}
-selecao_funcao_deteccao_termo_ajuste_cutias <- selecionar_funcao_deteccao_termo_ajuste(
+melhor_modelo_cutias <- selecionar_funcao_deteccao_termo_ajuste(
   cutias_distance_unif$Cosseno,
   cutias_distance_unif$`Polinomial simples`,
   cutias_distance_hn$`Sem termo`,
@@ -2065,7 +2103,7 @@ selecao_funcao_deteccao_termo_ajuste_cutias <- selecionar_funcao_deteccao_termo_
   cutias_distance_hr$`Polinomial simples`
 )
 
-selecao_funcao_deteccao_termo_ajuste_cutias
+melhor_modelo_cutias
 
 ```
 ###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
@@ -2109,45 +2147,41 @@ quanto maior o valor de p, melhor o ajuste do modelo.
 Aqui, são resumidos os dados de taxa de encontro, abundância e densidade
 em três tabelas.
 
-###### Características da área de estudo e da taxa de encontro
+**Área coberta pela Amostragem**
 
 ```{r}
-# gera lista contendo os modelos selecionados para cada função de detecção e termo de ajuste
-fluxo1_lista_modelos_ajustados_termos <- list(
-  cutia_tap_arap_hr$`Sem termo`,
-  cutia_tap_arap_hn$Cosseno,
-  cutia_tap_arap_unif$Cosseno,
-  cutia_tap_arap_unif$`Polinomial simples`,
-  cutia_tap_arap_hn$`Sem termo`
-)
 
-# área de estudo, tamanho da área de estudo, area coberta pelo esforço amostral, esforço amostral em metros, número de detecções, número de transectos (ea), taxa de encontro, coeficiente de variação da taxa de encontro  
-fluxo1_caracteristicas_area_estudo_taxa_encontro <- fluxo1_lista_modelos_ajustados_termos |> 
-  gerar_caracteristicas_area_estudo_taxa_encontro(resultado_selecao_modelos = fluxo1_selecao_funcao_deteccao_termo_ajuste)
+gerar_resultados_Distance(
+  modelos_cutias,
+  melhor_modelo_cutias,
+  tipo_de_resultado = "area_estudo"
+  )
 
-fluxo1_caracteristicas_area_estudo_taxa_encontro
 ```
 
-###### Características de abundância, esforço e detecção
+**Ábundância**
 
 ```{r}
-# área de estudo, tamanho da área de estudo, trilhas ou estações amostrais, esforço total em cada trilha, abundância estimada em cada estação amostral, número de detecções em cada estação amostral, área total amostrada
-fluxo1_caracteristicas_esforco_abundancia_deteccao <- fluxo1_lista_modelos_ajustados_termos |> 
-  gerar_caracteristicas_esforco_abundancia_deteccao(resultado_selecao_modelos = fluxo1_selecao_funcao_deteccao_termo_ajuste)
 
-fluxo1_caracteristicas_esforco_abundancia_deteccao
+gerar_resultados_Distance(
+  modelos_cutias,
+  melhor_modelo_cutias,
+  tipo_de_resultado = "abundancia"
+  )
+
 ```
 
-###### Características de densidade
+**Densidade**
 
 ```{r}
-# total, densidade estimada, erro padrão da densidade destimada, coeficiente de variação da densidade destimada, intervalo de confiança inferior e superior do coeficiente de variação, gruas de liberdade
-fluxo1_caracteristicas_densidade <- fluxo1_lista_modelos_ajustados_termos |> 
-  gerar_caracteristicas_densidade(resultado_selecao_modelos = fluxo1_selecao_funcao_deteccao_termo_ajuste)
 
-fluxo1_caracteristicas_densidade
+gerar_resultados_Distance(
+  modelos_cutias,
+  melhor_modelo_cutias,
+  tipo_de_resultado = "densidade"
+  )
+
 ```
-
 
 
 
