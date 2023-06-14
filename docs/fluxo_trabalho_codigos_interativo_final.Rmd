@@ -94,7 +94,7 @@ library(distanceMonitoraflorestal)
 # library(stringr)
 # library(tidyr)
 # library(tidyselect)
- source(paste0(here::here(), "/R/minhas_funcoes.R"))
+# source(paste0(here::here(), "/R/minhas_funcoes.R"))
 
 ```
 
@@ -2024,6 +2024,8 @@ selecao_funcao_deteccao_termo_ajuste_cutias
 ###### VOLTAR AQUIGráficos de ajuste das funções de deteção às probabilidades de deteção
 
 ```{r}
+
+
 
 ```
 
