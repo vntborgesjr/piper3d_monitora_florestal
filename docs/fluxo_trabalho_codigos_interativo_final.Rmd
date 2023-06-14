@@ -1727,7 +1727,37 @@ fluxo3.3_caracteristicas_densidade
 Aqui vamos usar a abordagem do Fluxo 2, com amostragens reduzidas, para
 o ajuste de covariáveis. Vamos usar o tamanho do grupo (size) como exemplo de covariável.
 
-##### Ajustando diferentes modelos com covariáveis
+#### Carregando os dados
+
+Aqui vamos trabalhar com os dados filtrados, sem repetições. O número de observações total foi de 71.
+
+```{r}
+cutias_cov <- filtrar_dados(
+  nome_ucs = "resex_tapajos_arapiuns", 
+  nome_sps = "dasyprocta_croconota",
+  validacao_obs = "especie"
+)
+
+cutias_cov_distance <- transformar_dados_formato_Distance(
+  cutias,
+  amostras_repetidas = FALSE)
+
+cutias_cov_distance
+
+
+
+
+```
+
+#### Plotando o histograma
+
+```{r}
+cutias_cov_distance |> 
+plotar_distribuicao_distancia_interativo(largura_caixa = 1)
+
+```
+
+#### Ajustando diferentes modelos com covariáveis
 
 Para o uso de coveriáveis, podemos usar somente as distribuições
 half-normal ou hazard-rate, pois ambas possuem o parâmetro escalar (sigma) pelo
@@ -1736,11 +1766,11 @@ de termos de ajuste com o uso de covariáveis pela grande chance de perda
 de monotonicidade nas curvas das funções de detecção. Assim, vamos
 trabalhar com as seguintes combinações de modelos
 
-###### Half-normal sem termos de ajuste (HN)
+##### Half-normal sem termos de ajuste (HN)
 
 ```{r}
 # ajustando a função de detecção half-normal, sem covariável, para um truncamento de 10% dos dados
-cutia_tap_arap_quase_sem_repeticao_hn_scov <- cutia_tap_arap_quase_sem_repeticao |> 
+cutias_cov_distance_hn <- cutias_cov_distance |> 
   ajustar_modelos_Distance(
     funcao_chave = "hn",
     truncamento = "10%"
@@ -1748,11 +1778,11 @@ cutia_tap_arap_quase_sem_repeticao_hn_scov <- cutia_tap_arap_quase_sem_repeticao
 
 ```
 
-###### HN + Tamanho do grupo (HN + S)
+##### HN + Tamanho do grupo (HN + S)
 ```{r}
 # ajustando a função de detecção half-normal, com tamanho do grupo como covariável, para um truncamento de 10% dos dados
 
-cutia_tap_arap_quase_sem_repeticao_hn_size <- cutia_tap_arap_quase_sem_repeticao |> 
+cutias_cov_distance_hn_size <- cutias_cov_distance |> 
   ajustar_modelos_Distance(
     funcao_chave = "hn",
     truncamento = "10%",
@@ -1760,11 +1790,11 @@ cutia_tap_arap_quase_sem_repeticao_hn_size <- cutia_tap_arap_quase_sem_repeticao
     )
 
 ```
-###### Hazard-rate sem termos de ajuste (HZ)
+##### Hazard-rate sem termos de ajuste (HZ)
 
 ```{r}
 
-cutia_tap_arap_quase_sem_repeticao_hr_scov <- cutia_tap_arap_quase_sem_repeticao |> 
+cutias_cov_distance_hr <- cutias_cov_distance |> 
   ajustar_modelos_Distance(
     funcao_chave = "hr",
     truncamento = "10%"
@@ -1776,7 +1806,7 @@ cutia_tap_arap_quase_sem_repeticao_hr_scov <- cutia_tap_arap_quase_sem_repeticao
 
 ```{r}
 
-cutia_tap_arap_quase_sem_repeticao_hr_size <- cutia_tap_arap_quase_sem_repeticao |> 
+cutias_cov_distance_hr_size <- cutias_cov_distance |> 
   ajustar_modelos_Distance(
     funcao_chave = "hr",
     truncamento = "10%",
@@ -1785,22 +1815,28 @@ cutia_tap_arap_quase_sem_repeticao_hr_size <- cutia_tap_arap_quase_sem_repeticao
 
 ```
 
-##### VOLTAR AQUI Comparando os modelos
+##### Comparando os modelos
 
 ###### Tabela com o resumo comparativo dos modelos
 
-Ainda estamos ajustando a função para poder gerar a tabela com o resumo
-dos resultados. A função criada para gerar tabela ainda não comporta os
-dados de modelos com covariáveis.
+Aqui, vamos selecionar somente os modelos sem termos de ajuste, com e sem covariáveis.
 
 ```{r}
-cov_lista_modelos_ajustados <- list(
-  `half-normal` = cutia_tap_arap_quase_sem_repeticao_hn_scov, 
-  `hazard-rate` = cutia_tap_arap_quase_sem_repeticao_hr_scov
+
+cutias_cov_distance_melhor_modelo <- 
+  selecionar_funcao_deteccao_termo_ajuste(
+  cutias_cov_distance_hn$`Sem termo`,
+  cutias_cov_distance_hn_size,
+  cutias_cov_distance_hr$`Sem termo`,
+  cutias_cov_distance_hr_size
 )
 
-cov_selecao_funcao_deteccao_termo_ajuste <- selecionar_funcao_deteccao_termo_ajuste(cov_lista_modelos_ajustados)
+cutias_cov_distance_melhor_modelo
+
 ```
+
+Observar que nesse caso o tamanho do grupo conferiu uma leve melhora ao ajuste dos modelos.
+
 
 ###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
 
@@ -1809,12 +1845,17 @@ modelos com covariáveis. A função criada para os gráficos ainda não
 comporta os dados de modelos com covariáveis.
 
 ```{r}
-cov_modelos_selecionados <- list(
-  cutia_cov_hn$`Sem termo`,
-  cutia_cov_hr$`Sem termo`
-)
+modelos_cutias_cov_distance <-
+  gerar_lista_modelos_selecionados(
+    cutias_cov_distance_hr_size,
+    cutias_cov_distance_hr$`Sem termo`,
+    cutias_cov_distance_hn_size,
+    cutias_cov_distance_hn$`Sem termo`,
+    nome_modelos_selecionados = cutias_cov_distance_melhor_modelo
+  )
 
-plotar_funcao_deteccao_modelos_selecionados(cov_modelos_selecionados)
+plotar_funcao_deteccao_modelos_selecionados(modelos_cutias_cov_distance)
+
 ```
 
 ###### Teste de bondade de ajuste dos modelos e Q-Q plots
@@ -1825,8 +1866,14 @@ covariáveis. A função criada para gerar tabela e os Q-Q plots ainda não
 comporta os dados de modelos com covariáveis.
 
 ```{r}
-bondade_ajuste_cov <- testar_bondade_ajuste(cov_modelos_selecionados, plot = TRUE)
-bondade_ajuste_cov
+
+testar_bondade_ajuste(
+  modelos_cutias_cov_distance,
+  plot = TRUE,
+  nboot = 100
+)
+
+
 ```
 
 ##### Avaliando as estimativas de Abundância e Densidade
@@ -2021,20 +2068,9 @@ selecao_funcao_deteccao_termo_ajuste_cutias <- selecionar_funcao_deteccao_termo_
 selecao_funcao_deteccao_termo_ajuste_cutias
 
 ```
-###### VOLTAR AQUIGráficos de ajuste das funções de deteção às probabilidades de deteção
+###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
 
 ```{r}
-
-
-
-```
-
-
-###### CORRIGIR Teste de bondade de ajuste dos modelos e Q-Q plots
-
-```{r}
-#criar uma lista com os modelos selecionados, na ordem de seleção
-
 modelos_cutias <- gerar_lista_modelos_selecionados(
   cutias_distance_hr$`Sem termo`,
   cutias_distance_unif$Cosseno,
@@ -2043,6 +2079,17 @@ modelos_cutias <- gerar_lista_modelos_selecionados(
   cutias_distance_hn$`Sem termo`,
   nome_modelos_selecionados = selecao_funcao_deteccao_termo_ajuste_cutias
 )
+
+plotar_funcao_deteccao_modelos_selecionados(modelos_cutias)
+
+
+```
+
+
+###### Teste de bondade de ajuste dos modelos e Q-Q plots
+
+```{r}
+#criar uma lista com os modelos selecionados, na ordem de seleção
 
 testar_bondade_ajuste(
   modelos_cutias,
