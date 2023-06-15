@@ -2106,6 +2106,8 @@ melhor_modelo_cutias <- selecionar_funcao_deteccao_termo_ajuste(
 melhor_modelo_cutias
 
 ```
+
+
 ###### Gráficos de ajuste das funções de deteção às probabilidades de deteção
 
 ```{r}
@@ -2169,6 +2171,7 @@ gerar_resultados_Distance(
   tipo_de_resultado = "abundancia", 
   estratificacao = TRUE
 )
+
 ```
 
 **Densidade**
@@ -2181,18 +2184,42 @@ gerar_resultados_Distance(
   tipo_de_resultado = "densidade", 
   estratificacao = TRUE
 )
+
+```
+
+##### Ajustando modelos para cada estrato
+
+A redução no tamanho amostral geralmente faz com que os modelos para os dados globais tenham um ajuste melhor que os modelos ajustados aos estratos. Entretanto, para os dados do Monitora, considerando alguns ruídos amostrais sobre a distribuição dos dados, o excesso de repetições, resultados melhores de ajuste têm sido obtidos para conjutnos de dados menores.
+
+Nas análises anteriores, os parâmetros de ajuste dos modelos e valores de AIC foram gerados somente para os dados globais. Porém, as estimativas relacionadas a área de estudo, abundância e densidade, foram geradas para cada estrato.
+
+Um critério para avaliar se o ajuste das funções para os dados estratificados foi melhor que para os dados globais é a comparação do somatório dos valores de AIC para cada estrato com o valor de AIC do modelo global. Se a soma dos valores de AIC dos estratos for menor que o AIC global, significa que o ajuste foi melhor para os dados estratificados.
+
+Assim, escolhemos um dos modelos testados anteriormente para os dados globais, que foi o Half-normal com ajuste do tipo Cosseno. Escolhemos o segundo melhor modelo porque consideramos que o ajuste do Hazard-rate, apesar de apresentar os melhores valores de AIC e teste de ajuste de bondade, foi sensível ao pico de observações próximo a zero, substimando as estimativas de probabilidade de detecção. Assim, vamos comparar o AIC global para o modelo do tipo Half-normal + Cosseno com os AICs das funções ajustadas para os dados de cada Unidade de Conservação.
+
+
+###### Half-Normal + Cosseno
+
+**Dados Globais**
+```{r}
+# ajustando a função de detecção half-normal para um truncamento de 10% dos dados
+cutias_distance_hn_cos <- cutias_distance |> 
+  ajustar_modelos_Distance(
+    funcao_chave = "hn",
+    termos_ajuste = 
+    truncamento = "10%")
+```
+
+**Dados Globais**
+```{r}
+# ajustando a função de detecção half-normal para um truncamento de 10% dos dados
+cutias_distance_hn <- cutias_distance |> 
+  ajustar_modelos_Distance(
+    funcao_chave = "hn",
+    truncamento = "10%")
 ```
 
 
-
-
-##### Ajustando diferentes modelos para os dados Estratificados
-
-A redução no tamanho amostral geralmente faz com que os modelos para os dados globais tenham um ajuste melhor que os modelos ajustados aos estratos. Um critério para avaliar este ajuste é comparar o somatório dos valores de AIC para cada estrato com o valor de AIC do modelo global. Se a soma dos valores de AIC dos estratos for menor que o AIC global, significa que o ajuste foi melhor para os dados estratificados.
-
-\#**AQUI TAMBÉM PRECISA TOMAR UMA DECISÃO IMPORTANTE**
-
-Rodamos todos os modelos para os dados estratificados? Ou partimos do melhor modelo para dados globais?
 
 ##### Comparando os modelos
 
