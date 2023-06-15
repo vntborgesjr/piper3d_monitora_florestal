@@ -2207,6 +2207,7 @@ Assim, escolhemos um dos modelos testados anteriormente para os dados globais, q
 cutias_distance_hn <- cutias_distance |> 
   ajustar_modelos_Distance(
     funcao_chave = "hn",
+    termos_ajuste = "cos",
     truncamento = "10%")
 ```
 
@@ -2216,6 +2217,7 @@ cutias_distance_hn <- cutias_distance |>
 cutias_tap_distance_hn <- cutias_tap_distance |> 
   ajustar_modelos_Distance(
     funcao_chave = "hn",
+    termos_ajuste = "cos",
     truncamento = "10%")
 ```
 **Resex Tapajós-Arapiuns**
@@ -2225,6 +2227,7 @@ cutias_tap_distance_hn <- cutias_tap_distance |>
 cutias_tap_distance_hn <- cutias_tap_distance |> 
   ajustar_modelos_Distance(
     funcao_chave = "hn",
+    termos_ajuste = "cos",
     truncamento = "10%")
 ```
 
@@ -2236,6 +2239,7 @@ cutias_tap_distance_hn <- cutias_tap_distance |>
 cutias_par_distance_hn <- cutias_par_distance |> 
   ajustar_modelos_Distance(
     funcao_chave = "hn",
+    termos_ajuste = "cos",
     truncamento = "10%")
 ```
 **Esec da Terra do Meio**
@@ -2246,6 +2250,7 @@ cutias_par_distance_hn <- cutias_par_distance |>
 cutias_ter_distance_hn <- cutias_ter_distance |> 
   ajustar_modelos_Distance(
     funcao_chave = "hn",
+    termos_ajuste = "cos",
     truncamento = "10%")
 ```
 **Resex Riozinho do Anfrísio**
@@ -2256,6 +2261,7 @@ cutias_ter_distance_hn <- cutias_ter_distance |>
 cutias_anf_distance_hn <- cutias_anf_distance |> 
   ajustar_modelos_Distance(
     funcao_chave = "hn",
+    termos_ajuste = "cos",
     truncamento = "10%")
 ```
 
@@ -2272,7 +2278,8 @@ modelo_cutias_estrat <- selecionar_funcao_deteccao_termo_ajuste(
   cutias_tap_distance_hn$Cosseno,
   cutias_par_distance_hn$Cosseno,
   cutias_ter_distance_hn$Cosseno,
-  cutias_anf_distance_hn$Cosseno
+  cutias_anf_distance_hn$Cosseno,
+  delta = TRUE
 )
 
 
