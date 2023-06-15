@@ -2115,7 +2115,7 @@ modelos_cutias <- gerar_lista_modelos_selecionados(
   cutias_distance_hn$Cosseno,
   cutias_distance_unif$`Polinomial simples`,
   cutias_distance_hn$`Sem termo`,
-  nome_modelos_selecionados = selecao_funcao_deteccao_termo_ajuste_cutias
+  nome_modelos_selecionados = melhor_modelo_cutias
 )
 
 plotar_funcao_deteccao_modelos_selecionados(modelos_cutias)
@@ -2152,11 +2152,11 @@ em três tabelas.
 ```{r}
 
 gerar_resultados_Distance(
-  modelos_cutias,
-  melhor_modelo_cutias,
-  tipo_de_resultado = "area_estudo"
-  )
-
+  dados = modelos_cutias,
+  resultado_selecao_modelos = melhor_modelo_cutias,
+  tipo_de_resultado = "area_estudo", 
+  estratificacao = TRUE
+)
 ```
 
 **Ábundância**
@@ -2164,11 +2164,11 @@ gerar_resultados_Distance(
 ```{r}
 
 gerar_resultados_Distance(
-  modelos_cutias,
-  melhor_modelo_cutias,
-  tipo_de_resultado = "abundancia"
-  )
-
+  dados = modelos_cutias,
+  resultado_selecao_modelos = melhor_modelo_cutias,
+  tipo_de_resultado = "abundancia", 
+  estratificacao = TRUE
+)
 ```
 
 **Densidade**
@@ -2176,11 +2176,11 @@ gerar_resultados_Distance(
 ```{r}
 
 gerar_resultados_Distance(
-  modelos_cutias,
-  melhor_modelo_cutias,
-  tipo_de_resultado = "densidade"
-  )
-
+  dados = modelos_cutias,
+  resultado_selecao_modelos = melhor_modelo_cutias,
+  tipo_de_resultado = "densidade", 
+  estratificacao = TRUE
+)
 ```
 
 
