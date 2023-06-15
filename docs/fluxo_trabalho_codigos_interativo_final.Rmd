@@ -2187,7 +2187,7 @@ gerar_resultados_Distance(
 
 ```
 
-##### Ajustando modelos para cada estrato
+##### Ajustando modelos para cada estrato espacial (Unidade de Conservação)
 
 A redução no tamanho amostral geralmente faz com que os modelos para os dados globais tenham um ajuste melhor que os modelos ajustados aos estratos. Entretanto, para os dados do Monitora, considerando alguns ruídos amostrais sobre a distribuição dos dados, o excesso de repetições, resultados melhores de ajuste têm sido obtidos para conjutnos de dados menores.
 
