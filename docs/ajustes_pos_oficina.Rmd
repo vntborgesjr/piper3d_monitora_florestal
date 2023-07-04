@@ -3,55 +3,61 @@ title: "ajustes_codigos_pos_oficina"
 output: html_document
 date: "`r Sys.Date()`"
 ---
+#PARA ENTREGA DENTRO DO PRAZO DO ADITIVO
+#Ajustes no relatorio Markdown (Lu Fusinatto)
 
-#Ajustes no relatorio Markdown
-1. O html não gerou outputs para o fluxo estratificado (gerar um novo html após correções e disponibilizar); 
-
-2. Incluir o fluxo de análise: dados estratificados + covariável de tamanho de grupo.
-
-3. Criar um html à parte (para quem não vai trabalhar com os dados do pacote), com a parte de carregamento de dados brutos até transoformação para o formato distance. (para não confundir quem vai usar os dados do pacote). Fazer algo semelhante para os dados do aplicativo SMART? Contemplar tudo em um mesmo relatório?
-
-4. Para quem vai usar os dados do pacote, inserir uma opção para chamar os dados de fora do pacote, se for o caso.
+1.Separar um tutoriral de carregamento de dados e transformação para o distance à parte do fluxo de análise. 
+Adaptar para facilitar inclusão de novos conjuntos de dados, inclusive do SMART.
 
 
+2. No tutorial de fluxo de análise, incluir uma opção incial com a alternativa de trabalhar com o conjunto de dados do pacote ou com outro conjunto de dados.
 
-#Ajustes nos dados/códigos
+2. O html não gerou outputs para o fluxo estratificado (gerar um novo html após correções e disponibilizar); 
 
-1. Corrigir nome da família Tinamidae;
+3. Incluir o fluxo de análise: dados estratificados + covariável de tamanho de grupo.
 
-2. Corrigir o esforço amostral para incluir trilhas percorridas sem registros dos animais.
+
+
+#Ajustes nos dados/códigos (Vitor)
+
+1.Criar uma opção para carregamento dos dados do SMART
+
+2. Corrigir nome da família Tinamidae;
+
+3. Corrigir o esforço amostral para incluir trilhas percorridas sem registros dos animais.
 Sugestão do Ricardo: calcular o esforço amostral total para cada UC antes de filtrar por espécie. Usar esse esforço amostral como base quando estiver analisando os dados de cada espécie. Filtrar por UC/ano/estacao. Generalizar para todas as espécies;
 
-3. Incluir um filtro por gênero;
+4. Incluir um filtro por gênero;
 
-4. Adicionar colunas genero, familia e ordem;
+5. Adicionar colunas genero, familia e ordem;
 
-5. Incluir opção de filtro pelo código cnuc;
+6. Incluir opção de filtro pelo código cnuc;
 
-6. Verificar nomes dos modelos nas tabelas de output das estimativas de taxa de encontro, abundancia e densidade. Todas devem ter a coluna modelo (com o nome) e a coluna formula.
+7. Verificar nomes dos modelos nas tabelas de output das estimativas de taxa de encontro, abundancia e densidade. Todas devem ter a coluna modelo (com o nome) e a coluna formula.
 
-7. Verificar título do eixo dos gráficos (probabilidade de detecação)
+8. Verificar título do eixo dos gráficos (probabilidade de detecação)
 
-8. Incluir intervalo de confiança:
+9. Incluir intervalo de confiança:
 - Tabela da taxa de encontro/abundancia
 - Grafico da serie temporal abundancia/densidade
 
+10. Padronizar limites do eixo y nos gráficos das séries temporais;
 
-9. Padronizar limites do eixo y nos gráficos das séries temporais;
-
-10. Combinações de gráficos de abundância e densidade /UC/ano, /estação amostral/UC/ano
+11. Combinações de gráficos de abundância e densidade /UC/ano, /estação amostral/UC/ano
 
 12. Para gerar a tebela de densidade, incluir um argumento que possibilite apresentar os resultados tanto por hectare quanto por Km quadrado;
 
 13. Para a legenda das tabelas de abundancia/densidade. Pensar em como ajustar as legendas de abundância/densidade (p. ex. ind/area). Para dados não corrigidos pelo tamnho do grupo a contagem será de ocorrências, que podem ser tanto indivíduos quanto grupos. Para casos de dados corrigidos pelo tamanho do grupo, estimativas serão de número de indivíduos.
 
+
+#PARA PENSAR FUTURAMENTE - COM BASE NOS APONTAMENTOS DA OFICINA
 #Ajustes nas análises/estratégias analíticas
 1. Pesquisar/entender Distância efetiva de avistamento.
 2. Pacote Unmarked
   - exponencial negativa
   - estratégia para lidar com repetições
   - estratégia para lidar com pico em zero.
-  - série temporal aunal (? anotei mais não lembro muito bem do que se tratava)
+  - série temporal anual (? anotei mais não lembro muito bem do que se tratava)
   
 #Pensar estratégias de disponbilizar os dados ao público - maior alcance
 -Olhar Darwin Core e dados ecológicos
