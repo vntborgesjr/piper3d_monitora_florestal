@@ -1,0 +1,89 @@
+---
+title: "Fluxo de trabalho para o carregamento de novos dados"
+date: "Criado em 17 de julho de 2023, atualizado em `r format(Sys.time(), '%d de %B de %Y')`"
+author: "Luciana Fusinatto \n Vitor Borges-Júnior"
+output: 
+  html_notebook:
+    toc: true
+    toc_depth: 5
+    toc_float: false
+    number_section: true
+    code_folding: show
+---
+
+## **Carregamento de um novo conjunto de dados** 
+
+A primeira função que utilizaremos, `carregar_dados_brutos_xlsx()`, irá carregar uma nova planilha de dados em formato excel. Essa função carrega um arquivo do tipo .xlsx e gerar automaticamente o arquivo *backup* nomeado como `dados_brutos.rds` na pasta `data-raw`. A função seguinte a ser utilizada, `gerar_dados_completos()` que irá carregar o arquivo `dados_brutos.rds`. Essa função foi escrita para carrega os dados e operar uma série de transformações para devolvê-lo mais próximo ao necessário para conduzir as análises. Como exemplo, utilizaremos a `monitora_masto_aves_2023_04_04.xlsx`.  
+
+Antes de começar o carregamento dos dados é necessário carregar as funções necessárias utilizando o comando `source()`.
+
+```{r}
+# carregar as funções necessárias
+source(here::here("R/carregar_dados_brutos_xlsx.R"))
+
+source(here::here("R/gerar_dados_completos.R"))
+```
+
+Para carregar a nova base de dados, é importante que ela esteja salva na pasta `data-raw` do projeto Monitora. No corpo da função, deve ser informado o caminho para o arquivo (ex. nome da pasta, `data-raw`, e o nome do arquivo, `monitora_masto_aves_2023_04_04.xlsx`).
+
+```{r}
+# carregar a base de dados do Monitora
+dados_brutos <- carregar_dados_brutos_xlsx(
+  dados = "data-raw/monitora_masto_aves_2023_04_04.xlsx",
+  sheet = 2
+)
+
+head(dados_brutos)
+dplyr::glimpse(dados_brutos)
+```
+Em seguida, usamos a função `gerar_dados_completos()`. 
+
+```{r}
+# gerar dados completos
+dados_completos <- gerar_dados_completos(dados_brutos)
+
+head(dados_completos)
+dplyr::glimpse(dados_completos)
+```
+
+Para garantir a reprodutibilidade dos códigos produzidos em versões atualizadas da base de dados do Monitora, é importante tomar alguns cuidados. O primeiro e mais importante cuidado é **manter a consistência dos nomes, da ordem e do número de colunas** em versões atualizadas da base de dados do Monitora. Além de carregar os dados, a função `carregar_dados_completos()` aplica uma série de transformações nas colunas. Seus nomes são alterados, e a essas são atribuídos tipos apropriados (data, caracter, fator, inteiro e numérico), linhas são eliminadas e novas colunas são geradas. Qualquer alteração no número de colunas, nos seus nomes ou na sua ordem levará a um mal funcionamento da função de transformação dos dados.
+
+Outro aspecto importante é a presença de observações não preenchidas (ex. células vazias) nos dados originais. A função foi desenha para resolver alguns problemas presentes nos dados originais. Por exemplo, nas o trecho do código das linhas xx a xx as observações vazias (`NA`s) são substituidas pelo valor correto na coluna `day_effort`. Essa correção continuará sendo realizada em versões atualizadas dos dados do Monitora. Porém, se outras colunas além das que estão sendo corrigidas possuirem observações vazias os dados serão carregados e transformados, porém outras funções podem ter o seu funcionamento comprometido devido a presença de `NA`'s.
+
+A partir de agora os dados estão prontos para serem explorados, ou  mesmo filtrados e transformados para o formato do pacote `Distance` para análise de densidade. Por exemplo, podemos contar o número de observações validadas:
+
+```{r}
+# carregar a função de contagem das observações validadas
+source(here::here("R/contar_n_obs_validadas.R"))
+
+# contar observações validadas ao nível de espécie
+n_obs_validadas <- contar_n_obs_validadas(dados_completos)
+n_obs_validadas
+```
+
+```{r}
+# carregar função de filtragem dos dados
+source(here::here("R/filtrar_dados.R"))
+
+# filtrar dados por Unidade de Conservação e por espécie
+dados_filtrados <- filtrar_dados(
+  dados = dados_completos,
+  nome_ucs = "resex_tapajos_arapiuns",
+  nome_sps = "dasyprocta_croconota"
+)
+
+head(dados_filtrados)
+str(dados_filtrados)
+```
+
+```{r}
+# carregar função de transformação dos dados para o formato do pacote Distance
+source(here::here("R/transformar_dados_formato_Distance.R"))
+
+# transformar dados para o formato do pacote Distance
+dados_transformados <- transformar_dados_formato_Distance(dados_filtrados)
+
+head(dados_transformados)
+dplyr::glimpse(dados_transformados)
+```
+
