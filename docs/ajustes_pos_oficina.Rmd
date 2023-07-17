@@ -49,6 +49,10 @@ Sugestão do Ricardo: calcular o esforço amostral total para cada UC antes de f
 
 13. Para a legenda das tabelas de abundancia/densidade. Pensar em como ajustar as legendas de abundância/densidade (p. ex. ind/area). Para dados não corrigidos pelo tamnho do grupo a contagem será de ocorrências, que podem ser tanto indivíduos quanto grupos. Para casos de dados corrigidos pelo tamanho do grupo, estimativas serão de número de indivíduos.
 
+14. Completar os arquivos help;
+
+15. Ajeitar os boxplots interativos
+
 
 #PARA PENSAR FUTURAMENTE - COM BASE NOS APONTAMENTOS DA OFICINA
 #Ajustes nas análises/estratégias analíticas
