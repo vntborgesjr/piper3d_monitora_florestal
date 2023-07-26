@@ -1,0 +1,133 @@
+---
+title: "Fluxo de trabalho para o carregamento de novos dados no formato SMART"
+author: 
+- Luciana Fusinatto 
+- Vitor Borges-Júnior
+date: Criado em 17 de julho de 2023, atualizado em `r format(Sys.time(), '%d de %B
+  de %Y')`
+output:
+  html_notebook:
+    toc: yes
+    toc_depth: 5
+    toc_float: no
+    number_section: yes
+    code_folding: show
+---
+
+## **Carregamento de um novo conjunto de dados no formato SMART** 
+
+A primeira função que utilizaremos, `carregar_dados_brutos_xlsx()`, irá carregar a planilha de dados do SMART em formato excel. Essa função carrega um arquivo do tipo .xlsx e gerar automaticamente o arquivo *backup* nomeado como `dados_brutos_SMART.rds` na pasta `data-raw`. A função seguinte a ser utilizada, `gerar_dados_completos_SMART()` que irá carregar o arquivo `dados_brutos_SMART.rds`. Essa função foi escrita para carrega os dados e operar uma série de transformações para devolvê-lo mais próximo ao necessário para conduzir as análises. Como exemplo, utilizaremos o arquivo `monitora_masto_aves_SMART.xlsx`.  
+
+Antes de começar o carregamento dos dados é necessário carregar as funções necessárias utilizando o comando `source()`.
+
+```{r}
+# carregar as funções necessárias
+source(here::here("R/carregar_dados_brutos_xlsx.R"))
+
+source(here::here("R/gerar_dados_completos_SMART.R"))
+```
+
+Para carregar a nova base de dados, é importante que ela esteja salva na pasta `data-raw` do projeto Monitora. Para isso, basta manter a estrutura de pastas do projeto (veja o README do repositório). No corpo da função, deve ser informado o caminho para o arquivo (ex. nome da pasta, `data-raw`, e o nome do arquivo, `monitora_masto_aves_2023_04_04.xlsx`).
+
+```{r, warning=FALSE}
+# carregar a base de dados do Monitora
+dados_brutos_SMART <- carregar_dados_brutos_xlsx(
+  dados = "data-raw/monitora_masto_aves_SMART.xlsx",
+  sheet = 3
+)
+
+head(dados_brutos_SMART)
+dplyr::glimpse(dados_brutos_SMART)
+```
+
+Em seguida, usamos a função `gerar_dados_completos_SMART()`. 
+
+```{r}
+# gerar dados completos
+dados_completos_SMART <- gerar_dados_completos_SMART(dados_brutos_SMART)
+
+head(dados_completos_SMART)
+dplyr::glimpse(dados_completos_SMART)
+```
+
+Para garantir a reprodutibilidade dos códigos produzidos em versões atualizadas da base de dados do Monitora, é importante tomar alguns cuidados. O primeiro e mais importante cuidado é **manter a consistência dos nomes, da ordem e do número de colunas** em versões atualizadas da base de dados do Monitora. Além de carregar os dados, a função `carregar_dados_completos()` aplica uma série de transformações nas colunas. Seus nomes são alterados, e a essas são atribuídos tipos apropriados (data, caracter, fator, inteiro e numérico), linhas são eliminadas e novas colunas são geradas. Qualquer alteração no número de colunas, nos seus nomes ou na sua ordem levará a um mal funcionamento da função de transformação dos dados.
+
+Outros aspectos importantes incluem: 
+
+- a presença de dados ausentes (`NA`s) são automaticamente substituidas pelo valor correto apenas nas colunas `nome_ea`, `esforco_dia` e `tempo_senso`;
+
+- novos dados devem ser adicionados a planilha de dados utilizada como modelo no presente documento;
+
+- se novas Unidades de Conservação para além das 41 presentes nessa planilha forem adicionadas, a função pode deixar de funcionar. Nesse caso, entre em contato com os desenvolvedores via e-mail: vntborgesjr@gmail.com;
+
+- os nomes dos observadores devem ser separados por " e ", " E ", "/", ";", ou " a ". Note que, quando presentes, os espaços são importantes e devem ser aplicados para separação dos nomes;
+
+- na coluna `vaildacao` (coluna "O que foi identificado" na planilha original) espécie deve ser identificado como "E", "e", ou "espécie"; gênero deve ser identificado como "G", "g", ou "gênero"; família deve ser identificada como "F"; e ordem deve ser identificada como "O".
+
+A partir de agora os dados estão prontos para serem explorados, ou  mesmo filtrados e transformados para o formato do pacote `Distance` para análise de densidade. Por exemplo, filtrar os dados para a UC cujos os dados foram introduzidos a partir do SMART:
+
+```{r}
+# carregar função de filtragem dos dados
+source(here::here("R/filtrar_dados.R"))
+
+# filtrar dados por Unidade de Conservação e por espécie
+dados_filtrados_SMART <- filtrar_dados(
+  dados = dados_completos_SMART,
+  nome_ucs = "rds_uatuma"
+)
+
+head(dados_filtrados_SMART)
+str(dados_filtrados_SMART)
+```
+
+Agora, podemos contar o número de observações validadas:
+
+```{r}
+# carregar a função de contagem das observações validadas
+source(here::here("R/contar_n_obs_validadas.R"))
+
+# contar observações validadas ao nível de espécie
+n_obs_validadas <- contar_n_obs_validadas(dados_filtrados_SMART)
+n_obs_validadas
+```
+
+Vamos selecionar uma espécie da RDS Uatumã para então transformar os dados para o formato de análise do pacote `Distance`. Primeiro vamos avaliar qual foi a espécie mais abundante:
+
+```{r}
+# carregar a função para contar número de observações por espécie e plotar os dados
+source(here::here("R/contar_n_obs_sp.R"))
+source(here::here("R/plotar_n_obs_sp_interativo.R"))
+
+# contar o número de observações por espécie
+n_obs_sp <- contar_n_obs_sp(dados_filtrados_SMART)
+n_obs_sp
+
+# plotar o número de observações por espécie
+plotar_n_obs_sp_interativo(n_obs_sp)
+```
+
+A espécie mais abundante foi *Crypturellus* sp. Vamos filtrar os dados somente para esse espécie:
+
+```{r}
+dados_filtrados_crypt_SMART <- filtrar_dados(
+  dados = dados_filtrados_SMART,
+  nome_sps = "crypturellus"
+)
+
+head(dados_filtrados_crypt_SMART)
+str(dados_filtrados_crypt_SMART)
+```
+
+Finalmente, vamos transformar os dados para o formato de análise:
+
+```{r}
+# carregar função de transformação dos dados para o formato do pacote Distance
+source(here::here("R/transformar_dados_formato_Distance.R"))
+
+# transformar dados para o formato do pacote Distance
+dados_transformados_SMART <- transformar_dados_formato_Distance(dados_filtrados_crypt_SMART)
+
+head(dados_transformados_SMART)
+dplyr::glimpse(dados_transformados_SMART)
+```
+
