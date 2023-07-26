@@ -49,7 +49,8 @@ gerar_dados_completos <- function(dados) {
     tamanho_grupo = nomes_antigos[25],
     observadores = nomes_antigos[14],
     horario_inicio = nomes_antigos[9],
-    horario_termino = nomes_antigos[10]
+    horario_termino = nomes_antigos[10],
+    velocidade_km_h = nomes_antigos[12]
   )
 
 
@@ -108,7 +109,7 @@ gerar_dados_completos <- function(dados) {
         as.factor
       ),
       # gera uma nova coluna com o tempo total do censo
-      tempo_censo = horario_inicio - horario_termino,
+      tempo_censo = horario_termino - horario_inicio,
       # padroniza os separadores entre os nomes dos observadores
       # substitu "e" por ","
       novo = stringr::str_replace_all(
@@ -178,10 +179,15 @@ gerar_dados_completos <- function(dados) {
         data,
         \(.x) rep(.x$tempo_censo[!is.na(.x$tempo_censo)][1])
       ),
+      # gerar nova coluna de velocidade sem observacoes ausentes
+      velocidade_km_h2 = purrr::map(
+        data,
+        \(.x) rep(.x$velocidade_km_h[!is.na(.x$velocidade_km_h)][1])
+      )
     ) |>
     # desaninhar os dados
     tidyr::unnest(
-      c(data, esforco_dia2, tempo_censo2)
+      c(data, esforco_dia2, tempo_censo2, velocidade_km_h2)
     ) |>
     # desagrupar os dados
     dplyr::ungroup() |>
@@ -196,7 +202,9 @@ gerar_dados_completos <- function(dados) {
       esforco_dia = esforco_dia2,
       nome_sp:numero_observadores,
       tempo_censo = tempo_censo2,
-      -tempo_censo,
+      velocidade_km_h = velocidade_km_h2,
+      -velocidade_km_h2,
+      -tempo_censo2,
       -esforco_dia,
       -tidyselect::starts_with("obs"),
       -tidyselect::starts_with("horario")
