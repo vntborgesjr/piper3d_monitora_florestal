@@ -55,7 +55,8 @@ transformar_dados_formato_Distance <- function(
         season = estacao,
         year = ano,
         size = tamanho_grupo,
-        cense_time = tempo_censo
+        cense_time = tempo_censo,
+        speed = velocidade_km_h
       ) |>
       dplyr::mutate(
         Area = 0,
@@ -79,7 +80,8 @@ transformar_dados_formato_Distance <- function(
         season = estacao,
         year = ano,
         size = tamanho_grupo,
-        cense_time = tempo_censo
+        cense_time = tempo_censo,
+        speed = velocidade_km_h
       ) |>
       dplyr::mutate(
         Area = 0,
@@ -170,6 +172,8 @@ utils::globalVariables(
     "n_max",
     "day",
     "month",
-    "filtro_datas_sem_repeticao"
+    "filtro_datas_sem_repeticao",
+    "speed",
+    "velocidade_km_h"
   )
 )
