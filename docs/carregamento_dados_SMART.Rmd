@@ -27,7 +27,7 @@ source(here::here("R/carregar_dados_brutos_xlsx.R"))
 source(here::here("R/gerar_dados_completos_SMART.R"))
 ```
 
-Para carregar a nova base de dados, é importante que ela esteja salva na pasta `data-raw` do projeto Monitora. Para isso, basta manter a estrutura de pastas do projeto (veja o README do repositório). No corpo da função, deve ser informado o caminho para o arquivo (ex. nome da pasta, `data-raw`, e o nome do arquivo, `monitora_masto_aves_2023_04_04.xlsx`).
+Para carregar a nova base de dados, é importante que ela esteja salva na pasta `data-raw` do projeto Monitora. Para isso, basta manter a estrutura de pastas do projeto (veja o README do repositório). No corpo da função, deve ser informado o caminho para o arquivo (ex. nome da pasta, `data-raw`, e o nome do arquivo, `monitora_masto_aves_SMART.xlsx`).
 
 ```{r, warning=FALSE}
 # carregar a base de dados do Monitora
@@ -56,9 +56,9 @@ Outros aspectos importantes incluem:
 
 - a presença de dados ausentes (`NA`s) são automaticamente substituidas pelo valor correto apenas nas colunas `nome_ea`, `esforco_dia` e `tempo_senso`;
 
-- novos dados devem ser adicionados a planilha de dados utilizada como modelo no presente documento;
+- para que as funções de carregamento dos dados funcionem, é recomendável que novos dados sejam adicionados à planilha de dados utilizada como modelo no presente documento. No caso de novas planilhas, estas deverão ser ajustadas para que mantenham a estrutura da planilha modelo. Em caso de dúvidas, entrar em contato com os desenvolvedores via e-mail: vntborgesjr@gmail.com;
 
-- se novas Unidades de Conservação para além das 41 presentes nessa planilha forem adicionadas, a função pode deixar de funcionar. Nesse caso, entre em contato com os desenvolvedores via e-mail: vntborgesjr@gmail.com;
+- se novas Unidades de Conservação forem adicionadas, a função pode deixar de funcionar. Nesse caso, entre em contato com os desenvolvedores via e-mail: vntborgesjr@gmail.com;
 
 - os nomes dos observadores devem ser separados por " e ", " E ", "/", ";", ou " a ". Note que, quando presentes, os espaços são importantes e devem ser aplicados para separação dos nomes;
 
