@@ -1,37 +1,38 @@
 ---
 title: "ajustes_codigos_pos_oficina"
-output: html_document
+output: html_notebook
 date: "`r Sys.Date()`"
 ---
 #PARA ENTREGA DENTRO DO PRAZO DO ADITIVO
 #Ajustes no relatorio Markdown (Lu Fusinatto)
 
-1.Separar um tutoriral de carregamento de dados e transformação para o distance à parte do fluxo de análise. 
-Adaptar para facilitar inclusão de novos conjuntos de dados, inclusive do SMART.
+1.~~Separar um tutoriral de carregamento de dados e transformação para o distance à parte do fluxo de análise. 
+Adaptar para facilitar inclusão de novos conjuntos de dados, inclusive do SMART.~~ **FEITO** (por hora, mas preciso conseguir preencher os valores `NA`'s na coluna speed...)
 
 
-2. No tutorial de fluxo de análise, incluir uma opção incial com a alternativa de trabalhar com o conjunto de dados do pacote ou com outro conjunto de dados.
+2. No tutorial de fluxo de análise, incluir uma opção incial com a alternativa de trabalhar com o conjunto de dados do pacote ou com outro conjunto de dados. 
+**OBS**: incluir no tutorial de fluxo de análise o que está no arquivo `carregamento_novos_dados.Rmd`.
 
-2. O html não gerou outputs para o fluxo estratificado (gerar um novo html após correções e disponibilizar); 
+3. O html não gerou outputs para o fluxo estratificado (gerar um novo html após correções e disponibilizar); 
 
-3. Incluir o fluxo de análise: dados estratificados + covariável de tamanho de grupo.
+4. Incluir o fluxo de análise: dados estratificados + covariável de tamanho de grupo.
 
 
 
 #Ajustes nos dados/códigos (Vitor)
 
-1.Criar uma opção para carregamento dos dados do SMART
+1.~~Criar uma opção para carregamento dos dados do SMART~~ **FEITO**
 
 2. Corrigir nome da família Tinamidae;
 
 3. Corrigir o esforço amostral para incluir trilhas percorridas sem registros dos animais.
 Sugestão do Ricardo: calcular o esforço amostral total para cada UC antes de filtrar por espécie. Usar esse esforço amostral como base quando estiver analisando os dados de cada espécie. Filtrar por UC/ano/estacao. Generalizar para todas as espécies;
 
-4. Incluir um filtro por gênero;
+4. Incluir um filtro por gênero; 
 
 5. Adicionar colunas genero, familia e ordem;
 
-6. Incluir opção de filtro pelo código cnuc;
+6. Incluir opção de filtro pelo código cnuc; (foda incluir todos esses filtros na função. seria mais fácil se as pessoas soubessem usar a função dplyr::filter()... fui querer facilitar acabei complicando o rolê...)
 
 7. Verificar nomes dos modelos nas tabelas de output das estimativas de taxa de encontro, abundancia e densidade. Todas devem ter a coluna modelo (com o nome) e a coluna formula.
 
@@ -45,7 +46,7 @@ Sugestão do Ricardo: calcular o esforço amostral total para cada UC antes de f
 
 11. Combinações de gráficos de abundância e densidade /UC/ano, /estação amostral/UC/ano
 
-12. Para gerar a tebela de densidade, incluir um argumento que possibilite apresentar os resultados tanto por hectare quanto por Km quadrado;
+12. Para gerar a tabela de densidade, incluir um argumento que possibilite apresentar os resultados tanto por hectare quanto por Km quadrado;
 
 13. Para a legenda das tabelas de abundancia/densidade. Pensar em como ajustar as legendas de abundância/densidade (p. ex. ind/area). Para dados não corrigidos pelo tamnho do grupo a contagem será de ocorrências, que podem ser tanto indivíduos quanto grupos. Para casos de dados corrigidos pelo tamanho do grupo, estimativas serão de número de indivíduos.
 
@@ -64,5 +65,8 @@ Sugestão do Ricardo: calcular o esforço amostral total para cada UC antes de f
   - série temporal anual (? anotei mais não lembro muito bem do que se tratava)
   
 #Pensar estratégias de disponbilizar os dados ao público - maior alcance
--Olhar Darwin Core e dados ecológicos
+-Olhar Darwin Core e dados ecológicos 
+
 - Dryad? DataOne? Algum outro banco de dados?
+
+**OBS**: (Formato Darwin Core é específico para dados de ocorrência. O PPBio tá tentando se adequar a esse formato, mas encontrando dificuldade pq perde muito dado, não será o formato único de tombamento. Provavelmente ficará no DataOne também, bom pra dados ecológicos).
