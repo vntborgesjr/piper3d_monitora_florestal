@@ -33,7 +33,7 @@ Para carregar a nova base de dados, é importante que ela esteja salva na pasta 
 # carregar a base de dados do Monitora
 dados_brutos_SMART <- carregar_dados_brutos_xlsx(
   dados = "data-raw/monitora_masto_aves_SMART.xlsx",
-  sheet = 3
+  sheet = 3 # indica a aba com a planilha a ser carregada
 )
 
 head(dados_brutos_SMART)
@@ -56,13 +56,15 @@ Outros aspectos importantes incluem:
 
 - a presença de dados ausentes (`NA`s) são automaticamente substituidas pelo valor correto apenas nas colunas `nome_ea`, `esforco_dia` e `tempo_senso`;
 
-- novos dados devem ser adicionados a planilha de dados utilizada como modelo no presente documento;
+- novos dados devem ser adicionados a planilha de dados utilizada como modelo no presente documento (idêntico ao modelo do mointora);
 
 - se novas Unidades de Conservação para além das 41 presentes nessa planilha forem adicionadas, a função pode deixar de funcionar. Nesse caso, entre em contato com os desenvolvedores via e-mail: vntborgesjr@gmail.com;
 
 - os nomes dos observadores devem ser separados por " e ", " E ", "/", ";", ou " a ". Note que, quando presentes, os espaços são importantes e devem ser aplicados para separação dos nomes;
 
-- na coluna `vaildacao` (coluna "O que foi identificado" na planilha original) espécie deve ser identificado como "E", "e", ou "espécie"; gênero deve ser identificado como "G", "g", ou "gênero"; família deve ser identificada como "F"; e ordem deve ser identificada como "O".
+- na coluna `validacao` (coluna "O que foi identificado" na planilha original) espécie deve ser identificado como "E", "e", ou "espécie"; gênero deve ser identificado como "G", "g", ou "gênero"; família deve ser identificada como "F"; e ordem deve ser identificada como "O";
+
+- deve ser utilizado ponto como separador decimal (ao em vez de vírgula).
 
 A partir de agora os dados estão prontos para serem explorados, ou  mesmo filtrados e transformados para o formato do pacote `Distance` para análise de densidade. Por exemplo, filtrar os dados para a UC cujos os dados foram introduzidos a partir do SMART:
 
