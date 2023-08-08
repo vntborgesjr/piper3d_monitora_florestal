@@ -1,5 +1,5 @@
 # Documentacao da funcao gerar_dados_completos_SMART() ----------------------
-#' Seleciona, trasforma e renomea as colunas e observacoes nos dados brutos
+#' Seleciona, trasforma e renomea as colunas e observacoes nos dados brutos oriundos do SMART
 #'
 #' @description
 #' A funcao \code{gerar_dados_completos()} recebe uma \code{tibble} gerada a partir da funcao \code{carregar_dados_brutos_xlsx()}, selecionando, transformando e renomeando suas colunas e observacoes.
@@ -65,15 +65,25 @@ gerar_dados_completos_SMART <- function(dados) {
         nome_uc
       ),
       # gera uma nova coluna com o nome das UCs abreviados
-      nome_uc_abv = forcats::lvls_revalue(
-        nome_uc,
-        new_levels = c(
-          "ETM", "EM", "EN", "ESGT", "FJ", "PCV", "PA", "PSBoc", "PSBod", "PSC",
-          "PSM", "PSC", "PSD", "PSP", "PSO", "PPN", "PCO", "PI", "PJau", "PJur",
-          "PMR", "PS", "PV", "PCA", "PMT", "RDSU", "RG", "RJ", "RTap", "RU", "RG",
-          "RTrom", "RAT", "RBA", "RCI", "RCM", "RRC", "RROP", "RIA", "RRA", "RTA"
-        )
-      ),
+      nome_uc_abv = stringr::str_split(# divide o genero e epiteto em diferentes listas
+        nome_sp, " "
+      ) |>
+        purrr::map(# retem apenas as 4 primeiras letras dos itens de cada lista
+          \(string) stringr::str_sub(
+            string, 1, 4
+          )
+        ) |>
+        purrr::map(# aidiciona "." ao final dos itens de cada lista
+          \(string) stringr::str_c(
+            string, "."
+          )
+        ) |>
+        purrr::map(# adiciona " " ao final dos itens de cada lista
+          \(string) stringr::str_flatten(
+            string, " "
+          )
+        ) |>
+        purrr::list_c(), # concatena os itens das duas listas
       # gera nova coluna com o nome das sp abreviados
       nome_sp_abv = stringr::str_split(# divide o genero e epiteto em diferentes listas
         nome_sp, " "
@@ -106,6 +116,10 @@ gerar_dados_completos_SMART <- function(dados) {
         "Genero" = "g",
         "Ordem" = "O"
       ),
+      # atribui tipo numerico
+      distancia = as.numeric(distancia), 
+      # atribuitipo numerico
+      tamanho_grupo = as.numeric(tamanho_grupo),
       # atribui o tipo fator a todas as colunas tipo caracter
       dplyr::across(
         tidyselect::where(is.character),
