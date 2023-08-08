@@ -30,7 +30,7 @@ Sugestão do Ricardo: calcular o esforço amostral total para cada UC antes de f
 
 4. Incluir um filtro por gênero; 
 
-5. Adicionar colunas genero, familia e ordem;
+5. ~~Adicionar colunas genero, familia e ordem;~~
 
 6. Incluir opção de filtro pelo código cnuc; (foda incluir todos esses filtros na função. seria mais fácil se as pessoas soubessem usar a função dplyr::filter()... fui querer facilitar acabei complicando o rolê...)
 
@@ -54,6 +54,9 @@ Sugestão do Ricardo: calcular o esforço amostral total para cada UC antes de f
 
 15. Ajeitar os boxplots interativos
 
+*EXTRAS**
+
+~~. incluir variável velocidade~~
 
 #PARA PENSAR FUTURAMENTE - COM BASE NOS APONTAMENTOS DA OFICINA
 #Ajustes nas análises/estratégias analíticas
