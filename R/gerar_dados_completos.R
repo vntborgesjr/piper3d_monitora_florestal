@@ -64,15 +64,25 @@ gerar_dados_completos <- function(dados) {
         nome_uc
       ),
       # gera uma nova coluna com o nome das UCs abreviados
-      nome_uc_abv = forcats::lvls_revalue(
-        nome_uc,
-        new_levels = c(
-          "ETM", "EM", "EN", "ESGT", "FJ", "PCV", "PA", "PSBoc", "PSBod", "PSC",
-          "PSM", "PSC", "PSD", "PSP", "PSO", "PPN", "PCO", "PI", "PJau", "PJur",
-          "PMR", "PS", "PV", "PCA", "PMT", "RG", "RJ", "RTap", "RU", "RG",
-          "RTrom", "RAT", "RBA", "RCI", "RCM", "RRC", "RROP", "RIA", "RRA", "RTA"
-        )
-      ),
+      nome_uc_abv = stringr::str_split(# divide o genero e epiteto em diferentes listas
+        nome_sp, " "
+      ) |>
+        purrr::map(# retem apenas as 4 primeiras letras dos itens de cada lista
+          \(string) stringr::str_sub(
+            string, 1, 4
+          )
+        ) |>
+        purrr::map(# aidiciona "." ao final dos itens de cada lista
+          \(string) stringr::str_c(
+            string, "."
+          )
+        ) |>
+        purrr::map(# adiciona " " ao final dos itens de cada lista
+          \(string) stringr::str_flatten(
+            string, " "
+          )
+        ) |>
+        purrr::list_c(), # concatena os itens das duas listas
       # gera nova coluna com o nome das sp abreviados
       nome_sp_abv = stringr::str_split(# divide o genero e epiteto em diferentes listas
         nome_sp, " "
