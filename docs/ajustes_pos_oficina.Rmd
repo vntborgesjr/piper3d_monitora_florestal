@@ -19,11 +19,11 @@ Adaptar para facilitar inclusão de novos conjuntos de dados, inclusive do SMART
 
 
 
-#Ajustes nos dados/códigos (Vitor)
+# Ajustes nos dados/códigos (Vitor)
 
 1.~~Criar uma opção para carregamento dos dados do SMART~~ **FEITO**
 
-2. Corrigir nome da família Tinamidae;
+2.~~Corrigir nome da família Tinamidae;~~
 
 3. Corrigir o esforço amostral para incluir trilhas percorridas sem registros dos animais.
 Sugestão do Ricardo: calcular o esforço amostral total para cada UC antes de filtrar por espécie. Usar esse esforço amostral como base quando estiver analisando os dados de cada espécie. Filtrar por UC/ano/estacao. Generalizar para todas as espécies;
