@@ -180,6 +180,7 @@ gerar_dados_completos_SMART <- function(dados) {
     # completar observacoes repetidas que estao ausentes
     # agrupar por nome da estacao amostral e data dee amostragem
     dplyr::group_by(
+      nome_uc,
       nome_ea,
       data_amostragem
     ) |>
@@ -240,33 +241,8 @@ gerar_dados_completos_SMART <- function(dados) {
       .after = nome_sp
     ) |>
     # preencher observacoes ausentes
-    tidyr::fill(esforco_dia)
-  
-  # calculo do esforco amostral total
-  dados_completos <- dados_completos |>
-    # seleciona combinacoes unicas de nome_ea e data_amostragem
-    dplyr::distinct(
-      nome_ea,
-      data_amostragem
-    ) |>
-    # conta o numero de vezes que uma ea foi amostrada
-    dplyr::count(
-      nome_ea,
-      name = "n_visitas_repetidas"
-    ) |>
-    # reune os dados gerados com os dados_completos a partir da coluna nome_ea
-    dplyr::left_join(
-      y = dados_completos,
-      by = dplyr::join_by(nome_ea),
-    ) |>
-    # gera a distancia total percorrida em cada ea
-    dplyr::mutate(esforco_total = esforco_dia*n_visitas_repetidas) |>
-    # reposiciona as colunas
-    dplyr::relocate(
-      esforco_total,
-      .after = esforco_dia
-    ) |>
-    # agrupa a tibble pelas colunas nome_uc e nome_ea
+    tidyr::fill(esforco_dia) |> 
+  # agrupa a tibble pelas colunas nome_uc e nome_ea
     dplyr::group_by(
       nome_uc,
       nome_ea
