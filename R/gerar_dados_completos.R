@@ -15,7 +15,7 @@
 #' colunas e observações dos dados brutos do Projeto Monitora Componente
 #' Florestal.
 #'
-#'@return Retorna um objeto do tipo \code{tibble} contendo uma seleção de
+#' @return Retorna um objeto do tipo \code{tibble} contendo uma seleção de
 #' colunas transformadas e renomeadas a partir dos dados brutos do Projeto
 #' Monitora Componente Florestal.
 
@@ -36,8 +36,7 @@
 
 #' @examples \dontrun{gerar_dados_completos(dados = dados_brutos)}
 gerar_dados_completos <- function(dados) {
-  
-  # limpar nome das colunas
+
   dados <- dados|>
     janitor::clean_names()
 
@@ -54,10 +53,10 @@ gerar_dados_completos <- function(dados) {
     nomes_antigos[7],
     estacao = nomes_antigos[8],
     esforco_dia = nomes_antigos[5],
-    nomes_antigos[16],
-    nomes_antigos[17],
-    nomes_antigos[18],
-    nomes_antigos[19],
+    nome_classe = nomes_antigos[16],
+    nome_ordem = nomes_antigos[17],
+    nome_familia = nomes_antigos[18],
+    nome_genero = nomes_antigos[19],
     nome_sp = nomes_antigos[22],
     validacao = nomes_antigos[23],
     distancia = nomes_antigos[27],
@@ -186,8 +185,9 @@ gerar_dados_completos <- function(dados) {
       numero_observadores = obs1 + obs2 + obs3 + obs4 + obs5 + obs6
     ) |>
     # completar observacoes repetidas que estao ausentes
-    # agrupar por nome da estacao amostral e data de amostragem
+    # agrupar por nome da estacao amostral e data dee amostragem
     dplyr::group_by(
+      nome_uc,
       nome_ea,
       data_amostragem
     ) |>
@@ -225,7 +225,7 @@ gerar_dados_completos <- function(dados) {
       estacao,
       ano,
       esforco_dia = esforco_dia2,
-      nome_sp:numero_observadores,
+      nome_classe:numero_observadores,
       tempo_censo = tempo_censo2,
       velocidade_km_h = velocidade_km_h2,
       -velocidade_km_h2,
@@ -248,41 +248,11 @@ gerar_dados_completos <- function(dados) {
       .after = nome_sp
     ) |>
     # preencher observacoes ausentes
-    tidyr::fill(esforco_dia)
-
-  # calculo do esforco amostral total
-  dados_completos <- dados_completos |>
-    # seleciona combinacoes unicas de nome_ea e data_amostragem
-    dplyr::distinct(
-      nome_ea,
-      data_amostragem
+    tidyr::fill(esforco_dia) |>
+    tidyr::fill(
+      velocidade_km_h,
+      .direction = "down"
     ) |>
-    # conta o numero de vezes que uma ea foi amostrada
-    dplyr::count(
-      nome_ea,
-      name = "n_visitas_repetidas"
-    ) |>
-    # reune os dados gerados com os dados_completos a partir da coluna nome_ea
-    dplyr::left_join(
-      y = dados_completos,
-      by = dplyr::join_by(nome_ea),
-    ) |>
-    # gera a distancia total percorrida em cada ea
-    dplyr::mutate(esforco_total = esforco_dia*n_visitas_repetidas) |>
-    # reposiciona as colunas
-    dplyr::relocate(
-      esforco_total,
-      .after = esforco_dia
-    ) |>
-    # agrupa a tibble pelas colunas nome_uc e nome_ea
-    dplyr::group_by(
-      nome_uc,
-      nome_ea
-    ) |>
-    # filtra a tibble mantendo apenas as linhas contendo o esforco maximo de um dia
-    dplyr::filter(esforco_dia == max(esforco_dia))  |>
-    # desagrupa a tibble
-    dplyr::ungroup() |>
     # eliminar espacos, letras minusculas e caracteres especiais das observacoes
     dplyr::mutate(
       dplyr::across(
@@ -300,5 +270,27 @@ gerar_dados_completos <- function(dados) {
 
   # retornar o tibble com os dados completos
   return(dados_completos)
+
 }
 
+utils::globalVariables(
+  c(
+    "horario_termino",
+    "horario_inicio",
+    "observadores",
+    "novo",
+    "obs1",
+    "obs2",
+    "obs3",
+    "obs4",
+    "obs5",
+    "obs6",
+    "esforco_dia2",
+    "tempo_censo2",
+    "velocidade_km_h2",
+    "nome_classe",
+    "numero_observadores",
+    "categoria_uc",
+    "n_visitas_repetidas"
+  )
+)
