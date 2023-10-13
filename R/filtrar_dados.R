@@ -84,51 +84,50 @@
 #' glimpse(dados_filtrados_uc_sp_validacao)
 filtrar_dados <- function(
     dados = monitora_aves_masto_florestal,
-    nome_ucs = NULL,
-    nome_sps = NULL,
+    ...,
     validacao_obs = c("ordem", "familia", "genero", "especie", "na")
 ) {
-
-  # controlar as possibilidades de filtragem
-  if (is.null(nome_ucs) & is.null(nome_sps)) {
-
-    # gerar o tibble filtrado por UC e especie e nivel taxonomico de validacao
-    dados_filtrados <- dados |>
-      dplyr::filter(
-        validacao %in% validacao_obs
-      )
-
-  } else if (!is.null(nome_ucs) & !is.null(nome_sps)) {
-
-    # gerar o tibble filtrado por UC e especie e nivel taxonomico de validacao
-    dados_filtrados <- dados |>
-      dplyr::filter(
-        nome_uc %in% nome_ucs,
-        nome_sp %in% nome_sps,
-        validacao %in% validacao_obs
-      )
-
-  } else  if (is.null(nome_ucs)) {
-
-    # gerar o tibble filtrado por especie e nivel taxonomico de validacao
-    dados_filtrados <- dados |>
-      dplyr::filter(
-        nome_sp %in% nome_sps,
-        validacao %in% validacao_obs
-      )
-
-  } else if (is.null(nome_sps)) {
-
-    # gerar o tibble filtrado por UC e nivel taxonomico de validacao
-    dados_filtrados <- dados |>
-      dplyr::filter(
-        nome_uc %in% nome_ucs,
-        validacao %in% validacao_obs
-      )
-
-  }
-
-  # retornar o tibble com os dados filtrados e nivel taxonomico de validacao
+  
+  # gerar o tibble filtrado pelas colunas desejadas e nivel taxonomico de validacao
+  dados_filtrados <- dados |>
+    dplyr::filter(
+      ...,
+      validacao %in% validacao_obs
+    )
+  
+  # gerar nomes das ucs e sps filtradas
+  nome_uc1 <- unique(as.character(dados$nome_uc))
+  
+  # gerar o tibble filtrado pelas uc, nivel taxonomico de validacao
+  dados_filtrados_uc <- dados |> 
+    dplyr::filter(
+      nome_uc %in% nome_uc1
+    ) 
+  
+  # incluir data amostradas e sem observação
+  dados_filtrados <- dados_filtrados_uc |>
+    # seleciona combinacoes unicas de nome_uc, nome_ea, data_amostragem,
+    # ano, estacao, esforco_dia
+    dplyr::distinct(
+      nome_uc,
+      nome_ea,
+      data_amostragem,
+      ano,
+      estacao,
+      esforco_dia
+    ) |> 
+    dplyr::left_join(
+      y = dados_filtrados,
+      by = dplyr::join_by(
+        nome_uc,
+        nome_ea,
+        data_amostragem,
+        ano,
+        estacao,
+        esforco_dia
+      ),
+    ) 
+  
   return(dados_filtrados)
 }
 
