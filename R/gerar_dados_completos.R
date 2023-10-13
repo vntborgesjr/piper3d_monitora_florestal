@@ -1,21 +1,35 @@
-# Documentacao da funcao gerar_dados_completos() ----------------------
-#' Seleciona, trasforma e renomea as colunas e observacoes nos dados brutos
+# Documentação da função gerar_dados_completos() ----------------------
+#' Seleciona, trasforma e renomea as colunas e observações nos dados brutos
 #'
 #' @description
-#' A funcao \code{gerar_dados_completos()} recebe uma \code{tibble} gerada a partir da funcao \code{carregar_dados_brutos_xlsx()}, selecionando, transformando e renomeando suas colunas e observacoes.
+#' A função \code{gerar_dados_completos()} recebe uma \code{tibble} gerada a
+#' partir da função \code{carregar_dados_brutos_xlsx()}, selecionando,
+#' transformando e renomeando suas colunas e observações.
 #'
 #' @usage gerar_dados_completos(dados)
 #'
 #' @param dados recebe uma \code{tibble} contendo os dados brutos.
 #'
 #' @details
-#' A funcao \code{gerar_dados_completos()} seleciona, transforma e renomeia as colunas e observacoes dos dados brutos do Projeto Monitora Componente Florestal. A funcao gera novas colunas contendo o numero de vezes que cada estacao amostral foi visitada, a categoria da UC,o nome abreviado das UC's, o nome abreviado das especies, o esforco amostral total empregado em cada estacao amostral, o numero de observadores e o tempo total de cada censo. Quando ausentes, as distancias de trilhas percorridas sao imputadas.
+#' A funcao \code{gerar_dados_completos()} seleciona, transforma e renomeia as
+#' colunas e observações dos dados brutos do Projeto Monitora Componente
+#' Florestal.
 #'
-#'
-#' @return Retorna um objeto do tipo \code{tibble} contendo uma selecao de colunas transformadas e renomeadas a partir dos dados brutos do Projeto Monitora Componente Florestal.
+#'@return Retorna um objeto do tipo \code{tibble} contendo uma seleção de
+#' colunas transformadas e renomeadas a partir dos dados brutos do Projeto
+#' Monitora Componente Florestal.
 
+#' @details
+#' A função gera novas colunas contendo o número de vezes que cada estação
+#' amostral foi visitada, a categoria da UC, o nome abreviado das UC's, o nome
+#' abreviado das espécies, o esforço amostral total empregado em cada estação
+#' amostral, o número de observadores e o tempo total de cada censo. Quando
+#' ausentes, as distâncias de trilhas percorridas sao imputadas. Outra
+#' transfomração importante é a inlcusão de linhas para os dias em que houve
+#' amostragem e uma dada espécie não foi observada (ex. distância = \code{NA})
+#'
 #' @export
-
+#'
 #' @author
 #' Vitor N. T. Borges-Junior
 #' Luciana A. Fusinatto
@@ -23,6 +37,7 @@
 #' @examples \dontrun{gerar_dados_completos(dados = dados_brutos)}
 gerar_dados_completos <- function(dados) {
   
+  # limpar nome das colunas
   dados <- dados|>
     janitor::clean_names()
 
@@ -171,7 +186,7 @@ gerar_dados_completos <- function(dados) {
       numero_observadores = obs1 + obs2 + obs3 + obs4 + obs5 + obs6
     ) |>
     # completar observacoes repetidas que estao ausentes
-    # agrupar por nome da estacao amostral e data dee amostragem
+    # agrupar por nome da estacao amostral e data de amostragem
     dplyr::group_by(
       nome_ea,
       data_amostragem
