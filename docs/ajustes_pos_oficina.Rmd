@@ -73,3 +73,7 @@ Sugestão do Ricardo: calcular o esforço amostral total para cada UC antes de f
 - Dryad? DataOne? Algum outro banco de dados?
 
 **OBS**: (Formato Darwin Core é específico para dados de ocorrência. O PPBio tá tentando se adequar a esse formato, mas encontrando dificuldade pq perde muito dado, não será o formato único de tombamento. Provavelmente ficará no DataOne também, bom pra dados ecológicos).
+
+# Novas atualizações necessárias
+
+- incluir mensagens de erro alertando quando o nome da uc, ou nome de familia, genero ou sp estiverem errados (por enquanto gera resultado mesmo com nomes errados, inserir warning)
