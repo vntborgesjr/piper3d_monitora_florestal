@@ -38,6 +38,7 @@
 #' glimpse(dados_distance_sem_repeticao)
 transformar_dados_formato_Distance <- function(
     dados = monitora_aves_masto_florestal,
+    ...,
     amostras_repetidas = TRUE
 ) {
 
@@ -49,7 +50,7 @@ transformar_dados_formato_Distance <- function(
       dplyr::select(
         Region.Label = nome_uc,
         Sample.Label = nome_ea,
-        Effort = esforco_total,
+        Effort_day = esforco_dia,
         sampling_day = data_amostragem,
         distance = distancia,
         season = estacao,
@@ -66,15 +67,43 @@ transformar_dados_formato_Distance <- function(
         Area,
         .before = Sample.Label
       )
+    
+    # calculo do esforco amostral total
+    n_repeated_visits <- dados_formato_distance |> 
+      # conta o numero de vezes que uma ea foi amostrada
+      dplyr::count(
+        Region.Label,
+        Sample.Label,
+        season,
+        year,
+        name = "repeated_visits"
+      )
+    
+    dados_formato_distance <- dados_formato_distance |>
+      dplyr::left_join(
+        n_repeated_visits,
+        dplyr::join_by(...),
+        relationship = "many-to-many"
+      ) |> 
+      # gera a distancia total percorrida em cada ea
+      dplyr::mutate(
+        Effort = Effort_day * repeated_visits,
+        .before = sampling_day
+      ) |>
+      # reposiciona as colunas
+      dplyr::relocate(
+        repeated_visits,
+        .after = Sample.Label
+      ) 
 
   } else {
 
-    # transforma dados para formato distance R
+    # tranformar dados mantendo as amostras repetidas
     dados_formato_distance <- dados |>
       dplyr::select(
         Region.Label = nome_uc,
         Sample.Label = nome_ea,
-        Effort = esforco_dia,
+        Effort_day = esforco_dia,
         sampling_day = data_amostragem,
         distance = distancia,
         season = estacao,
@@ -91,17 +120,51 @@ transformar_dados_formato_Distance <- function(
         Area,
         .before = Sample.Label
       )
+    
+    # calculo do esforco amostral total
+    n_repeated_visits <- dados_formato_distance |> 
+      # conta o numero de vezes que uma ea foi amostrada
+      dplyr::count(
+        Region.Label,
+        Sample.Label,
+        season,
+        year,
+        name = "repeated_visits"
+      )
+    
+    dados_formato_distance <- dados_formato_distance |>
+      dplyr::left_join(
+        n_repeated_visits,
+        dplyr::join_by(...),
+        relationship = "many-to-many"
+      ) |> 
+      # gera a distancia total percorrida em cada ea
+      dplyr::mutate(
+        Effort = Effort_day * repeated_visits,
+        .before = sampling_day
+      ) |>
+      # reposiciona as colunas
+      dplyr::relocate(
+        repeated_visits,
+        .after = Sample.Label
+      ) 
 
     # gerar filtro para eliminar amostras repetidas mantendo o dia com o maior n de obs
     # gerar o n de obs por data de amostragem
     n_obs_data <- dados_formato_distance |>
-      dplyr::group_by(Region.Label, Sample.Label, sampling_day, year, season) |>
+      dplyr::group_by(
+        ...,
+        sampling_day
+      ) |>
       dplyr::count(sampling_day) |>
       dplyr::ungroup()
 
     # gerar as datas com maior n de obs em cada estacao e ano
     data_com_maior_n_obs <- dados_formato_distance |>
-      dplyr::group_by(Region.Label, Sample.Label, year, season) |>
+      dplyr::group_by(
+        ...,
+        sampling_day
+      ) |>
       dplyr::count(sampling_day) |>
       dplyr::reframe(n_max = max(n)) |>
       dplyr::ungroup()
@@ -112,14 +175,23 @@ transformar_dados_formato_Distance <- function(
     dados_para_filtrar_por_data_sem_repeticao <- n_obs_data |>
       dplyr::semi_join(
         data_com_maior_n_obs,
-        dplyr::join_by(Region.Label, Sample.Label, year, season, n == n_max),
+        dplyr::join_by(
+          ...,
+          sampling_day
+          , n == n_max),
       ) |>
-      dplyr::distinct(Sample.Label, sampling_day, year, season) |>
+      dplyr::distinct(
+        ...,
+        sampling_day
+      ) |>
       dplyr::mutate(
         day = lubridate::day(sampling_day),
         month = lubridate::month(sampling_day)
       ) |>
-      dplyr::group_by(Sample.Label, season, year) |>
+      dplyr::group_by(
+        ...,
+        sampling_day
+      ) |>
       dplyr::filter(day == min(day))
 
     # gerar o filtro de datas
