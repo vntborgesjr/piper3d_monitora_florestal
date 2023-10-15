@@ -123,7 +123,7 @@ filtrar_dados <- function(
         ano,
         estacao,
         esforco_dia
-      ),
+      )
     )
   
   return(dados_filtrados)
