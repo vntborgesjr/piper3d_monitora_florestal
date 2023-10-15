@@ -28,7 +28,7 @@ Adaptar para facilitar inclusão de novos conjuntos de dados, inclusive do SMART
 3. Corrigir o esforço amostral para incluir trilhas percorridas sem registros dos animais.
 Sugestão do Ricardo: calcular o esforço amostral total para cada UC antes de filtrar por espécie. Usar esse esforço amostral como base quando estiver analisando os dados de cada espécie. Filtrar por UC/ano/estacao. Generalizar para todas as espécies;
 
-4. Incluir um filtro por gênero; 
+4. ~~Incluir um filtro por gênero;~~
 
 5. ~~Adicionar colunas genero, familia e ordem;~~
 
