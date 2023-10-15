@@ -72,10 +72,7 @@ transformar_dados_formato_Distance <- function(
     n_repeated_visits <- dados_formato_distance |> 
       # conta o numero de vezes que uma ea foi amostrada
       dplyr::count(
-        Region.Label,
-        Sample.Label,
-        season,
-        year,
+        ...,
         name = "repeated_visits"
       )
     
