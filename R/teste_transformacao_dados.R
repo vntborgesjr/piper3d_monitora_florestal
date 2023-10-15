@@ -1,3 +1,4 @@
+# descarregar pacote
 detach("package:distanceMonitoraflorestal", unload = TRUE)
 # teste usando as funções do projeto atual -------------------------------------------
 
@@ -60,8 +61,14 @@ rm(
   transformar_dados_formato_Distance
 )
 
+# remover pacote
+remove.packages(pkgs = "distanceMonitoraflorestal")
+
 # reinstalar o pacote
-devtools::install_github("vntborgesjr/distanceMonitoraflorestal", force = TRUE)
+devtools::install_github(
+  "vntborgesjr/distanceMonitoraflorestal", 
+  # force = TRUE
+)
 
 # carregar o pacote
 library(distanceMonitoraflorestal)
@@ -71,7 +78,7 @@ View(monitora_aves_masto_florestal)
 # dados filtrados com dias sem observações incluídos!
 dados_filtrados <- filtrar_dados(
   dados = monitora_aves_masto_florestal,
-  "nome_uc" %in% c("esec_da_terra_do_meio" ,"parna_da_serra_do_pardo"),
+  nome_uc %in% c("esec_da_terra_do_meio" ,"parna_da_serra_do_pardo"),
   nome_sp == c("sapajus_apella"),
   validacao_obs = "especie"
 )
@@ -102,3 +109,8 @@ dados_formato_distance <- transformar_dados_formato_Distance(
   year,
   amostras_repetidas = FALSE
 )
+
+dados_formato_distance |> 
+  View()
+
+#  rm(list = ls())
