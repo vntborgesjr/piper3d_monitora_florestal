@@ -1,4 +1,4 @@
-
+detach("package:distanceMonitoraflorestal", unload = TRUE)
 # teste usando as funções do projeto atual -------------------------------------------
 
 source("R/carregar_dados_brutos_xlsx.R")
