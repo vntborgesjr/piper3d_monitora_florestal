@@ -94,7 +94,7 @@ filtrar_dados <- function(
     )
   
   # gerar nomes das ucs e sps filtradas
-  nome_uc1 <- unique(as.character(dados$nome_uc))
+  nome_uc1 <- unique(as.character(dados_filtrados$nome_uc))
   
   # gerar o tibble filtrado pelas uc, nivel taxonomico de validacao
   dados_filtrados_uc <- dados |>
