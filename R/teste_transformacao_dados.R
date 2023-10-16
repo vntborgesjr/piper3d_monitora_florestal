@@ -67,7 +67,7 @@ remove.packages(pkgs = "distanceMonitoraflorestal")
 # reinstalar o pacote
 devtools::install_github(
   "vntborgesjr/distanceMonitoraflorestal", 
-  # force = TRUE
+  force = TRUE
 )
 
 # carregar o pacote
@@ -83,7 +83,7 @@ dados_filtrados <- filtrar_dados(
   validacao_obs = "especie"
 )
 
-# dados_filtrados |> 
+# dados_filtrados |>
 #   View()
 
 # teste transformar formato distance sem repetição
@@ -105,6 +105,8 @@ dados_formato_distance <- transformar_dados_formato_Distance(
   dados = dados_filtrados,
   Region.Label,
   Sample.Label,
+  season,
+  year,
   amostras_repetidas = FALSE
 )
 
