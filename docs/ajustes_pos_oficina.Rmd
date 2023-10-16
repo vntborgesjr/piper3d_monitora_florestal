@@ -25,14 +25,14 @@ Adaptar para facilitar inclusão de novos conjuntos de dados, inclusive do SMART
 
 2.~~Corrigir nome da família Tinamidae;~~
 
-3. Corrigir o esforço amostral para incluir trilhas percorridas sem registros dos animais.
-Sugestão do Ricardo: calcular o esforço amostral total para cada UC antes de filtrar por espécie. Usar esse esforço amostral como base quando estiver analisando os dados de cada espécie. Filtrar por UC/ano/estacao. Generalizar para todas as espécies;
+3. ~~Corrigir o esforço amostral para incluir trilhas percorridas sem registros dos animais.
+Sugestão do Ricardo: calcular o esforço amostral total para cada UC antes de filtrar por espécie. Usar esse esforço amostral como base quando estiver analisando os dados de cada espécie. Filtrar por UC/ano/estacao. Generalizar para todas as espécies;~~
 
 4. ~~Incluir um filtro por gênero;~~
 
 5. ~~Adicionar colunas genero, familia e ordem;~~
 
-6. Incluir opção de filtro pelo código cnuc; (foda incluir todos esses filtros na função. seria mais fácil se as pessoas soubessem usar a função dplyr::filter()... fui querer facilitar acabei complicando o rolê...)
+6. ~~Incluir opção de filtro pelo código cnuc;~~ 
 
 7. Verificar nomes dos modelos nas tabelas de output das estimativas de taxa de encontro, abundancia e densidade. Todas devem ter a coluna modelo (com o nome) e a coluna formula.
 
