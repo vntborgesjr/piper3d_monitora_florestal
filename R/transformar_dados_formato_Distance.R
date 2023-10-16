@@ -141,27 +141,29 @@ transformar_dados_formato_Distance <- function(
     
     # eliminar amostras repetidas a partir do dia com
     # maior distância perpendicular média
-    dados_para_filtrar_por_data_sem_repeticao_media <- dados_formato_distance |>
-      dplyr::filter(
-        sampling_day %in% filtro_datas_sem_repeticao1
-      ) |> 
-      dplyr::group_by(
-        ...,
-        sampling_day
-      ) |> 
-      dplyr::summarise(
-        distance_mean = mean(
-          distance,
-          na.rm = TRUE
-        )
-      ) |> 
-      dplyr::filter(
-        distance_mean == max(
-          distance_mean,
-          na.rm = TRUE
-        )
-      ) |> 
-      dplyr::ungroup()
+    dados_para_filtrar_por_data_sem_repeticao_media <- suppressWarnings(
+      dados_formato_distance |>
+        dplyr::filter(
+          sampling_day %in% filtro_datas_sem_repeticao1
+        ) |> 
+        dplyr::group_by(
+          ...,
+          sampling_day
+        ) |> 
+        dplyr::summarise(
+          distance_mean = mean(
+            distance,
+            na.rm = TRUE
+          )
+        ) |> 
+        dplyr::filter(
+          distance_mean == max(
+            distance_mean,
+            na.rm = TRUE
+          )
+        ) |> 
+        dplyr::ungroup()
+    )
     
     # gerar o filtro de datas não repetidas com data
     # com número máximo de indivíduos observados
