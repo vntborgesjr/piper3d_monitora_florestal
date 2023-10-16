@@ -21,8 +21,8 @@ dados_filtrados <- filtrar_dados(
   validacao_obs = "especie"
 )
 
-dados_filtrados |> 
-  View()
+# dados_filtrados |> 
+#   View()
 
 # teste transformar formato distance sem repetição
 # incluidas colunas repeated_visits e Effort_day
@@ -34,8 +34,8 @@ dados_formato_distance_repeticao <- transformar_dados_formato_Distance(
   amostras_repetidas = TRUE
 )
 
-dados_formato_distance_repeticao |>
-  View()
+# dados_formato_distance_repeticao |>
+#   View()
 
 # teste transformar formato distance sem repetição
 # precisa de ajuste
@@ -72,7 +72,7 @@ devtools::install_github(
 
 # carregar o pacote
 library(distanceMonitoraflorestal)
-View(monitora_aves_masto_florestal)
+# View(monitora_aves_masto_florestal)
 
 
 # dados filtrados com dias sem observações incluídos!
@@ -83,8 +83,8 @@ dados_filtrados <- filtrar_dados(
   validacao_obs = "especie"
 )
 
-dados_filtrados |> 
-  View()
+# dados_filtrados |> 
+#   View()
 
 # teste transformar formato distance sem repetição
 # incluidas colunas repeated_visits e Effort_day
@@ -96,8 +96,8 @@ dados_formato_distance_repeticao <- transformar_dados_formato_Distance(
   amostras_repetidas = TRUE
 )
 
-dados_formato_distance_repeticao |>
-  View()
+# dados_formato_distance_repeticao |>
+#   View()
 
 # teste transformar formato distance sem repetição
 # precisa de ajuste
@@ -105,12 +105,10 @@ dados_formato_distance <- transformar_dados_formato_Distance(
   dados = dados_filtrados,
   Region.Label,
   Sample.Label,
-  season,
-  year,
   amostras_repetidas = FALSE
 )
 
-dados_formato_distance |> 
+dados_formato_distance |>
   View()
 
 #  rm(list = ls())
