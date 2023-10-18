@@ -72,9 +72,7 @@ devtools::install_github(
 
 # carregar o pacote
 library(distanceMonitoraflorestal)
-# View(monitora_aves_masto_florestal)
-
-
+View(monitora_aves_masto_florestal)
 # dados filtrados com dias sem observações incluídos!
 dados_filtrados <- filtrar_dados(
   dados = monitora_aves_masto_florestal,
