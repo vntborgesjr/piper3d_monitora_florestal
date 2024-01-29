@@ -58,8 +58,8 @@ Sugestão do Ricardo: calcular o esforço amostral total para cada UC antes de f
 
 ~~. incluir variável velocidade~~
 
-#PARA PENSAR FUTURAMENTE - COM BASE NOS APONTAMENTOS DA OFICINA
-#Ajustes nas análises/estratégias analíticas
+# PARA PENSAR FUTURAMENTE - COM BASE NOS APONTAMENTOS DA OFICINA
+# Ajustes nas análises/estratégias analíticas
 1. Pesquisar/entender Distância efetiva de avistamento.
 2. Pacote Unmarked
   - exponencial negativa
@@ -67,7 +67,7 @@ Sugestão do Ricardo: calcular o esforço amostral total para cada UC antes de f
   - estratégia para lidar com pico em zero.
   - série temporal anual (? anotei mais não lembro muito bem do que se tratava)
   
-#Pensar estratégias de disponbilizar os dados ao público - maior alcance
+# Pensar estratégias de disponbilizar os dados ao público - maior alcance
 -Olhar Darwin Core e dados ecológicos 
 
 - Dryad? DataOne? Algum outro banco de dados?
